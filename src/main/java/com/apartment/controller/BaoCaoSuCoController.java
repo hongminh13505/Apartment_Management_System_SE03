@@ -3,7 +3,7 @@ package com.apartment.controller;
 import com.apartment.entity.BaoCaoSuCo;
 import com.apartment.service.BaoCaoSuCoService;
 import com.apartment.service.DoiTuongService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -16,11 +16,13 @@ import java.time.LocalDateTime;
 @Controller
 @RequestMapping("/admin/bao-cao-su-co")
 @PreAuthorize("hasAnyRole('BAN_QUAN_TRI', 'CO_QUAN_CHUC_NANG')")
-@RequiredArgsConstructor
 public class BaoCaoSuCoController {
     
-    private final BaoCaoSuCoService baoCaoSuCoService;
-    private final DoiTuongService doiTuongService;
+    @Autowired
+    private BaoCaoSuCoService baoCaoSuCoService;
+    
+    @Autowired
+    private DoiTuongService doiTuongService;
     
     @GetMapping
     public String list(@RequestParam(required = false) String trangThai, Model model) {
@@ -39,6 +41,7 @@ public class BaoCaoSuCoController {
         baoCaoSuCo.setCccdNguoiNhap(authentication.getName());
         model.addAttribute("baoCaoSuCo", baoCaoSuCo);
         model.addAttribute("cuDanList", doiTuongService.findAllActiveCuDan());
+        model.addAttribute("isEdit", false);
         return "admin/bao-cao-su-co/form";
     }
     

@@ -3,7 +3,7 @@ package com.apartment.controller;
 import com.apartment.entity.HoGiaDinh;
 import com.apartment.service.HoGiaDinhService;
 import com.apartment.service.DoiTuongService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,11 +13,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/ho-gia-dinh")
 @PreAuthorize("hasRole('BAN_QUAN_TRI')")
-@RequiredArgsConstructor
 public class HoGiaDinhController {
     
-    private final HoGiaDinhService hoGiaDinhService;
-    private final DoiTuongService doiTuongService;
+    @Autowired
+    private HoGiaDinhService hoGiaDinhService;
+    
+    @Autowired
+    private DoiTuongService doiTuongService;
     
     @GetMapping
     public String list(@RequestParam(required = false) String search, Model model) {
@@ -33,6 +35,7 @@ public class HoGiaDinhController {
     @GetMapping("/create")
     public String createForm(Model model) {
         model.addAttribute("hoGiaDinh", new HoGiaDinh());
+        model.addAttribute("isEdit", false);
         return "admin/ho-gia-dinh/form";
     }
     

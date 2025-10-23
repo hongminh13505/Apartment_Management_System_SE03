@@ -36,10 +36,6 @@ public class HoGiaDinh {
     @Column(name = "ngay_cap_nhat")
     private LocalDateTime ngayCapNhat;
     
-    @ManyToOne
-    @JoinColumn(name = "ma_can_ho", referencedColumnName = "ma_tai_san", insertable = false, updatable = false)
-    private TaiSanChungCu canHo;
-    
     @PrePersist
     protected void onCreate() {
         if (ngayThanhLap == null) {

@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/apartment_db
     username: postgres
-    password: gygygyg67
+    password: ancutkhong1235
     driver-class-name: org.postgresql.Driver
     
   jpa:
@@ -35,7 +35,7 @@ spring:
       static-locations: classpath:/static/
       
 server:
-  port: 8081
+  port: 8082
   servlet:
     context-path: /
     session:

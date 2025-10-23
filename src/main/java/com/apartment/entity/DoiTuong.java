@@ -73,6 +73,135 @@ public class DoiTuong {
     protected void onUpdate() {
         ngayCapNhat = LocalDateTime.now();
     }
+    
+    // Manual getter/setter methods for Lombok compatibility
+    public String getMatKhau() {
+        return matKhau;
+    }
+    
+    public void setMatKhau(String matKhau) {
+        this.matKhau = matKhau;
+    }
+    
+    public LocalDateTime getLanDangNhapCuoi() {
+        return lanDangNhapCuoi;
+    }
+    
+    public void setLanDangNhapCuoi(LocalDateTime lanDangNhapCuoi) {
+        this.lanDangNhapCuoi = lanDangNhapCuoi;
+    }
+    
+    public String getCccd() {
+        return cccd;
+    }
+    
+    public void setCccd(String cccd) {
+        this.cccd = cccd;
+    }
+    
+    public String getVaiTro() {
+        return vaiTro;
+    }
+    
+    public void setVaiTro(String vaiTro) {
+        this.vaiTro = vaiTro;
+    }
+    
+    public Boolean getLaCuDan() {
+        return laCuDan;
+    }
+    
+    public void setLaCuDan(Boolean laCuDan) {
+        this.laCuDan = laCuDan;
+    }
+    
+    public String getHoVaTen() {
+        return hoVaTen;
+    }
+    
+    public void setHoVaTen(String hoVaTen) {
+        this.hoVaTen = hoVaTen;
+    }
+    
+    public LocalDate getNgaySinh() {
+        return ngaySinh;
+    }
+    
+    public void setNgaySinh(LocalDate ngaySinh) {
+        this.ngaySinh = ngaySinh;
+    }
+    
+    public String getGioiTinh() {
+        return gioiTinh;
+    }
+    
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
+    }
+    
+    public String getQueQuan() {
+        return queQuan;
+    }
+    
+    public void setQueQuan(String queQuan) {
+        this.queQuan = queQuan;
+    }
+    
+    public String getSoDienThoai() {
+        return soDienThoai;
+    }
+    
+    public void setSoDienThoai(String soDienThoai) {
+        this.soDienThoai = soDienThoai;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public String getNgheNghiep() {
+        return ngheNghiep;
+    }
+    
+    public void setNgheNghiep(String ngheNghiep) {
+        this.ngheNghiep = ngheNghiep;
+    }
+    
+    public String getTrangThaiTaiKhoan() {
+        return trangThaiTaiKhoan;
+    }
+    
+    public void setTrangThaiTaiKhoan(String trangThaiTaiKhoan) {
+        this.trangThaiTaiKhoan = trangThaiTaiKhoan;
+    }
+    
+    public String getTrangThaiDanCu() {
+        return trangThaiDanCu;
+    }
+    
+    public void setTrangThaiDanCu(String trangThaiDanCu) {
+        this.trangThaiDanCu = trangThaiDanCu;
+    }
+    
+    public LocalDateTime getNgayTao() {
+        return ngayTao;
+    }
+    
+    public void setNgayTao(LocalDateTime ngayTao) {
+        this.ngayTao = ngayTao;
+    }
+    
+    public LocalDateTime getNgayCapNhat() {
+        return ngayCapNhat;
+    }
+    
+    public void setNgayCapNhat(LocalDateTime ngayCapNhat) {
+        this.ngayCapNhat = ngayCapNhat;
+    }
 }
 
 

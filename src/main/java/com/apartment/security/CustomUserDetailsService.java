@@ -2,7 +2,7 @@ package com.apartment.security;
 
 import com.apartment.entity.DoiTuong;
 import com.apartment.repository.DoiTuongRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     
-    private final DoiTuongRepository doiTuongRepository;
+    @Autowired
+    private DoiTuongRepository doiTuongRepository;
     
     @Override
     public UserDetails loadUserByUsername(String cccd) throws UsernameNotFoundException {

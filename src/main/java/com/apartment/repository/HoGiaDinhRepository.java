@@ -12,8 +12,6 @@ public interface HoGiaDinhRepository extends JpaRepository<HoGiaDinh, String> {
     
     Optional<HoGiaDinh> findByMaHo(String maHo);
     
-    Optional<HoGiaDinh> findByMaCanHo(Integer maCanHo);
-    
     List<HoGiaDinh> findByTrangThai(String trangThai);
     
     List<HoGiaDinh> findByTenHoContainingIgnoreCase(String tenHo);

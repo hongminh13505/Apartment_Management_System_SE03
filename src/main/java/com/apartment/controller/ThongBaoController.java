@@ -2,7 +2,7 @@ package com.apartment.controller;
 
 import com.apartment.entity.ThongBao;
 import com.apartment.service.ThongBaoService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -13,10 +13,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/admin/thong-bao")
 @PreAuthorize("hasRole('BAN_QUAN_TRI')")
-@RequiredArgsConstructor
 public class ThongBaoController {
     
-    private final ThongBaoService thongBaoService;
+    @Autowired
+    private ThongBaoService thongBaoService;
     
     @GetMapping
     public String list(Model model) {
@@ -29,6 +29,7 @@ public class ThongBaoController {
         ThongBao thongBao = new ThongBao();
         thongBao.setCccdBanQuanTri(authentication.getName());
         model.addAttribute("thongBao", thongBao);
+        model.addAttribute("isEdit", false);
         return "admin/thong-bao/form";
     }
     

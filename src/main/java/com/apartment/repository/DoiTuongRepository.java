@@ -15,7 +15,7 @@ public interface DoiTuongRepository extends JpaRepository<DoiTuong, String> {
     @Query("SELECT d FROM DoiTuong d WHERE d.vaiTro = :vaiTro AND d.trangThaiTaiKhoan = 'hoat_dong'")
     List<DoiTuong> findByVaiTroAndActive(String vaiTro);
     
-    @Query("SELECT d FROM DoiTuong d WHERE d.laCuDan = true AND d.trangThaiDanCu = 'o_chung_cu'")
+    @Query("SELECT d FROM DoiTuong d WHERE d.laCuDan = true AND d.trangThaiTaiKhoan = 'hoat_dong'")
     List<DoiTuong> findAllActiveCuDan();
     
     List<DoiTuong> findByHoVaTenContainingIgnoreCase(String hoVaTen);

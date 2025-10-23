@@ -80,6 +80,159 @@ public class BaoCaoSuCo {
     protected void onCreate() {
         ngayBaoCao = LocalDateTime.now();
     }
+    
+    // Manual getter/setter methods for Lombok compatibility
+    public Integer getMaBaoCao() {
+        return maBaoCao;
+    }
+    
+    public void setMaBaoCao(Integer maBaoCao) {
+        this.maBaoCao = maBaoCao;
+    }
+    
+    public String getCccdNguoiBaoCao() {
+        return cccdNguoiBaoCao;
+    }
+    
+    public void setCccdNguoiBaoCao(String cccdNguoiBaoCao) {
+        this.cccdNguoiBaoCao = cccdNguoiBaoCao;
+    }
+    
+    public String getCccdNguoiNhap() {
+        return cccdNguoiNhap;
+    }
+    
+    public void setCccdNguoiNhap(String cccdNguoiNhap) {
+        this.cccdNguoiNhap = cccdNguoiNhap;
+    }
+    
+    public String getTieuDe() {
+        return tieuDe;
+    }
+    
+    public void setTieuDe(String tieuDe) {
+        this.tieuDe = tieuDe;
+    }
+    
+    public String getMoTaSuCo() {
+        return moTaSuCo;
+    }
+    
+    public void setMoTaSuCo(String moTaSuCo) {
+        this.moTaSuCo = moTaSuCo;
+    }
+    
+    public String getViTriSuCo() {
+        return viTriSuCo;
+    }
+    
+    public void setViTriSuCo(String viTriSuCo) {
+        this.viTriSuCo = viTriSuCo;
+    }
+    
+    public String getMucDoUuTien() {
+        return mucDoUuTien;
+    }
+    
+    public void setMucDoUuTien(String mucDoUuTien) {
+        this.mucDoUuTien = mucDoUuTien;
+    }
+    
+    public String getPhuongThucBaoCao() {
+        return phuongThucBaoCao;
+    }
+    
+    public void setPhuongThucBaoCao(String phuongThucBaoCao) {
+        this.phuongThucBaoCao = phuongThucBaoCao;
+    }
+    
+    public LocalDateTime getNgayBaoCao() {
+        return ngayBaoCao;
+    }
+    
+    public void setNgayBaoCao(LocalDateTime ngayBaoCao) {
+        this.ngayBaoCao = ngayBaoCao;
+    }
+    
+    public String getTrangThai() {
+        return trangThai;
+    }
+    
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+    
+    public String getCccdNguoiXuLy() {
+        return cccdNguoiXuLy;
+    }
+    
+    public void setCccdNguoiXuLy(String cccdNguoiXuLy) {
+        this.cccdNguoiXuLy = cccdNguoiXuLy;
+    }
+    
+    public LocalDateTime getNgayBatDauXuLy() {
+        return ngayBatDauXuLy;
+    }
+    
+    public void setNgayBatDauXuLy(LocalDateTime ngayBatDauXuLy) {
+        this.ngayBatDauXuLy = ngayBatDauXuLy;
+    }
+    
+    public LocalDateTime getNgayHoanThanh() {
+        return ngayHoanThanh;
+    }
+    
+    public void setNgayHoanThanh(LocalDateTime ngayHoanThanh) {
+        this.ngayHoanThanh = ngayHoanThanh;
+    }
+    
+    public String getKetQuaXuLy() {
+        return ketQuaXuLy;
+    }
+    
+    public void setKetQuaXuLy(String ketQuaXuLy) {
+        this.ketQuaXuLy = ketQuaXuLy;
+    }
+    
+    public BigDecimal getChiPhiXuLy() {
+        return chiPhiXuLy;
+    }
+    
+    public void setChiPhiXuLy(BigDecimal chiPhiXuLy) {
+        this.chiPhiXuLy = chiPhiXuLy;
+    }
+    
+    public String getGhiChu() {
+        return ghiChu;
+    }
+    
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+    
+    public DoiTuong getNguoiBaoCao() {
+        return nguoiBaoCao;
+    }
+    
+    public void setNguoiBaoCao(DoiTuong nguoiBaoCao) {
+        this.nguoiBaoCao = nguoiBaoCao;
+    }
+    
+    public DoiTuong getNguoiNhap() {
+        return nguoiNhap;
+    }
+    
+    public void setNguoiNhap(DoiTuong nguoiNhap) {
+        this.nguoiNhap = nguoiNhap;
+    }
+    
+    public DoiTuong getNguoiXuLy() {
+        return nguoiXuLy;
+    }
+    
+    public void setNguoiXuLy(DoiTuong nguoiXuLy) {
+        this.nguoiXuLy = nguoiXuLy;
+    }
 }
 
 

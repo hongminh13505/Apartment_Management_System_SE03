@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit ? 'Sửa báo cáo sự cố' : 'Tạo báo cáo sự cố'} + ' - Quản lý chung cư'">Tạo báo cáo sự cố - Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Quản lý chung cư</h3>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/admin/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/doi-tuong}">
+                            <span>👥</span> Quản lý cư dân
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/ho-gia-dinh}">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/hoa-don}">
+                            <span>💰</span> Hóa đơn
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/bao-cao-su-co}" class="active">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <div class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2 th:text="${isEdit ? 'Sửa báo cáo sự cố' : 'Tạo báo cáo sự cố'}">Tạo báo cáo sự cố</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="page-content">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <form th:action="@{/admin/bao-cao-su-co/save}" th:object="${baoCaoSuCo}" method="post" class="form-container">
+                    <div class="form-group">
+                        <label for="tieuDe">Tiêu đề *</label>
+                        <input type="text" id="tieuDe" th:field="*{tieuDe}" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="noiDung">Nội dung *</label>
+                        <textarea id="noiDung" th:field="*{noiDung}" class="form-control" rows="5" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cccdNguoiBaoCao">Người báo cáo *</label>
+                        <select id="cccdNguoiBaoCao" th:field="*{cccdNguoiBaoCao}" class="form-control" required>
+                            <option value="">-- Chọn người báo cáo --</option>
+                            <option th:each="cd : ${cuDanList}" 
+                                    th:value="${cd.cccd}" 
+                                    th:text="${cd.cccd + ' - ' + cd.hoVaTen}">001234567890 - Nguyễn Văn A</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mucDoUuTien">Mức độ ưu tiên *</label>
+                        <select id="mucDoUuTien" th:field="*{mucDoUuTien}" class="form-control" required>
+                            <option value="">-- Chọn mức độ ưu tiên --</option>
+                            <option value="binh_thuong">Bình thường</option>
+                            <option value="cao">Cao</option>
+                            <option value="khan_cap">Khẩn cấp</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trangThai">Trạng thái *</label>
+                        <select id="trangThai" th:field="*{trangThai}" class="form-control" required>
+                            <option value="">-- Chọn trạng thái --</option>
+                            <option value="moi_tiep_nhan">Mới tiếp nhận</option>
+                            <option value="dang_xu_ly">Đang xử lý</option>
+                            <option value="da_hoan_thanh">Hoàn thành</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" th:text="${isEdit ? 'Cập nhật' : 'Tạo'}">Tạo</button>
+                        <a th:href="@{/admin/bao-cao-su-co}" class="btn btn-secondary">Hủy</a>
+                    </div>
+                </form>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

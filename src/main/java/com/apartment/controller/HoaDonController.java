@@ -4,7 +4,7 @@ import com.apartment.entity.HoaDon;
 import com.apartment.service.HoaDonService;
 import com.apartment.service.HoGiaDinhService;
 import com.apartment.service.DichVuService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +16,16 @@ import java.time.LocalDateTime;
 @Controller
 @RequestMapping("/admin/hoa-don")
 @PreAuthorize("hasAnyRole('BAN_QUAN_TRI', 'KE_TOAN')")
-@RequiredArgsConstructor
 public class HoaDonController {
     
-    private final HoaDonService hoaDonService;
-    private final HoGiaDinhService hoGiaDinhService;
-    private final DichVuService dichVuService;
+    @Autowired
+    private HoaDonService hoaDonService;
+    
+    @Autowired
+    private HoGiaDinhService hoGiaDinhService;
+    
+    @Autowired
+    private DichVuService dichVuService;
     
     @GetMapping
     public String list(@RequestParam(required = false) String trangThai, Model model) {
@@ -41,6 +45,7 @@ public class HoaDonController {
         model.addAttribute("hoaDon", new HoaDon());
         model.addAttribute("hoGiaDinhList", hoGiaDinhService.findAll());
         model.addAttribute("dichVuList", dichVuService.findAllActive());
+        model.addAttribute("isEdit", false);
         return "admin/hoa-don/form";
     }
     

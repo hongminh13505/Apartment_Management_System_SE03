@@ -2,7 +2,7 @@ package com.apartment.service;
 
 import com.apartment.entity.DoiTuong;
 import com.apartment.repository.DoiTuongRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,11 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class DoiTuongService {
     
-    private final DoiTuongRepository doiTuongRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private DoiTuongRepository doiTuongRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     public List<DoiTuong> findAll() {
         return doiTuongRepository.findAll();

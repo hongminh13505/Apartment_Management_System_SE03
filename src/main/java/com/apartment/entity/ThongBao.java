@@ -47,6 +47,79 @@ public class ThongBao {
     protected void onCreate() {
         ngayTaoThongBao = LocalDateTime.now();
     }
+    
+    // Manual getter/setter methods for Lombok compatibility
+    public Integer getMaThongBao() {
+        return maThongBao;
+    }
+    
+    public void setMaThongBao(Integer maThongBao) {
+        this.maThongBao = maThongBao;
+    }
+    
+    public String getCccdBanQuanTri() {
+        return cccdBanQuanTri;
+    }
+    
+    public void setCccdBanQuanTri(String cccdBanQuanTri) {
+        this.cccdBanQuanTri = cccdBanQuanTri;
+    }
+    
+    public String getTieuDe() {
+        return tieuDe;
+    }
+    
+    public void setTieuDe(String tieuDe) {
+        this.tieuDe = tieuDe;
+    }
+    
+    public String getNoiDungThongBao() {
+        return noiDungThongBao;
+    }
+    
+    public void setNoiDungThongBao(String noiDungThongBao) {
+        this.noiDungThongBao = noiDungThongBao;
+    }
+    
+    public LocalDateTime getNgayTaoThongBao() {
+        return ngayTaoThongBao;
+    }
+    
+    public void setNgayTaoThongBao(LocalDateTime ngayTaoThongBao) {
+        this.ngayTaoThongBao = ngayTaoThongBao;
+    }
+    
+    public String getTrangThai() {
+        return trangThai;
+    }
+    
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+    
+    public String getLoaiThongBao() {
+        return loaiThongBao;
+    }
+    
+    public void setLoaiThongBao(String loaiThongBao) {
+        this.loaiThongBao = loaiThongBao;
+    }
+    
+    public String getDoiTuongNhan() {
+        return doiTuongNhan;
+    }
+    
+    public void setDoiTuongNhan(String doiTuongNhan) {
+        this.doiTuongNhan = doiTuongNhan;
+    }
+    
+    public DoiTuong getBanQuanTri() {
+        return banQuanTri;
+    }
+    
+    public void setBanQuanTri(DoiTuong banQuanTri) {
+        this.banQuanTri = banQuanTri;
+    }
 }
 
 

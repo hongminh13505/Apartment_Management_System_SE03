@@ -2,7 +2,7 @@ package com.apartment.controller;
 
 import com.apartment.entity.DoiTuong;
 import com.apartment.service.DoiTuongService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +15,10 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/admin/doi-tuong")
 @PreAuthorize("hasRole('BAN_QUAN_TRI')")
-@RequiredArgsConstructor
 public class DoiTuongController {
     
-    private final DoiTuongService doiTuongService;
+    @Autowired
+    private DoiTuongService doiTuongService;
     
     @GetMapping
     public String list(@RequestParam(required = false) String search, Model model) {
@@ -34,6 +34,7 @@ public class DoiTuongController {
     @GetMapping("/create")
     public String createForm(Model model) {
         model.addAttribute("doiTuong", new DoiTuong());
+        model.addAttribute("isEdit", false);
         return "admin/doi-tuong/form";
     }
     

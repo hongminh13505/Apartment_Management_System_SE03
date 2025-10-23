@@ -2,7 +2,7 @@ package com.apartment.service;
 
 import com.apartment.entity.HoaDon;
 import com.apartment.repository.HoaDonRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class HoaDonService {
     
-    private final HoaDonRepository hoaDonRepository;
+    @Autowired
+    private HoaDonRepository hoaDonRepository;
     
     public List<HoaDon> findAll() {
         return hoaDonRepository.findAll();

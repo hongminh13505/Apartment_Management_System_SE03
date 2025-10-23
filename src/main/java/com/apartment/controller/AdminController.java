@@ -1,7 +1,7 @@
 package com.apartment.controller;
 
 import com.apartment.service.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -12,14 +12,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('BAN_QUAN_TRI')")
-@RequiredArgsConstructor
 public class AdminController {
     
-    private final DoiTuongService doiTuongService;
-    private final HoGiaDinhService hoGiaDinhService;
-    private final BaoCaoSuCoService baoCaoSuCoService;
-    private final HoaDonService hoaDonService;
-    private final ThongBaoService thongBaoService;
+    @Autowired
+    private DoiTuongService doiTuongService;
+    
+    @Autowired
+    private HoGiaDinhService hoGiaDinhService;
+    
+    @Autowired
+    private BaoCaoSuCoService baoCaoSuCoService;
+    
+    @Autowired
+    private HoaDonService hoaDonService;
+    
+    @Autowired
+    private ThongBaoService thongBaoService;
     
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
