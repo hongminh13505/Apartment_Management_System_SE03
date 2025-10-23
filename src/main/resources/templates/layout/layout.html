@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ? ${pageTitle} + ' - Quản lý chung cư' : 'Quản lý chung cư'">Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar" th:fragment="sidebar">
+            <div class="sidebar-header">
+                <h3>Quản lý chung cư</h3>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li sec:authorize="hasRole('BAN_QUAN_TRI')">
+                        <a th:href="@{/admin/dashboard}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'dashboard')} ? 'active' : ''">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li sec:authorize="hasRole('BAN_QUAN_TRI')">
+                        <a th:href="@{/admin/doi-tuong}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'doi-tuong')} ? 'active' : ''">
+                            <span>👥</span> Quản lý cư dân
+                        </a>
+                    </li>
+                    
+                    <li sec:authorize="hasRole('BAN_QUAN_TRI')">
+                        <a th:href="@{/admin/ho-gia-dinh}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'ho-gia-dinh')} ? 'active' : ''">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li sec:authorize="hasAnyRole('BAN_QUAN_TRI', 'KE_TOAN')">
+                        <a th:href="@{/admin/hoa-don}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'hoa-don')} ? 'active' : ''">
+                            <span>💰</span> Hóa đơn
+                        </a>
+                    </li>
+                    
+                    <li sec:authorize="hasAnyRole('BAN_QUAN_TRI', 'CO_QUAN_CHUC_NANG')">
+                        <a th:href="@{/admin/bao-cao-su-co}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'bao-cao-su-co')} ? 'active' : ''">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li sec:authorize="hasRole('BAN_QUAN_TRI')">
+                        <a th:href="@{/admin/thong-bao}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'thong-bao')} ? 'active' : ''">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header" th:fragment="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2 th:text="${pageTitle}">Dashboard</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">User</strong></span>
+                        <a th:href="@{/logout}" class="btn btn-sm btn-danger">Đăng xuất</a>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <div th:replace="${content}"></div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
+

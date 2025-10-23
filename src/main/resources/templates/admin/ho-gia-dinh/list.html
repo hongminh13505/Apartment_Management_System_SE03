@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý hộ gia đình - Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div th:replace="~{layout/layout :: sidebar}"></div>
+        </aside>
+        
+        <div class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Quản lý hộ gia đình</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <a th:href="@{/logout}" class="btn btn-sm btn-danger">Đăng xuất</a>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="page-content">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/admin/ho-gia-dinh}" method="get">
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                    </div>
+                    <a th:href="@{/admin/ho-gia-dinh/create}" class="btn btn-success">+ Thêm mới</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Mã hộ</th>
+                                <th>Tên hộ</th>
+                                <th>Mã căn hộ</th>
+                                <th>Ngày thành lập</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ho : ${hoGiaDinhList}">
+                                <td th:text="${ho.maHo}">HO001</td>
+                                <td th:text="${ho.tenHo}">Hộ gia đình A</td>
+                                <td th:text="${ho.maCanHo}">101</td>
+                                <td th:text="${#temporals.format(ho.ngayThanhLap, 'dd/MM/yyyy')}">01/01/2020</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${ho.trangThai == 'hoat_dong'} ? 'badge-success' : 'badge-secondary'"
+                                          th:text="${ho.trangThai}">Hoạt động</span>
+                                </td>
+                                <td class="actions">
+                                    <a th:href="@{/admin/ho-gia-dinh/edit/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-warning">Sửa</a>
+                                    <a th:href="@{/admin/ho-gia-dinh/delete/{maHo}(maHo=${ho.maHo})}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
+

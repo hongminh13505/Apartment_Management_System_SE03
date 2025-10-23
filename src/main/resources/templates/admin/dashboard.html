@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div th:replace="~{layout/layout :: sidebar}"></div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Dashboard</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <a th:href="@{/logout}" class="btn btn-sm btn-danger">Đăng xuất</a>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Statistics Cards -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-details">
+                            <h3 th:text="${tongCuDan}">0</h3>
+                            <p>Tổng cư dân</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🏠</div>
+                        <div class="stat-details">
+                            <h3 th:text="${tongHoGiaDinh}">0</h3>
+                            <p>Hộ gia đình</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-details">
+                            <h3 th:text="${baoCaoMoi}">0</h3>
+                            <p>Báo cáo mới</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-details">
+                            <h3 th:text="${#numbers.formatDecimal(tongThuNhap, 0, 'COMMA', 0, 'POINT')}">0</h3>
+                            <p>Tổng thu (VNĐ)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-details">
+                            <h3 th:text="${#numbers.formatDecimal(congNoConLai, 0, 'COMMA', 0, 'POINT')}">0</h3>
+                            <p>Công nợ (VNĐ)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Reports -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Báo cáo sự cố mới nhất</h3>
+                        <a th:href="@{/admin/bao-cao-su-co}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Tiêu đề</th>
+                                    <th>Người báo cáo</th>
+                                    <th>Mức độ</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày báo cáo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="bc : ${baoCaoSuCoList}" th:if="${baoCaoSuCoList != null and !baoCaoSuCoList.isEmpty()}">
+                                    <td th:text="${bc.maBaoCao}">1</td>
+                                    <td th:text="${bc.tieuDe}">Báo cáo</td>
+                                    <td th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : 
+                                                             ${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info'"
+                                              th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-warning" th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                </tr>
+                                <tr th:if="${baoCaoSuCoList == null or baoCaoSuCoList.isEmpty()}">
+                                    <td colspan="6" class="text-center">Không có báo cáo sự cố mới</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Recent Notifications -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Thông báo gần đây</h3>
+                        <a th:href="@{/admin/thong-bao}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                    </div>
+                    
+                    <div class="notifications-list">
+                        <div class="notification-item" th:each="tb : ${thongBaoList}" th:if="${thongBaoList != null and !thongBaoList.isEmpty()}">
+                            <div class="notification-header">
+                                <h4 th:text="${tb.tieuDe}">Tiêu đề thông báo</h4>
+                                <span class="notification-time" th:text="${#temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy HH:mm')}">01/01/2025</span>
+                            </div>
+                            <p th:text="${tb.noiDungThongBao}">Nội dung thông báo...</p>
+                        </div>
+                        <div th:if="${thongBaoList == null or thongBaoList.isEmpty()}">
+                            <p class="text-center">Không có thông báo mới</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
+

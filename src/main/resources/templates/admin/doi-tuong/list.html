@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý cư dân - Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div th:replace="~{layout/layout :: sidebar}"></div>
+        </aside>
+        
+        <div class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Quản lý cư dân</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <a th:href="@{/logout}" class="btn btn-sm btn-danger">Đăng xuất</a>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="page-content">
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/admin/doi-tuong}" method="get">
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm theo tên..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                    </div>
+                    <a th:href="@{/admin/doi-tuong/create}" class="btn btn-success">+ Thêm mới</a>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>CCCD</th>
+                                <th>Họ và tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Số điện thoại</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="dt : ${doiTuongList}">
+                                <td th:text="${dt.cccd}">001234567890</td>
+                                <td th:text="${dt.hoVaTen}">Nguyễn Văn A</td>
+                                <td th:text="${#temporals.format(dt.ngaySinh, 'dd/MM/yyyy')}">01/01/1990</td>
+                                <td th:text="${dt.gioiTinh}">Nam</td>
+                                <td th:text="${dt.soDienThoai}">0123456789</td>
+                                <td>
+                                    <span class="badge badge-info" th:text="${dt.vaiTro}">Vai trò</span>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${dt.trangThaiTaiKhoan == 'hoat_dong'} ? 'badge-success' : 'badge-danger'"
+                                          th:text="${dt.trangThaiTaiKhoan}">Trạng thái</span>
+                                </td>
+                                <td class="actions">
+                                    <a th:href="@{/admin/doi-tuong/edit/{cccd}(cccd=${dt.cccd})}" class="btn btn-sm btn-warning">Sửa</a>
+                                    <a th:href="@{/admin/doi-tuong/delete/{cccd}(cccd=${dt.cccd})}" 
+                                       class="btn btn-sm btn-danger" 
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
+
