@@ -2,14 +2,12 @@ package com.apartment.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tai_san_chung_cu")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaiSanChungCu {
@@ -29,7 +27,7 @@ public class TaiSanChungCu {
     private String maHo;
     
     @Column(name = "trang_thai", length = 20)
-    private String trangThai = "hoat_dong";
+    private String trangThai;
     
     @Column(name = "dien_tich", precision = 10, scale = 2)
     private BigDecimal dienTich;
@@ -43,13 +41,85 @@ public class TaiSanChungCu {
     @Column(name = "ngay_them")
     private LocalDateTime ngayThem;
     
-    @ManyToOne
-    @JoinColumn(name = "ma_ho", referencedColumnName = "ma_ho", insertable = false, updatable = false)
-    private HoGiaDinh hoGiaDinh;
-    
     @PrePersist
     protected void onCreate() {
         ngayThem = LocalDateTime.now();
+        if (trangThai == null) {
+            trangThai = "hoat_dong";
+        }
+    }
+    
+    // Getters and Setters
+    public Integer getMaTaiSan() {
+        return maTaiSan;
+    }
+    
+    public void setMaTaiSan(Integer maTaiSan) {
+        this.maTaiSan = maTaiSan;
+    }
+    
+    public String getTenTaiSan() {
+        return tenTaiSan;
+    }
+    
+    public void setTenTaiSan(String tenTaiSan) {
+        this.tenTaiSan = tenTaiSan;
+    }
+    
+    public String getLoaiTaiSan() {
+        return loaiTaiSan;
+    }
+    
+    public void setLoaiTaiSan(String loaiTaiSan) {
+        this.loaiTaiSan = loaiTaiSan;
+    }
+    
+    public String getMaHo() {
+        return maHo;
+    }
+    
+    public void setMaHo(String maHo) {
+        this.maHo = maHo;
+    }
+    
+    public String getTrangThai() {
+        return trangThai;
+    }
+    
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+    
+    public BigDecimal getDienTich() {
+        return dienTich;
+    }
+    
+    public void setDienTich(BigDecimal dienTich) {
+        this.dienTich = dienTich;
+    }
+    
+    public String getViTri() {
+        return viTri;
+    }
+    
+    public void setViTri(String viTri) {
+        this.viTri = viTri;
+    }
+    
+    public BigDecimal getGiaTri() {
+        return giaTri;
+    }
+    
+    public void setGiaTri(BigDecimal giaTri) {
+        this.giaTri = giaTri;
+    }
+    
+    public LocalDateTime getNgayThem() {
+        return ngayThem;
+    }
+    
+    public void setNgayThem(LocalDateTime ngayThem) {
+        this.ngayThem = ngayThem;
     }
 }
 

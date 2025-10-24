@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý hóa đơn - Quản lý chung cư</title>
+    <title>Quản lý hóa đơn - Kế toán</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
@@ -14,49 +14,20 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h3>BLUE MOON</h3>
+                <p class="role-badge">Kế toán</p>
             </div>
             
             <nav class="sidebar-menu">
                 <ul>
                     <li>
-                        <a th:href="@{/admin/dashboard}">
+                        <a th:href="@{/ke-toan/dashboard}">
                             <span>📊</span> Dashboard
                         </a>
                     </li>
                     
                     <li>
-                        <a th:href="@{/admin/doi-tuong}">
-                            <span>👥</span> Quản lý cư dân
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a th:href="@{/admin/ho-gia-dinh}">
-                            <span>🏠</span> Hộ gia đình
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a th:href="@{/admin/tai-san}">
-                            <span>🏢</span> Tài sản chung cư
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a th:href="@{/admin/hoa-don}" class="active">
-                            <span>💰</span> Hóa đơn
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a th:href="@{/admin/bao-cao-su-co}">
-                            <span>⚠️</span> Báo cáo sự cố
-                        </a>
-                    </li>
-                    
-                    <li>
-                        <a th:href="@{/admin/thong-bao}">
-                            <span>📢</span> Thông báo
+                        <a th:href="@{/ke-toan/hoa-don}" class="active">
+                            <span>💰</span> Quản lý hóa đơn
                         </a>
                     </li>
                 </ul>
@@ -71,7 +42,7 @@
                 </div>
                 <div class="header-right">
                     <div class="user-info">
-                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <span>Xin chào, <strong sec:authentication="name">Kế toán</strong></span>
                         <form th:action="@{/logout}" method="post" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
                         </form>
@@ -83,38 +54,19 @@
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                 <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
                 
-                <!-- Thống kê -->
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-details">
-                            <h3 th:text="${#numbers.formatDecimal(tongDaThu, 0, 'COMMA', 0, 'POINT')}">0</h3>
-                            <p>Đã thu (VNĐ)</p>
-                        </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-details">
-                            <h3 th:text="${#numbers.formatDecimal(tongChuaThu, 0, 'COMMA', 0, 'POINT')}">0</h3>
-                            <p>Chưa thu (VNĐ)</p>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="content-header">
                     <div class="filter-group">
-                        <a th:href="@{/admin/hoa-don}" 
+                        <a th:href="@{/ke-toan/hoa-don}" 
                            th:classappend="${trangThai == null} ? 'btn-primary' : 'btn-secondary'"
                            class="btn btn-sm">Tất cả</a>
-                        <a th:href="@{/admin/hoa-don(trangThai='chua_thanh_toan')}" 
+                        <a th:href="@{/ke-toan/hoa-don(trangThai='chua_thanh_toan')}" 
                            th:classappend="${trangThai == 'chua_thanh_toan'} ? 'btn-primary' : 'btn-secondary'"
                            class="btn btn-sm">Chưa thanh toán</a>
-                        <a th:href="@{/admin/hoa-don(trangThai='da_thanh_toan')}" 
+                        <a th:href="@{/ke-toan/hoa-don(trangThai='da_thanh_toan')}" 
                            th:classappend="${trangThai == 'da_thanh_toan'} ? 'btn-primary' : 'btn-secondary'"
                            class="btn btn-sm">Đã thanh toán</a>
                     </div>
-                    <a th:href="@{/admin/hoa-don/create}" class="btn btn-success">+ Tạo hóa đơn</a>
+                    <a th:href="@{/ke-toan/hoa-don/create}" class="btn btn-success">+ Tạo hóa đơn</a>
                 </div>
                 
                 <div class="table-responsive">
@@ -148,7 +100,7 @@
                                        href="#" 
                                        onclick="thanhToan(event, [[${hd.maHoaDon}]])"
                                        class="btn btn-sm btn-success">Thanh toán</a>
-                                    <a th:href="@{/admin/hoa-don/edit/{id}(id=${hd.maHoaDon})}" class="btn btn-sm btn-warning">Sửa</a>
+                                    <a th:href="@{/ke-toan/hoa-don/edit/{id}(id=${hd.maHoaDon})}" class="btn btn-sm btn-warning">Sửa</a>
                                 </td>
                             </tr>
                         </tbody>
@@ -166,11 +118,11 @@
         if (phuongThuc) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '/admin/hoa-don/thanh-toan/' + maHoaDon;
+            form.action = '/ke-toan/hoa-don/thanh-toan/' + maHoaDon;
             
             const input = document.createElement('input');
             input.type = 'hidden';
-            input.name = 'phuongThucThanhToan';
+            input.name = 'phuongThuc';
             input.value = phuongThuc;
             
             form.appendChild(input);
@@ -181,5 +133,3 @@
     </script>
 </body>
 </html>
-
-

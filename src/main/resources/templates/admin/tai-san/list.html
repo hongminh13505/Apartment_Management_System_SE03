@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý tài sản chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/admin/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/doi-tuong}">
+                            <span>👥</span> Quản lý cư dân
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/ho-gia-dinh}">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/tai-san}" class="active">
+                            <span>🏢</span> Tài sản chung cư
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/hoa-don}">
+                            <span>💰</span> Hóa đơn
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/bao-cao-su-co}">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <div class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Quản lý tài sản chung cư</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="page-content">
+                <div th:if="${success}" class="alert alert-success">
+                    <span th:text="${success}"></span>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-error">
+                    <span th:text="${error}"></span>
+                </div>
+                
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/admin/tai-san}" method="get">
+                            <select name="loai" class="form-control" onchange="this.form.submit()">
+                                <option value="">-- Tất cả loại tài sản --</option>
+                                <option value="can_ho" th:selected="${loai == 'can_ho'}">Căn hộ</option>
+                                <option value="thiet_bi" th:selected="${loai == 'thiet_bi'}">Thiết bị</option>
+                                <option value="tien_ich" th:selected="${loai == 'tien_ich'}">Tiện ích</option>
+                            </select>
+                        </form>
+                    </div>
+                    <a th:href="@{/admin/tai-san/create}" class="btn btn-success">+ Thêm mới</a>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 80px;">Mã TS</th>
+                                <th>Tên tài sản</th>
+                                <th style="width: 100px;">Loại</th>
+                                <th>Vị trí</th>
+                                <th style="width: 100px;">Diện tích</th>
+                                <th style="width: 130px;">Giá trị</th>
+                                <th style="width: 120px;">Trạng thái</th>
+                                <th style="width: 100px;">Hộ sử dụng</th>
+                                <th style="width: 150px;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ts : ${taiSanList}">
+                                <td th:text="${ts.maTaiSan}" style="text-align: center;"></td>
+                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word;"></td>
+                                <td style="text-align: center;">
+                                    <span th:if="${ts.loaiTaiSan == 'can_ho'}" class="badge badge-info">Căn hộ</span>
+                                    <span th:if="${ts.loaiTaiSan == 'thiet_bi'}" class="badge badge-secondary">Thiết bị</span>
+                                    <span th:if="${ts.loaiTaiSan == 'tien_ich'}" class="badge badge-success">Tiện ích</span>
+                                </td>
+                                <td th:text="${ts.viTri}" style="word-break: break-word;"></td>
+                                <td th:text="${ts.dienTich != null ? ts.dienTich : '-'}" style="text-align: right;"></td>
+                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') : '-'}" style="text-align: right;"></td>
+                                <td style="text-align: center;">
+                                    <span th:if="${ts.trangThai == 'hoat_dong'}" class="badge badge-success">Hoạt động</span>
+                                    <span th:if="${ts.trangThai == 'bao_tri'}" class="badge badge-warning">Bảo trì</span>
+                                    <span th:if="${ts.trangThai == 'hong'}" class="badge badge-danger">Hỏng</span>
+                                    <span th:if="${ts.trangThai == 'ngung_hoat_dong'}" class="badge badge-secondary">Ngừng hoạt động</span>
+                                </td>
+                                <td th:text="${ts.maHo != null ? ts.maHo : 'Trống'}" style="text-align: center;"></td>
+                                <td class="actions" style="white-space: nowrap;">
+                                    <a th:href="@{/admin/tai-san/edit/{id}(id=${ts.maTaiSan})}" class="btn btn-sm btn-primary">Sửa</a>
+                                    <a th:href="@{/admin/tai-san/delete/{id}(id=${ts.maTaiSan})}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Xác nhận xóa tài sản này?')">Xóa</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${taiSanList.isEmpty()}">
+                                <td colspan="9" style="text-align: center; color: #94a3b8;">Chưa có tài sản nào</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+

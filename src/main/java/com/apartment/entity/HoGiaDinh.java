@@ -48,6 +48,63 @@ public class HoGiaDinh {
     protected void onUpdate() {
         ngayCapNhat = LocalDateTime.now();
     }
+
+    // ---- Explicit getters and setters to ensure runtime property access ----
+    public String getMaHo() {
+        return maHo;
+    }
+
+    public void setMaHo(String maHo) {
+        this.maHo = maHo;
+    }
+
+    public String getTenHo() {
+        return tenHo;
+    }
+
+    public void setTenHo(String tenHo) {
+        this.tenHo = tenHo;
+    }
+
+    public Integer getMaCanHo() {
+        return maCanHo;
+    }
+
+    public void setMaCanHo(Integer maCanHo) {
+        this.maCanHo = maCanHo;
+    }
+
+    public LocalDate getNgayThanhLap() {
+        return ngayThanhLap;
+    }
+
+    public void setNgayThanhLap(LocalDate ngayThanhLap) {
+        this.ngayThanhLap = ngayThanhLap;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+
+    public LocalDateTime getNgayCapNhat() {
+        return ngayCapNhat;
+    }
+
+    public void setNgayCapNhat(LocalDateTime ngayCapNhat) {
+        this.ngayCapNhat = ngayCapNhat;
+    }
 }
 
 

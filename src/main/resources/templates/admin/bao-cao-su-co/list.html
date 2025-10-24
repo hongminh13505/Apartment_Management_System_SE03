@@ -13,7 +13,7 @@
     <div class="wrapper">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h3>Quản lý chung cư</h3>
+                <h3>BLUE MOON</h3>
             </div>
             
             <nav class="sidebar-menu">
@@ -33,6 +33,12 @@
                     <li>
                         <a th:href="@{/admin/ho-gia-dinh}">
                             <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/tai-san}">
+                            <span>🏢</span> Tài sản chung cư
                         </a>
                     </li>
                     
@@ -115,16 +121,14 @@
                                 <td th:text="${bc.cccdNguoiBaoCao}">001234567890</td>
                                 <td>
                                     <span class="badge" 
-                                          th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : 
-                                                         ${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info'"
-                                          th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                           th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
+                                           th:text="${bc.mucDoUuTien}">Bình thường</span>
                                 </td>
                                 <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
                                 <td>
                                     <span class="badge" 
-                                          th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : 
-                                                         ${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info'"
-                                          th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                           th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : (${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info')"
+                                           th:text="${bc.trangThai}">Mới tiếp nhận</span>
                                 </td>
                                 <td class="actions">
                                     <a th:if="${bc.trangThai != 'da_hoan_thanh'}" 

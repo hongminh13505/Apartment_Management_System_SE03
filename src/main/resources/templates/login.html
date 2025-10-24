@@ -10,8 +10,28 @@
     <div class="login-container">
         <div class="login-box">
             <div class="login-header">
-                <h1>Hệ thống quản lý chung cư</h1>
-                <p>Đăng nhập để tiếp tục</p>
+                <h1>Sign In</h1>
+                <p>Chọn vai trò và đăng nhập</p>
+            </div>
+            
+            <!-- Role Selection -->
+            <div class="role-selection">
+                <div class="role-card" data-role="NGUOI_DUNG_THUONG">
+                    <div class="role-icon">👨‍👩‍👧‍👦</div>
+                    <div class="role-name">Cư dân</div>
+                </div>
+                <div class="role-card" data-role="BAN_QUAN_TRI">
+                    <div class="role-icon">👔</div>
+                    <div class="role-name">Ban quản trị</div>
+                </div>
+                <div class="role-card" data-role="KE_TOAN">
+                    <div class="role-icon">💼</div>
+                    <div class="role-name">Kế toán</div>
+                </div>
+                <div class="role-card" data-role="CO_QUAN_CHUC_NANG">
+                    <div class="role-icon">👮</div>
+                    <div class="role-name">Cơ quan chức năng</div>
+                </div>
             </div>
             
             <div th:if="${error}" class="alert alert-error">
@@ -22,20 +42,25 @@
                 <span th:text="${message}"></span>
             </div>
             
-            <form th:action="@{/login}" method="post" class="login-form">
+            <form th:action="@{/login}" method="post" class="login-form" id="loginForm">
+                <input type="hidden" id="selectedRole" name="role" value="">
+                
                 <div class="form-group">
-                    <label for="cccd">Số CCCD:</label>
                     <input type="text" id="cccd" name="cccd" class="form-control" 
-                           placeholder="Nhập số CCCD" required autofocus>
+                           placeholder="Username" required autofocus>
                 </div>
                 
-                <div class="form-group">
-                    <label for="password">Mật khẩu:</label>
+                <div class="form-group password-group">
                     <input type="password" id="password" name="password" class="form-control" 
-                           placeholder="Nhập mật khẩu" required>
+                           placeholder="Password" required>
+                    <span class="toggle-password" onclick="togglePassword()">👁️</span>
                 </div>
                 
-                <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                
+                <div class="form-links">
+                    <a href="/forgot-password" class="forgot-link">Forgot Password?</a>
+                </div>
             </form>
             
             <div class="login-footer">
@@ -43,6 +68,43 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        // Role selection
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all cards
+                document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+                // Add active class to clicked card
+                this.classList.add('active');
+                // Set hidden input value
+                document.getElementById('selectedRole').value = this.dataset.role;
+            });
+        });
+        
+        // Form validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const role = document.getElementById('selectedRole').value;
+            if (!role) {
+                e.preventDefault();
+                alert('Vui lòng chọn vai trò!');
+                return false;
+            }
+        });
+        
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+    </script>
 </body>
 </html>
 
