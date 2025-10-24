@@ -66,11 +66,13 @@ public class SecurityConfig {
                 .requestMatchers("/admin/hoa-don/**").hasAnyRole("BAN_QUAN_TRI", "KE_TOAN")
                 // Cho phép kế toán xem danh sách hộ gia đình (cần để tạo hóa đơn)
                 .requestMatchers("/admin/ho-gia-dinh", "/admin/ho-gia-dinh/detail/**").hasAnyRole("BAN_QUAN_TRI", "KE_TOAN")
-                // Các trang admin khác vẫn chỉ cho BQT
+                // Các trang admin khác chỉ cho BQT
                 .requestMatchers("/admin/**").hasRole("BAN_QUAN_TRI")
                 // Cho phép kế toán truy cập khu vực riêng
                 .requestMatchers("/ke-toan/**").hasAnyRole("BAN_QUAN_TRI", "KE_TOAN")
+                // Cho phép cư dân truy cập khu vực riêng
                 .requestMatchers("/cu-dan/**").hasAnyRole("BAN_QUAN_TRI", "NGUOI_DUNG_THUONG")
+                // Cho phép cơ quan chức năng truy cập khu vực riêng
                 .requestMatchers("/co-quan/**").hasAnyRole("BAN_QUAN_TRI", "CO_QUAN_CHUC_NANG")
                 .anyRequest().authenticated()
             )

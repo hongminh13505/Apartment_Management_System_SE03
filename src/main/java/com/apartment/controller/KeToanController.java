@@ -76,61 +76,92 @@ public class KeToanController {
         return "redirect:/ke-toan/chi-so?maHo=" + maHo + "&ky=" + ky;
     }
     
-    @GetMapping("/hoa-don")
-    public String hoaDonList(@RequestParam(required = false) String trangThai, Model model) {
-        model.addAttribute("trangThai", trangThai);
-        if (trangThai != null && !trangThai.isEmpty()) {
-            model.addAttribute("hoaDonList", hoaDonService.findByTrangThai(trangThai));
-        } else {
-            model.addAttribute("hoaDonList", hoaDonService.findAll());
+    @GetMapping("/quan-ly-hoa-don")
+    public String quanLyHoaDon(@RequestParam(required = false) String search,
+                               Model model,
+                               Authentication authentication) {
+        try {
+            System.out.println("=== Truy cập /ke-toan/quan-ly-hoa-don ===");
+            
+            // Lấy danh sách hóa đơn
+            java.util.List<HoaDon> hoaDonList = hoaDonService.findAll();
+            
+            // Lọc theo từ khóa tìm kiếm nếu có
+            if (search != null && !search.trim().isEmpty()) {
+                String searchLower = search.trim().toLowerCase();
+                hoaDonList = hoaDonList.stream()
+                    .filter(hd -> 
+                        (hd.getMaHo() != null && hd.getMaHo().toLowerCase().contains(searchLower)) ||
+                        (hd.getLoaiHoaDon() != null && hd.getLoaiHoaDon().toLowerCase().contains(searchLower)) ||
+                        (hd.getMaHoaDon() != null && hd.getMaHoaDon().toString().contains(searchLower))
+                    )
+                    .collect(java.util.stream.Collectors.toList());
+            }
+            
+            model.addAttribute("hoaDonList", hoaDonList);
+            model.addAttribute("search", search);
+            
+            return "ke-toan/quan-ly-hoa-don";
+        } catch (Exception e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            e.printStackTrace();
+            model.addAttribute("hoaDonList", new java.util.ArrayList<>());
+            model.addAttribute("error", "Lỗi khi tải danh sách hóa đơn");
+            return "ke-toan/quan-ly-hoa-don";
         }
-        return "ke-toan/hoa-don/list";
     }
     
-    @GetMapping("/hoa-don/create")
-    public String createForm(Model model) {
-        model.addAttribute("hoaDon", new HoaDon());
-        model.addAttribute("hoGiaDinhList", hoGiaDinhService.findAll());
-        model.addAttribute("isEdit", false);
-        return "ke-toan/hoa-don/form";
+    @GetMapping("/quan-ly-hoa-don/tao-moi")
+    public String taoHoaDonMoi(Model model) {
+        try {
+            HoaDon hoaDon = new HoaDon();
+            hoaDon.setTrangThai("chua_thanh_toan");
+            model.addAttribute("hoaDon", hoaDon);
+            model.addAttribute("hoGiaDinhList", hoGiaDinhService.findAll());
+            model.addAttribute("isEdit", false);
+            return "ke-toan/tao-hoa-don";
+        } catch (Exception e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return "redirect:/ke-toan/quan-ly-hoa-don";
+        }
     }
     
-    @GetMapping("/hoa-don/edit/{id}")
-    public String editForm(@PathVariable Integer id, Model model) {
-        HoaDon hoaDon = hoaDonService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn"));
-        model.addAttribute("hoaDon", hoaDon);
-        model.addAttribute("hoGiaDinhList", hoGiaDinhService.findAll());
-        model.addAttribute("isEdit", true);
-        return "ke-toan/hoa-don/form";
+    @GetMapping("/quan-ly-hoa-don/sua/{id}")
+    public String suaHoaDon(@PathVariable Integer id, Model model) {
+        try {
+            HoaDon hoaDon = hoaDonService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn"));
+            model.addAttribute("hoaDon", hoaDon);
+            model.addAttribute("hoGiaDinhList", hoGiaDinhService.findAll());
+            model.addAttribute("isEdit", true);
+            return "ke-toan/tao-hoa-don";
+        } catch (Exception e) {
+            System.err.println("Lỗi: " + e.getMessage());
+            return "redirect:/ke-toan/quan-ly-hoa-don";
+        }
     }
     
-    @PostMapping("/hoa-don/save")
-    public String save(@ModelAttribute HoaDon hoaDon, RedirectAttributes ra) {
+    @PostMapping("/quan-ly-hoa-don/luu")
+    public String luuHoaDon(@ModelAttribute HoaDon hoaDon, RedirectAttributes ra) {
         try {
             hoaDonService.save(hoaDon);
             ra.addFlashAttribute("success", "Lưu hóa đơn thành công!");
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Có lỗi: " + e.getMessage());
         }
-        return "redirect:/ke-toan/hoa-don";
+        return "redirect:/ke-toan/quan-ly-hoa-don";
     }
     
-    @PostMapping("/hoa-don/thanh-toan/{id}")
-    public String thanhToanHoaDon(@PathVariable Integer id,
-                                  @RequestParam String phuongThuc,
-                                  RedirectAttributes ra) {
+    @PostMapping("/quan-ly-hoa-don/xoa/{id}")
+    public String xoaHoaDon(@PathVariable Integer id, RedirectAttributes ra) {
         try {
-            HoaDon hd = hoaDonService.findById(id).orElseThrow();
-            hd.setTrangThai("da_thanh_toan");
-            hd.setPhuongThucThanhToan(phuongThuc);
-            hd.setNgayThanhToan(java.time.LocalDateTime.now());
-            hoaDonService.save(hd);
-            ra.addFlashAttribute("success", "Thanh toán thành công!");
+            hoaDonService.delete(id);
+            ra.addFlashAttribute("success", "Xóa hóa đơn thành công!");
         } catch (Exception e) {
             ra.addFlashAttribute("error", "Có lỗi: " + e.getMessage());
         }
-        return "redirect:/ke-toan/hoa-don";
+        return "redirect:/ke-toan/quan-ly-hoa-don";
     }
+    
 }
 

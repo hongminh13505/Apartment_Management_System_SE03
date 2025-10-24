@@ -21,57 +21,59 @@
             <nav class="sidebar-menu">
                 <ul>
                     <li>
-                        <a th:href="@{/ke-toan/dashboard}" class="active">
+                        <a href="/ke-toan/dashboard" class="active">
                             <span>📊</span> Dashboard
                         </a>
                     </li>
-                    
                     <li>
-                        <a th:href="@{/ke-toan/hoa-don}">
-                            <span>💰</span> Quản lý hóa đơn
+                        <a href="/ke-toan/quan-ly-hoa-don">
+                            <span>📄</span> Quản lý hóa đơn
                         </a>
-                    </li>
-                    
-                    <li>
-                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <span>🚪</span> Đăng xuất
-                        </a>
-                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                        </form>
                     </li>
                 </ul>
             </nav>
         </aside>
         
         <!-- Main Content -->
-        <main class="main-content">
-            <header class="content-header">
-                <h1>Dashboard Kế toán</h1>
-                <div class="user-info">
-                    <span>Xin chào, <strong th:text="${username}"></strong></span>
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Dashboard Kế toán</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Kế toán</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
                 </div>
             </header>
             
-            <div class="dashboard-content">
+            <!-- Page Content -->
+            <main class="page-content">
                 <!-- Statistics Cards -->
-                <div class="stats-grid">
-                    <div class="stat-card stat-success">
+                <div class="stats-container">
+                    <div class="stat-card">
                         <div class="stat-icon">💵</div>
                         <div class="stat-details">
-                            <h3 th:text="${tongThuNhap != null ? tongThuNhap : 0}">0</h3>
+                            <h3 th:text="${#numbers.formatDecimal(tongThuNhap != null ? tongThuNhap : 0, 0, 'COMMA', 0, 'POINT')}">0</h3>
                             <p>Tổng thu nhập (VNĐ)</p>
                         </div>
                     </div>
                     
-                    <div class="stat-card stat-warning">
+                    <div class="stat-card">
                         <div class="stat-icon">⚠️</div>
                         <div class="stat-details">
-                            <h3 th:text="${congNoConLai != null ? congNoConLai : 0}">0</h3>
+                            <h3 th:text="${#numbers.formatDecimal(congNoConLai != null ? congNoConLai : 0, 0, 'COMMA', 0, 'POINT')}">0</h3>
                             <p>Công nợ còn lại (VNĐ)</p>
                         </div>
                     </div>
                     
-                    <div class="stat-card stat-info">
+                    <div class="stat-card">
                         <div class="stat-icon">🏠</div>
                         <div class="stat-details">
                             <h3 th:text="${tongHoGiaDinh != null ? tongHoGiaDinh : 0}">0</h3>
@@ -80,13 +82,18 @@
                     </div>
                 </div>
                 
-                <div class="welcome-section">
-                    <h2>Chào mừng đến với hệ thống quản lý tài chính</h2>
-                    <p>Sử dụng menu bên trái để quản lý hóa đơn và theo dõi công nợ.</p>
+                <!-- Welcome Section -->
+                <div class="content-section">
+                    <div class="welcome-section">
+                        <h2>Chào mừng đến với hệ thống quản lý tài chính</h2>
+                        <p>Sử dụng menu bên trái để quản lý hóa đơn và theo dõi công nợ.</p>
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
+    
+    <script th:src="@{/js/script.js}"></script>
 </body>
 </html>
 

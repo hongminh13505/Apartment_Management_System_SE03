@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo sự cố - Cư dân</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cư dân</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/cu-dan/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/cu-dan/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}" class="active">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Báo cáo sự cố</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cư dân</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <!-- Search Bar -->
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/cu-dan/bao-cao-su-co}" method="get">
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>TIÊU ĐỀ</th>
+                                <th>NGÀY BÁO CÁO</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>MỨC ĐỘ ƯU TIÊN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${baoCaoList.isEmpty()}">
+                                <td colspan="4" style="text-align: center; color: #94a3b8;">Không có báo cáo sự cố nào</td>
+                            </tr>
+                            <tr th:each="bc : ${baoCaoList}">
+                                <td th:text="${bc.tieuDe}">Sự cố điện</td>
+                                <td th:text="${bc.ngayBaoCao != null ? #temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
+                                <td>
+                                    <span class="badge badge-warning" th:text="${bc.trangThai}">Đang xử lý</span>
+                                </td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${bc.mucDoUuTien == 'cao'} ? 'badge-danger' : (${bc.mucDoUuTien == 'trung_binh'} ? 'badge-warning' : 'badge-info')"
+                                          th:text="${bc.mucDoUuTien}">Cao</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
