@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông báo - Cư dân</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cư dân</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/cu-dan/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/cu-dan/thong-bao}" class="active">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Thông báo</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cư dân</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <!-- Search Bar -->
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/cu-dan/thong-bao}" method="get">
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>TIÊU ĐỀ</th>
+                                <th>NỘI DUNG</th>
+                                <th>NGÀY ĐĂNG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${thongBaoList.isEmpty()}">
+                                <td colspan="3" style="text-align: center; color: #94a3b8;">Không có thông báo nào</td>
+                            </tr>
+                            <tr th:each="tb : ${thongBaoList}">
+                                <td th:text="${tb.tieuDe}">Thông báo quan trọng</td>
+                                <td>
+                                    <span th:text="${#strings.length(tb.noiDungThongBao) > 80 ? #strings.substring(tb.noiDungThongBao, 0, 80) + '...' : tb.noiDungThongBao}">
+                                        Nội dung thông báo...
+                                    </span>
+                                </td>
+                                <td th:text="${tb.ngayTaoThongBao != null ? #temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${isEdit ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}">Quản lý hóa đơn</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Kế toán</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="/ke-toan/dashboard">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/ke-toan/quan-ly-hoa-don" class="active">
+                            <span>📄</span> Quản lý hóa đơn
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2 th:text="${isEdit ? 'Sửa hóa đơn' : 'Thêm hóa đơn mới'}">Thêm hóa đơn</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Kế toán</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <div class="form-container">
+                    <form th:action="@{/ke-toan/quan-ly-hoa-don/luu}" method="post" th:object="${hoaDon}">
+                        <input type="hidden" th:field="*{maHoaDon}" th:if="${isEdit}">
+                        
+                        <div class="form-group">
+                            <label for="maHo">Mã hộ <span class="required">*</span></label>
+                            <select id="maHo" th:field="*{maHo}" class="form-control" required>
+                                <option value="">-- Chọn hộ gia đình --</option>
+                                <option th:each="ho : ${hoGiaDinhList}" 
+                                        th:value="${ho.maHo}" 
+                                        th:text="${ho.maHo + ' - ' + ho.tenHo}">H001 - Hộ 1</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loaiHoaDon">Loại hóa đơn <span class="required">*</span></label>
+                            <select id="loaiHoaDon" th:field="*{loaiHoaDon}" class="form-control" required>
+                                <option value="">-- Chọn loại hóa đơn --</option>
+                                <option value="dien">Điện</option>
+                                <option value="nuoc">Nước</option>
+                                <option value="quan_ly">Phí quản lý</option>
+                                <option value="gui_xe">Gửi xe</option>
+                                <option value="dich_vu">Dịch vụ</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tongTien">Tổng tiền (VNĐ) <span class="required">*</span></label>
+                            <input type="number" id="tongTien" th:field="*{tongTien}" class="form-control" required min="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="hanThanhToan">Hạn thanh toán <span class="required">*</span></label>
+                            <input type="date" id="hanThanhToan" th:field="*{hanThanhToan}" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="trangThai">Trạng thái <span class="required">*</span></label>
+                            <select id="trangThai" th:field="*{trangThai}" class="form-control" required>
+                                <option value="chua_thanh_toan">Chưa thanh toán</option>
+                                <option value="da_thanh_toan">Đã thanh toán</option>
+                                <option value="qua_han">Quá hạn</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="moTa">Mô tả</label>
+                            <textarea id="moTa" th:field="*{moTa}" class="form-control" rows="4" placeholder="Nhập mô tả..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success">
+                                <span th:text="${isEdit ? 'Cập nhật' : 'Tạo mới'}">Lưu</span>
+                            </button>
+                            <a th:href="@{/ke-toan/quan-ly-hoa-don}" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+

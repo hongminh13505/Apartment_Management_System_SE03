@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin hộ gia đình - Cơ quan chức năng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .detail-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            color: #1e293b;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cơ quan chức năng</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/co-quan/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/doi-tuong}">
+                            <span>👥</span> Danh sách cư dân
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/ho-gia-dinh}" class="active">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/bao-cao-su-co}">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Thông tin hộ gia đình</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cơ quan</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <div style="margin-bottom: 20px;">
+                    <a th:href="@{/co-quan/ho-gia-dinh}" class="btn btn-secondary">← Quay lại</a>
+                </div>
+                
+                <!-- Thông tin hộ gia đình -->
+                <div class="detail-card">
+                    <h3 style="margin-bottom: 20px; color: #1e293b; font-size: 20px;">📋 Thông tin hộ gia đình</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Mã hộ:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.maHo}">H001</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tên chủ hộ:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.tenHo}">Nguyễn Văn A</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Căn hộ:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.maCanHo}">A101</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày thành lập:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.ngayThanhLap != null ? #temporals.format(hoGiaDinh.ngayThanhLap, 'dd/MM/yyyy') : 'N/A'}">01/01/2020</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái:</span>
+                            <span class="badge" 
+                                  th:classappend="${hoGiaDinh.trangThai == 'hoat_dong'} ? 'badge-success' : 'badge-secondary'"
+                                  th:text="${hoGiaDinh.trangThai}">Hoạt động</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thành viên hộ gia đình -->
+                <div class="detail-card">
+                    <h3 style="margin-bottom: 20px; color: #1e293b; font-size: 20px;">👨‍👩‍👧‍👦 Thành viên hộ gia đình</h3>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>CCCD</th>
+                                    <th>HỌ VÀ TÊN</th>
+                                    <th>NGÀY SINH</th>
+                                    <th>QUAN HỆ</th>
+                                    <th>CHỦ HỘ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${thanhVienList == null or thanhVienList.isEmpty()}">
+                                    <td colspan="5" style="text-align: center; color: #94a3b8;">Chưa có thành viên nào</td>
+                                </tr>
+                                <tr th:each="tv : ${thanhVienList}">
+                                    <td th:text="${tv.cccd}">001234567890</td>
+                                    <td th:text="${tv.doiTuong?.hoVaTen}">Nguyễn Văn A</td>
+                                    <td th:text="${tv.doiTuong?.ngaySinh != null ? #temporals.format(tv.doiTuong.ngaySinh, 'dd/MM/yyyy') : 'N/A'}">01/01/1990</td>
+                                    <td th:text="${tv.quanHeVoiChuHo}">Chủ hộ</td>
+                                    <td>
+                                        <span th:if="${tv.laChuHo}" class="badge badge-success">✓</span>
+                                        <span th:unless="${tv.laChuHo}">-</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+

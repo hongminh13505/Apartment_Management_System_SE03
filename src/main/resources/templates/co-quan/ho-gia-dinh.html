@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách hộ gia đình - Cơ quan chức năng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cơ quan chức năng</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/co-quan/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/doi-tuong}">
+                            <span>👥</span> Danh sách cư dân
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/ho-gia-dinh}" class="active">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/bao-cao-su-co}">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/co-quan/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Danh sách hộ gia đình</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cơ quan</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <!-- Search Bar -->
+                <div class="content-header">
+                    <div class="search-bar">
+                        <form th:action="@{/co-quan/ho-gia-dinh}" method="get">
+                            <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control">
+                            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>MÃ HỘ</th>
+                                <th>TÊN HỘ</th>
+                                <th>MÃ CĂN HỘ</th>
+                                <th>NGÀY THÀNH LẬP</th>
+                                <th>TRẠNG THÁI</th>
+                                <th>THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${hoGiaDinhList.isEmpty()}">
+                                <td colspan="6" style="text-align: center; color: #94a3b8;">Không có hộ gia đình nào</td>
+                            </tr>
+                            <tr th:each="ho : ${hoGiaDinhList}">
+                                <td th:text="${ho.maHo}">H001</td>
+                                <td th:text="${ho.tenHo}">Hộ gia đình A</td>
+                                <td th:text="${ho.maCanHo}">A101</td>
+                                <td th:text="${ho.ngayThanhLap != null ? #temporals.format(ho.ngayThanhLap, 'dd/MM/yyyy') : 'N/A'}">01/01/2020</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${ho.trangThai == 'hoat_dong'} ? 'badge-success' : 'badge-secondary'"
+                                          th:text="${ho.trangThai}">Hoạt động</span>
+                                </td>
+                                <td class="actions">
+                                    <a th:href="@{/co-quan/ho-gia-dinh/detail/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-info">Chi tiết</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
