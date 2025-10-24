@@ -13,7 +13,7 @@
     <div class="wrapper">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h3>Quản lý chung cư</h3>
+                <h3>BLUE MOON</h3>
             </div>
             
             <nav class="sidebar-menu">
@@ -33,6 +33,12 @@
                     <li>
                         <a th:href="@{/admin/ho-gia-dinh}" class="active">
                             <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/tai-san}">
+                            <span>🏢</span> Tài sản chung cư
                         </a>
                     </li>
                     
@@ -92,8 +98,8 @@
                         <thead>
                             <tr>
                                 <th>Mã hộ</th>
-                                <th>Tên hộ</th>
-                                <th>Mã căn hộ</th>
+                                <th>Tên chủ hộ</th>
+                                <th>Căn hộ</th>
                                 <th>Ngày thành lập</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
@@ -103,7 +109,12 @@
                             <tr th:each="ho : ${hoGiaDinhList}">
                                 <td th:text="${ho.maHo}">HO001</td>
                                 <td th:text="${ho.tenHo}">Hộ gia đình A</td>
-                                <td th:text="${ho.maCanHo}">101</td>
+                                <td>
+                                    <span th:with="canHo=${allCanHo.?[maTaiSan == __${ho.maCanHo}__].![tenTaiSan + (viTri != null ? ' - ' + viTri : '')]}">
+                                        <span th:if="${!canHo.isEmpty()}" th:text="${canHo[0]}">Căn hộ 101</span>
+                                        <span th:if="${canHo.isEmpty()}" style="color: #94a3b8;">Chưa có</span>
+                                    </span>
+                                </td>
                                 <td th:text="${#temporals.format(ho.ngayThanhLap, 'dd/MM/yyyy')}">01/01/2020</td>
                                 <td>
                                     <span class="badge" 
@@ -111,6 +122,7 @@
                                           th:text="${ho.trangThai}">Hoạt động</span>
                                 </td>
                                 <td class="actions">
+                                    <a th:href="@{/admin/ho-gia-dinh/detail/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-info">Chi tiết</a>
                                     <a th:href="@{/admin/ho-gia-dinh/edit/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-warning">Sửa</a>
                                     <a th:href="@{/admin/ho-gia-dinh/delete/{maHo}(maHo=${ho.maHo})}" 
                                        class="btn btn-sm btn-danger" 

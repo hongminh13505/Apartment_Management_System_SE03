@@ -26,6 +26,12 @@ public interface DoiTuongRepository extends JpaRepository<DoiTuong, String> {
     
     @Query("SELECT COUNT(d) FROM DoiTuong d WHERE d.laCuDan = true")
     Long countCuDan();
+    
+    @Query("SELECT d FROM DoiTuong d WHERE d.laCuDan = true AND " +
+           "(LOWER(d.hoVaTen) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "d.cccd LIKE CONCAT('%', :keyword, '%') OR " +
+           "d.soDienThoai LIKE CONCAT('%', :keyword, '%'))")
+    List<DoiTuong> searchCuDanByKeyword(String keyword);
 }
 
 

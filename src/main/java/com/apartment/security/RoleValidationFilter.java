@@ -1,0 +1,42 @@
+package com.apartment.security;
+
+import com.apartment.entity.DoiTuong;
+import com.apartment.repository.DoiTuongRepository;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+
+@Component
+public class RoleValidationFilter extends OncePerRequestFilter {
+    
+    @Autowired
+    private DoiTuongRepository doiTuongRepository;
+    
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
+            throws ServletException, IOException {
+        
+        // Only validate on login POST requests
+        if ("/login".equals(request.getServletPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
+            String selectedRole = request.getParameter("role");
+            String cccd = request.getParameter("cccd");
+            
+            // Store selected role in session for later validation
+            if (selectedRole != null && !selectedRole.isEmpty()) {
+                request.getSession().setAttribute("selectedRole", selectedRole);
+            }
+        }
+        
+        filterChain.doFilter(request, response);
+    }
+}
+

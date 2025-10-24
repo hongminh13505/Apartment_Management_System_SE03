@@ -23,7 +23,7 @@ public class DoiTuongController {
     @GetMapping
     public String list(@RequestParam(required = false) String search, Model model) {
         if (search != null && !search.isEmpty()) {
-            model.addAttribute("doiTuongList", doiTuongService.searchByName(search));
+            model.addAttribute("doiTuongList", doiTuongService.searchByKeyword(search));
         } else {
             model.addAttribute("doiTuongList", doiTuongService.findAll());
         }

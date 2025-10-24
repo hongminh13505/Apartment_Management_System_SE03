@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết hộ gia đình - Quản lý chung cư</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .detail-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            color: #1e293b;
+            font-size: 16px;
+        }
+        
+        .member-search-section {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .text-muted {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/admin/dashboard}">
+                            <span>📊</span> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/doi-tuong}">
+                            <span>👥</span> Quản lý cư dân
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/ho-gia-dinh}" class="active">
+                            <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/tai-san}">
+                            <span>🏢</span> Tài sản chung cư
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/hoa-don}">
+                            <span>💰</span> Hóa đơn
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/bao-cao-su-co}">
+                            <span>⚠️</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <div class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Chi tiết hộ gia đình</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong sec:authentication="name">Admin</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <main class="page-content">
+                <div style="margin-bottom: 20px;">
+                    <a th:href="@{/admin/ho-gia-dinh}" class="btn btn-secondary">← Quay lại</a>
+                </div>
+                
+                <!-- Thông tin hộ gia đình -->
+                <div class="detail-card">
+                    <h3 style="margin-bottom: 20px; color: #1e293b; font-size: 20px;">📋 Thông tin hộ gia đình</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Mã hộ:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.maHo}">H001</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Tên chủ hộ:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.tenHo}">Nguyễn Văn A</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Căn hộ:</span>
+                            <span class="info-value" th:text="${canHo != null ? canHo.tenTaiSan + (canHo.viTri != null ? ' - ' + canHo.viTri : '') : 'Chưa có'}">Căn hộ 101</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ngày thành lập:</span>
+                            <span class="info-value" th:text="${#temporals.format(hoGiaDinh.ngayThanhLap, 'dd/MM/yyyy')}">01/01/2020</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái:</span>
+                            <span class="badge" 
+                                  th:classappend="${hoGiaDinh.trangThai == 'hoat_dong'} ? 'badge-success' : 'badge-secondary'"
+                                  th:text="${hoGiaDinh.trangThai}">Hoạt động</span>
+                        </div>
+                        <div class="info-item" th:if="${hoGiaDinh.ghiChu != null && !hoGiaDinh.ghiChu.isEmpty()}">
+                            <span class="info-label">Ghi chú:</span>
+                            <span class="info-value" th:text="${hoGiaDinh.ghiChu}">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thành viên hộ gia đình -->
+                <div class="detail-card">
+                    <h3 style="margin-bottom: 20px; color: #1e293b; font-size: 20px;">👨‍👩‍👧‍👦 Thành viên hộ gia đình</h3>
+                    
+                    <!-- Bảng danh sách thành viên -->
+                    <div style="overflow-x: auto; margin-bottom: 30px;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>CCCD</th>
+                                    <th>Họ và tên</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Quan hệ</th>
+                                    <th>Chủ hộ</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="memberTableBody">
+                                <tr th:each="tv : ${thanhVienList}">
+                                    <td th:text="${tv.cccd}"></td>
+                                    <td th:text="${tv.doiTuong?.hoVaTen}"></td>
+                                    <td th:text="${tv.doiTuong?.ngaySinh != null ? #temporals.format(tv.doiTuong.ngaySinh, 'dd/MM/yyyy') : '-'}"></td>
+                                    <td th:text="${tv.quanHeVoiChuHo}"></td>
+                                    <td>
+                                        <span th:if="${tv.laChuHo}" class="badge badge-success">✓</span>
+                                        <span th:unless="${tv.laChuHo}">-</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-danger btn-remove-member" 
+                                                th:attr="data-cccd=${tv.cccd},data-ngay-bat-dau=${tv.ngayBatDau}">Xóa</button>
+                                    </td>
+                                </tr>
+                                <tr id="emptyRow" th:if="${thanhVienList == null or thanhVienList.isEmpty()}">
+                                    <td colspan="6" style="text-align: center; color: #94a3b8;">Chưa có thành viên nào</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Tìm kiếm và thêm thành viên -->
+                    <div style="border-top: 2px solid #e2e8f0; padding-top: 20px;">
+                        <div class="member-search-section">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 15px;">
+                                <div style="position: relative;">
+                                    <label for="searchCuDan" style="font-weight: 600; margin-bottom: 8px; display: block;">Tìm kiếm cư dân:</label>
+                                    <input type="text" id="searchCuDan" class="form-control" 
+                                           placeholder="Nhập tên, CCCD hoặc SĐT để tìm kiếm..." autocomplete="off">
+                                    <!-- Dropdown kết quả -->
+                                    <div id="searchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; 
+                                        background: white; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 300px; 
+                                        overflow-y: auto; z-index: 1000; margin-top: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
+                                </div>
+                                <div>
+                                    <label for="quanHe" style="font-weight: 600; margin-bottom: 8px; display: block;">Quan hệ với chủ hộ:</label>
+                                    <select id="quanHe" class="form-control">
+                                        <option value="Chủ hộ">Chủ hộ</option>
+                                        <option value="Vợ/Chồng">Vợ/Chồng</option>
+                                        <option value="Con">Con</option>
+                                        <option value="Bố/Mẹ">Bố/Mẹ</option>
+                                        <option value="Anh/Chị/Em">Anh/Chị/Em</option>
+                                        <option value="Khác">Khác</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="button" id="btnAddMember" class="btn btn-primary" disabled>
+                                ➕ Thêm thành viên
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+    <script th:inline="javascript">
+        let selectedCuDan = null;
+        let searchTimeout = null;
+        
+        const searchInput = document.getElementById('searchCuDan');
+        const searchResults = document.getElementById('searchResults');
+        const btnAddMember = document.getElementById('btnAddMember');
+        const maHo = /*[[${hoGiaDinh.maHo}]]*/ 'H001';
+        
+        // Tìm kiếm cư dân với debounce
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (keyword.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/admin/ho-gia-dinh/api/search-cudan?keyword=${encodeURIComponent(keyword)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html = '';
+                            data.forEach(cuDan => {
+                                const ngaySinh = cuDan.ngaySinh || '';
+                                html += `
+                                    <div class="search-item" style="padding: 12px; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;"
+                                         onmouseover="this.style.background='#f1f5f9'" 
+                                         onmouseout="this.style.background='white'"
+                                         onclick="selectCuDan('${cuDan.cccd}', '${cuDan.hoVaTen}', '${ngaySinh}', '${cuDan.soDienThoai || ''}')">
+                                        <div style="font-weight: 600; color: #1e293b;">${cuDan.hoVaTen}</div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                            CCCD: ${cuDan.cccd} | SĐT: ${cuDan.soDienThoai || 'N/A'}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            searchResults.innerHTML = html;
+                            searchResults.style.display = 'block';
+                        } else {
+                            searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: #94a3b8;">Không tìm thấy cư dân nào</div>';
+                            searchResults.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        searchResults.style.display = 'none';
+                    });
+            }, 300);
+        });
+        
+        // Hàm chọn cư dân
+        window.selectCuDan = function(cccd, hoVaTen, ngaySinh, soDienThoai) {
+            selectedCuDan = { cccd, hoVaTen, ngaySinh, soDienThoai };
+            searchInput.value = hoVaTen + ' (' + cccd + ')';
+            searchResults.style.display = 'none';
+            btnAddMember.disabled = false;
+        };
+        
+        // Đóng dropdown khi click bên ngoài
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Thêm thành viên
+        btnAddMember.addEventListener('click', function() {
+            if (!selectedCuDan) {
+                showNotification('Vui lòng chọn cư dân', 'warning');
+                return;
+            }
+            
+            const quanHe = document.getElementById('quanHe').value;
+            // Nếu không có checkbox "Là chủ hộ" thì mặc định theo lựa chọn quan hệ
+            const laChuHoEl = document.getElementById('laChuHo');
+            const laChuHo = laChuHoEl ? !!laChuHoEl.checked : (quanHe === 'Chủ hộ');
+            
+            const formData = new FormData();
+            formData.append('maHo', maHo);
+            formData.append('cccd', selectedCuDan.cccd);
+            formData.append('quanHe', quanHe);
+            formData.append('laChuHo', laChuHo);
+            
+            // Disable button temporarily
+            btnAddMember.disabled = true;
+            const originalText = btnAddMember.textContent;
+            btnAddMember.textContent = '⏳ Đang thêm...';
+            
+            fetch('/admin/ho-gia-dinh/api/add-member', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Lỗi khi thêm thành viên');
+                }
+                return response.text();
+            })
+            .then(message => {
+                // Xóa dòng "Chưa có thành viên nào" nếu có
+                const emptyRow = document.getElementById('emptyRow');
+                if (emptyRow) {
+                    emptyRow.remove();
+                }
+                
+                // Thêm dòng mới vào bảng
+                const tbody = document.getElementById('memberTableBody');
+                const newRow = document.createElement('tr');
+                
+                // Format ngày sinh nếu có
+                let ngaySinhFormatted = '-';
+                if (selectedCuDan.ngaySinh) {
+                    try {
+                        const date = new Date(selectedCuDan.ngaySinh);
+                        ngaySinhFormatted = date.toLocaleDateString('vi-VN');
+                    } catch (e) {
+                        ngaySinhFormatted = '-';
+                    }
+                }
+                
+                newRow.innerHTML = `
+                    <td>${selectedCuDan.cccd}</td>
+                    <td>${selectedCuDan.hoVaTen}</td>
+                    <td>${ngaySinhFormatted}</td>
+                    <td>${quanHe}</td>
+                    <td>${laChuHo ? '<span class="badge badge-success">✓</span>' : '-'}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-danger btn-remove-member" 
+                                data-cccd="${selectedCuDan.cccd}" data-ngay-bat-dau="${new Date().toISOString().split('T')[0]}">Xóa</button>
+                    </td>
+                `;
+                
+                // Highlight new row
+                newRow.style.backgroundColor = '#d1fae5';
+                tbody.appendChild(newRow);
+                
+                setTimeout(() => {
+                    newRow.style.backgroundColor = '';
+                }, 2000);
+                
+                // Attach event listener cho nút xóa mới
+                attachRemoveEventToButton(newRow.querySelector('.btn-remove-member'));
+                
+                // Show success notification
+                showNotification('✓ Đã thêm thành viên thành công', 'success');
+                
+                // Reset form
+                searchInput.value = '';
+                document.getElementById('quanHe').value = 'Chủ hộ';
+                const laChuHoReset = document.getElementById('laChuHo');
+                if (laChuHoReset) laChuHoReset.checked = false;
+                selectedCuDan = null;
+                
+                // Re-enable button
+                btnAddMember.textContent = originalText;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('✗ Có lỗi xảy ra khi thêm thành viên', 'error');
+                btnAddMember.disabled = false;
+                btnAddMember.textContent = originalText;
+            });
+        });
+        
+        // Function để attach event listener cho nút xóa
+        function attachRemoveEventToButton(btn) {
+            btn.addEventListener('click', function() {
+                const cccd = this.getAttribute('data-cccd');
+                const ngayBatDau = this.getAttribute('data-ngay-bat-dau');
+                const row = this.closest('tr');
+                const formData = new FormData();
+                formData.append('maHo', maHo);
+                formData.append('cccd', cccd);
+                formData.append('ngayBatDau', ngayBatDau);
+                
+                // Visual feedback
+                row.style.opacity = '0.5';
+                
+                fetch('/admin/ho-gia-dinh/api/remove-member', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Lỗi khi xóa thành viên');
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    // Xóa dòng khỏi bảng với animation
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.backgroundColor = '#fee2e2';
+                    
+                    setTimeout(() => {
+                        row.remove();
+                        
+                        // Kiểm tra nếu bảng trống thì hiển thị lại dòng "Chưa có thành viên nào"
+                        const tbody = document.getElementById('memberTableBody');
+                        if (tbody.children.length === 0) {
+                            const emptyRow = document.createElement('tr');
+                            emptyRow.id = 'emptyRow';
+                            emptyRow.innerHTML = '<td colspan="6" style="text-align: center; color: #94a3b8;">Chưa có thành viên nào</td>';
+                            tbody.appendChild(emptyRow);
+                        }
+                        
+                        showNotification('✓ Đã xóa thành viên', 'success');
+                    }, 300);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    row.style.opacity = '1';
+                    showNotification('✗ Có lỗi xảy ra khi xóa thành viên', 'error');
+                });
+            });
+        }
+        
+        // Function để hiển thị notification
+        function showNotification(message, type) {
+            // Remove existing notification if any
+            const existing = document.querySelector('.custom-notification');
+            if (existing) {
+                existing.remove();
+            }
+            
+            const notification = document.createElement('div');
+            notification.className = 'custom-notification';
+            notification.textContent = message;
+            
+            const colors = {
+                success: '#10b981',
+                error: '#ef4444',
+                warning: '#f59e0b'
+            };
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: ${colors[type] || colors.success};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Add CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Attach event listener cho tất cả nút xóa hiện có
+        document.querySelectorAll('.btn-remove-member').forEach(btn => {
+            attachRemoveEventToButton(btn);
+        });
+    </script>
+</body>
+</html>
+

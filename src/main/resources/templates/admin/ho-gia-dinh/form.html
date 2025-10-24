@@ -5,15 +5,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${isEdit ? 'Sửa hộ gia đình' : 'Tạo hộ gia đình'} + ' - Quản lý chung cư'">Tạo hộ gia đình - Quản lý chung cư</title>
+    <title th:text="${isEdit} ? 'Chỉnh sửa hộ gia đình' : 'Thêm hộ gia đình mới'">Form hộ gia đình</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .text-muted {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h3>Quản lý chung cư</h3>
+                <h3>BLUE MOON</h3>
             </div>
             
             <nav class="sidebar-menu">
@@ -33,6 +41,12 @@
                     <li>
                         <a th:href="@{/admin/ho-gia-dinh}" class="active">
                             <span>🏠</span> Hộ gia đình
+                        </a>
+                    </li>
+                    
+                    <li>
+                        <a th:href="@{/admin/tai-san}">
+                            <span>🏢</span> Tài sản chung cư
                         </a>
                     </li>
                     
@@ -61,7 +75,7 @@
             <header class="header">
                 <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-                    <h2 th:text="${isEdit ? 'Sửa hộ gia đình' : 'Tạo hộ gia đình'}">Tạo hộ gia đình</h2>
+                    <h2 th:text="${isEdit} ? 'Chỉnh sửa hộ gia đình' : 'Thêm hộ gia đình mới'">Form hộ gia đình</h2>
                 </div>
                 <div class="header-right">
                     <div class="user-info">
@@ -74,45 +88,69 @@
             </header>
             
             <main class="page-content">
-                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                <!-- Cảnh báo nếu chưa có căn hộ -->
+                <div th:if="${canHoList != null and canHoList.isEmpty()}" class="alert alert-warning" style="background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                    <strong>⚠️ Chú ý:</strong> Chưa có căn hộ nào trong hệ thống. 
+                    Vui lòng <a th:href="@{/admin/tai-san/create}" style="color: #0066ff; font-weight: bold;">tạo căn hộ mới</a> trước khi thêm hộ gia đình.
+                </div>
                 
-                <form th:action="@{/admin/ho-gia-dinh/save}" th:object="${hoGiaDinh}" method="post" class="form-container">
-                    <div class="form-group">
-                        <label for="maHo">Mã hộ *</label>
-                        <input type="text" id="maHo" th:field="*{maHo}" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="tenHo">Tên hộ *</label>
-                        <input type="text" id="tenHo" th:field="*{tenHo}" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="maCanHo">Mã căn hộ *</label>
-                        <input type="number" id="maCanHo" th:field="*{maCanHo}" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="ngayThanhLap">Ngày thành lập *</label>
-                        <input type="date" id="ngayThanhLap" th:field="*{ngayThanhLap}" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="trangThai">Trạng thái *</label>
+                <div class="form-container">
+                    <form th:action="@{/admin/ho-gia-dinh/save}" method="post" th:object="${hoGiaDinh}">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maHo">Mã hộ: <span class="required">*</span></label>
+                                <input type="text" id="maHo" th:field="*{maHo}" class="form-control" th:readonly="${isEdit}" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tenHo">Tên chủ hộ: <span class="required">*</span></label>
+                                <input type="text" id="tenHo" th:field="*{tenHo}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="maCanHo">Căn hộ: <span class="required">*</span></label>
+                                <select id="maCanHo" th:field="*{maCanHo}" class="form-control" required>
+                                    <option value="">-- Chọn căn hộ --</option>
+                                    <option th:each="canHo : ${canHoList}" 
+                                            th:value="${canHo.maTaiSan}" 
+                                            th:text="${canHo.tenTaiSan} + 
+                                                     (${canHo.viTri} != null ? ' - ' + ${canHo.viTri} : '') + 
+                                                     (${canHo.dienTich} != null ? ' (' + ${canHo.dienTich} + ' m²)' : '')">
+                                    </option>
+                                </select>
+                                <small class="text-muted">Chọn căn hộ từ danh sách tài sản đã tạo</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ngayThanhLap">Ngày thành lập: <span class="required">*</span></label>
+                                <input type="date" id="ngayThanhLap" th:field="*{ngayThanhLap}" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                        <label for="trangThai">Trạng thái: <span class="required">*</span></label>
                         <select id="trangThai" th:field="*{trangThai}" class="form-control" required>
-                            <option value="">-- Chọn trạng thái --</option>
-                            <option value="hoat_dong">Hoạt động</option>
-                            <option value="tam_dung">Tạm dừng</option>
-                            <option value="ket_thuc">Kết thúc</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary" th:text="${isEdit ? 'Cập nhật' : 'Tạo'}">Tạo</button>
-                        <a th:href="@{/admin/ho-gia-dinh}" class="btn btn-secondary">Hủy</a>
-                    </div>
-                </form>
+                                    <option value="hoat_dong">Hoạt động</option>
+                                    <option value="da_chuyen_di">Đã chuyển đi</option>
+                                    <option value="giai_the">Giải thể</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ghiChu">Ghi chú:</label>
+                                <textarea id="ghiChu" th:field="*{ghiChu}" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success" th:text="${isEdit} ? 'Lưu thay đổi' : 'Lưu'">Lưu</button>
+                            <a th:href="@{/admin/ho-gia-dinh}" class="btn btn-secondary">Hủy</a>
+                        </div>
+                    </form>
+                </div>
             </main>
         </div>
     </div>

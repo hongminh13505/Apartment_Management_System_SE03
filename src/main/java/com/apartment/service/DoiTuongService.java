@@ -35,13 +35,24 @@ public class DoiTuongService {
         return doiTuongRepository.findByVaiTroAndActive(vaiTro);
     }
     
-    public List<DoiTuong> searchByName(String hoVaTen) {
-        return doiTuongRepository.findByHoVaTenContainingIgnoreCase(hoVaTen);
+    public List<DoiTuong> searchByKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return findAll();
+        }
+        return doiTuongRepository.searchCuDanByKeyword(keyword.trim());
     }
     
     @Transactional
     public DoiTuong save(DoiTuong doiTuong) {
-        // Mã hóa mật khẩu nếu là tạo mới hoặc thay đổi mật khẩu
+        // Khi cập nhật, nếu không nhập mật khẩu thì giữ nguyên mật khẩu cũ để tránh null constraint
+        if (doiTuong.getCccd() != null) {
+            doiTuongRepository.findByCccd(doiTuong.getCccd()).ifPresent(existing -> {
+                if (doiTuong.getMatKhau() == null || doiTuong.getMatKhau().isBlank()) {
+                    doiTuong.setMatKhau(existing.getMatKhau());
+                }
+            });
+        }
+        // Mã hóa mật khẩu nếu là tạo mới hoặc thay đổi mật khẩu (chưa mã hóa)
         if (doiTuong.getMatKhau() != null && !doiTuong.getMatKhau().startsWith("$2a$")) {
             doiTuong.setMatKhau(passwordEncoder.encode(doiTuong.getMatKhau()));
         }

@@ -2,14 +2,13 @@ package com.apartment.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "thanh_vien_ho")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @IdClass(ThanhVienHo.ThanhVienHoId.class)
@@ -50,12 +49,40 @@ public class ThanhVienHo {
     private DoiTuong doiTuong;
     
     // Composite Key Class
-    @Data
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ThanhVienHoId implements Serializable {
         private String cccd;
         private LocalDate ngayBatDau;
+        
+        public String getCccd() {
+            return cccd;
+        }
+        
+        public void setCccd(String cccd) {
+            this.cccd = cccd;
+        }
+        
+        public LocalDate getNgayBatDau() {
+            return ngayBatDau;
+        }
+        
+        public void setNgayBatDau(LocalDate ngayBatDau) {
+            this.ngayBatDau = ngayBatDau;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ThanhVienHoId that = (ThanhVienHoId) o;
+            return cccd.equals(that.cccd) && ngayBatDau.equals(that.ngayBatDau);
+        }
+        
+        @Override
+        public int hashCode() {
+            return cccd.hashCode() + ngayBatDau.hashCode();
+        }
     }
     
     @PrePersist
@@ -63,6 +90,87 @@ public class ThanhVienHo {
         if (ngayBatDau == null) {
             ngayBatDau = LocalDate.now();
         }
+    }
+    
+    // Getters and Setters
+    public String getCccd() {
+        return cccd;
+    }
+    
+    public void setCccd(String cccd) {
+        this.cccd = cccd;
+    }
+    
+    public LocalDate getNgayBatDau() {
+        return ngayBatDau;
+    }
+    
+    public void setNgayBatDau(LocalDate ngayBatDau) {
+        this.ngayBatDau = ngayBatDau;
+    }
+    
+    public String getMaHo() {
+        return maHo;
+    }
+    
+    public void setMaHo(String maHo) {
+        this.maHo = maHo;
+    }
+    
+    public Boolean getLaChuHo() {
+        return laChuHo;
+    }
+    
+    public void setLaChuHo(Boolean laChuHo) {
+        this.laChuHo = laChuHo;
+    }
+    
+    public String getQuanHeVoiChuHo() {
+        return quanHeVoiChuHo;
+    }
+    
+    public void setQuanHeVoiChuHo(String quanHeVoiChuHo) {
+        this.quanHeVoiChuHo = quanHeVoiChuHo;
+    }
+    
+    public LocalDate getNgayKetThuc() {
+        return ngayKetThuc;
+    }
+    
+    public void setNgayKetThuc(LocalDate ngayKetThuc) {
+        this.ngayKetThuc = ngayKetThuc;
+    }
+    
+    public String getLyDoKetThuc() {
+        return lyDoKetThuc;
+    }
+    
+    public void setLyDoKetThuc(String lyDoKetThuc) {
+        this.lyDoKetThuc = lyDoKetThuc;
+    }
+    
+    public String getGhiChu() {
+        return ghiChu;
+    }
+    
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+    
+    public HoGiaDinh getHoGiaDinh() {
+        return hoGiaDinh;
+    }
+    
+    public void setHoGiaDinh(HoGiaDinh hoGiaDinh) {
+        this.hoGiaDinh = hoGiaDinh;
+    }
+    
+    public DoiTuong getDoiTuong() {
+        return doiTuong;
+    }
+    
+    public void setDoiTuong(DoiTuong doiTuong) {
+        this.doiTuong = doiTuong;
     }
 }
 
