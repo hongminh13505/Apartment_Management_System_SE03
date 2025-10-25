@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private DoiTuongRepository doiTuongRepository;
     
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String cccd) throws UsernameNotFoundException {
         DoiTuong doiTuong = doiTuongRepository.findByCccd(cccd)
                 .orElseThrow(() -> new UsernameNotFoundException("Không tìm thấy người dùng với CCCD: " + cccd));
@@ -29,8 +32,16 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Tài khoản không hoạt động");
         }
         
+        // Cập nhật thời gian đăng nhập cuối
+        doiTuong.setLanDangNhapCuoi(LocalDateTime.now());
+        doiTuongRepository.save(doiTuong);
+        
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + doiTuong.getVaiTro().toUpperCase()));
+        String role = "ROLE_" + doiTuong.getVaiTro().toUpperCase();
+        authorities.add(new SimpleGrantedAuthority(role));
+        
+        // Debug logging
+        System.out.println("User: " + doiTuong.getCccd() + ", Role: " + role + ", Last login updated");
         
         return User.builder()
                 .username(doiTuong.getCccd())

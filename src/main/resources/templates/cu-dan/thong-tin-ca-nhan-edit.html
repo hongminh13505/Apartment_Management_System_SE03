@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa thông tin cá nhân</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cư dân</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/cu-dan/dashboard}">
+                            <span>🏠</span> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-tin-ca-nhan}" class="active">
+                            <span>👤</span> Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}">
+                            <span>🚨</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Chỉnh sửa thông tin cá nhân</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${doiTuong.hoVaTen}">Nguyễn Văn A</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Success/Error Messages -->
+                <div th:if="${success}" class="alert alert-success" style="margin-bottom: 20px;">
+                    <span th:text="${success}"></span>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger" style="margin-bottom: 20px;">
+                    <span th:text="${error}"></span>
+                </div>
+                
+                <div class="content-header">
+                    <h3>Cập nhật thông tin cá nhân</h3>
+                    <a th:href="@{/cu-dan/thong-tin-ca-nhan}" class="btn btn-secondary">
+                        ← Quay lại
+                    </a>
+                </div>
+                
+                <div class="form-container">
+                    <form th:action="@{/cu-dan/thong-tin-ca-nhan/save}" method="post" th:object="${doiTuong}">
+                        <input type="hidden" th:field="*{cccd}">
+                        <input type="hidden" th:field="*{vaiTro}">
+                        <input type="hidden" th:field="*{laCuDan}">
+                        <input type="hidden" th:field="*{ngayTao}">
+                        <input type="hidden" th:field="*{lanDangNhapCuoi}">
+                        <input type="hidden" th:field="*{ngayCapNhat}">
+                        <input type="hidden" th:field="*{trangThaiTaiKhoan}">
+                        
+                        <div class="info-container">
+                            <h4>Thông tin cơ bản</h4>
+                            
+                            <!-- Hàng 1: CCCD, Họ và tên, Ngày sinh -->
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>CCCD:</label>
+                                    <input type="text" th:field="*{cccd}" class="form-control readonly" readonly style="background-color: #f9fafb;">
+                                    <small class="text-muted">CCCD không thể thay đổi</small>
+                                </div>
+                                <div class="info-item">
+                                    <label>Họ và tên <span class="required">*</span>:</label>
+                                    <input type="text" th:field="*{hoVaTen}" class="form-control" required>
+                                </div>
+                                <div class="info-item">
+                                    <label>Ngày sinh <span class="required">*</span>:</label>
+                                    <input type="date" th:field="*{ngaySinh}" class="form-control" required>
+                                </div>
+                            </div>
+                            
+                            <!-- Hàng 2: Giới tính, Số điện thoại, Email -->
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Giới tính <span class="required">*</span>:</label>
+                                    <select th:field="*{gioiTinh}" class="form-control" required>
+                                        <option value="">-- Chọn giới tính --</option>
+                                        <option value="nam">Nam</option>
+                                        <option value="nu">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="info-item">
+                                    <label>Số điện thoại:</label>
+                                    <input type="tel" th:field="*{soDienThoai}" class="form-control">
+                                </div>
+                                <div class="info-item">
+                                    <label>Email:</label>
+                                    <input type="email" th:field="*{email}" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <!-- Hàng 3: Quê quán, Nghề nghiệp, Đổi mật khẩu -->
+                            <div class="info-row">
+                                <div class="info-item">
+                                    <label>Quê quán:</label>
+                                    <input type="text" th:field="*{queQuan}" class="form-control">
+                                </div>
+                                <div class="info-item">
+                                    <label>Nghề nghiệp:</label>
+                                    <input type="text" th:field="*{ngheNghiep}" class="form-control">
+                                </div>
+                                <div class="info-item password-change">
+                                    <label>🔒 Đổi mật khẩu:</label>
+                                    <input type="password" id="matKhau" name="matKhau" class="form-control" placeholder="Để trống nếu không muốn đổi mật khẩu">
+                                    <small class="text-muted">Để trống nếu không muốn thay đổi mật khẩu</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                            <a th:href="@{/cu-dan/thong-tin-ca-nhan}" class="btn btn-secondary">❌ Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+    
+    <style>
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 100%;
+        }
+        
+        .info-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .info-container h4 {
+            color: #3b82f6;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .info-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        
+        .info-item label {
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .info-item .form-control {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .password-change {
+            /* Loại bỏ background và border để thẳng hàng với các ô khác */
+        }
+        
+        .password-change label {
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .required {
+            color: #ef4444;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            height: 40px;
+        }
+        
+        .form-control[type="date"] {
+            height: 40px;
+        }
+        
+        select.form-control {
+            height: 40px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .form-control[readonly] {
+            background-color: #f9fafb;
+            color: #6b7280;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .text-muted {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        @media (max-width: 768px) {
+            .content-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

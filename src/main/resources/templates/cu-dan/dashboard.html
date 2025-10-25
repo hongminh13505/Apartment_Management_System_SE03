@@ -22,19 +22,22 @@
                 <ul>
                     <li>
                         <a th:href="@{/cu-dan/dashboard}" class="active">
-                            <span>📊</span> Dashboard
+                            <span>🏠</span> Dashboard
                         </a>
                     </li>
-                    
+                    <li>
+                        <a th:href="@{/cu-dan/thong-tin-ca-nhan}">
+                            <span>👤</span> Thông tin cá nhân
+                        </a>
+                    </li>
                     <li>
                         <a th:href="@{/cu-dan/thong-bao}">
                             <span>📢</span> Thông báo
                         </a>
                     </li>
-                    
                     <li>
                         <a th:href="@{/cu-dan/bao-cao-su-co}">
-                            <span>⚠️</span> Báo cáo sự cố
+                            <span>🚨</span> Báo cáo sự cố
                         </a>
                     </li>
                 </ul>
@@ -129,6 +132,178 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    
+    <style>
+        .content-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .section-header h3 {
+            color: #1e40af;
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .notifications-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #f9fafb;
+            transition: box-shadow 0.2s;
+        }
+        
+        .notification-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .notification-header h4 {
+            margin: 0;
+            color: #1e40af;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .notification-time {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .notification-item p {
+            margin: 0;
+            color: #374151;
+            line-height: 1.5;
+        }
+        
+        .text-center {
+            text-align: center;
+            color: #6b7280;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .table-responsive {
+                font-size: 14px;
+            }
+            
+            .notification-item {
+                padding: 15px;
+            }
+        }
+    </style>
 </body>
 </html>
 
