@@ -37,60 +37,98 @@
                             <span>⚠️</span> Báo cáo sự cố
                         </a>
                     </li>
-                    
-                    <li>
-                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <span>🚪</span> Đăng xuất
-                        </a>
-                        <form id="logout-form" th:action="@{/logout}" method="post" style="display: none;">
-                        </form>
-                    </li>
                 </ul>
             </nav>
         </aside>
         
         <!-- Main Content -->
-        <main class="main-content">
-            <header class="content-header">
-                <h1>Dashboard Cư dân</h1>
-                <div class="user-info">
-                    <span>Xin chào, <strong th:text="${username}"></strong></span>
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Dashboard</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}"></strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
                 </div>
             </header>
             
-            <div class="dashboard-content">
-                <div class="welcome-section">
-                    <h2>Chào mừng đến với hệ thống quản lý chung cư</h2>
-                    <p>Xem thông báo mới nhất và báo cáo sự cố từ menu bên trái.</p>
-                </div>
-                
-                <!-- Latest Announcements -->
-                <div class="content-section" th:if="${thongBaoList != null and !thongBaoList.isEmpty()}">
-                    <h3>Thông báo mới nhất</h3>
-                    <div class="table-wrapper">
-                        <table class="data-table">
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Recent Reports -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Báo cáo sự cố mới nhất</h3>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table">
                             <thead>
                                 <tr>
+                                    <th>Mã</th>
                                     <th>Tiêu đề</th>
-                                    <th>Ngày đăng</th>
+                                    <th>Người báo cáo</th>
+                                    <th>Mức độ</th>
                                     <th>Trạng thái</th>
+                                    <th>Ngày báo cáo</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="tb : ${thongBaoList}">
-                                    <td th:text="${tb.tieuDe}"></td>
-                                    <td th:text="${#temporals.format(tb.ngayDang, 'dd/MM/yyyy')}"></td>
+                                <tr th:each="bc : ${baoCaoSuCoList}" th:if="${baoCaoSuCoList != null and !baoCaoSuCoList.isEmpty()}">
+                                    <td th:text="${bc.maBaoCao}">1</td>
+                                    <td th:text="${bc.tieuDe}">Báo cáo</td>
+                                    <td th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
                                     <td>
-                                        <span class="badge badge-info">Mới</span>
+                                        <span class="badge" 
+                                              th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
+                                              th:text="${bc.mucDoUuTien}">Bình thường</span>
                                     </td>
+                                    <td>
+                                        <span class="badge badge-warning" th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                </tr>
+                                <tr th:if="${baoCaoSuCoList == null or baoCaoSuCoList.isEmpty()}">
+                                    <td colspan="6" class="text-center">Không có báo cáo sự cố mới</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
-        </main>
+                
+                <!-- Recent Notifications -->
+                <div class="content-section">
+                    <div class="section-header">
+                        <h3>Thông báo gần đây</h3>
+                        <a th:href="@{/cu-dan/thong-bao}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                    </div>
+                    
+                    <div class="notifications-list">
+                        <div class="notification-item" th:each="tb : ${thongBaoList}" th:if="${thongBaoList != null and !thongBaoList.isEmpty()}">
+                            <div class="notification-header">
+                                <h4 th:text="${tb.tieuDe}">Tiêu đề thông báo</h4>
+                                <span class="notification-time" th:text="${#temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy HH:mm')}">01/01/2025</span>
+                            </div>
+                            <p th:text="${tb.noiDungThongBao}">Nội dung thông báo...</p>
+                        </div>
+                        <div th:if="${thongBaoList == null or thongBaoList.isEmpty()}">
+                            <p class="text-center">Không có thông báo mới</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
+    
+    <script th:src="@{/js/script.js}"></script>
 </body>
 </html>
 
