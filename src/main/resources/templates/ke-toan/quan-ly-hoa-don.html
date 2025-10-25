@@ -106,12 +106,13 @@
                                 <td th:text="${hoaDon.maHo}">H001</td>
                                 <td>
                                     <span th:switch="${hoaDon.loaiHoaDon}">
-                                        <span th:case="'dich_vu'" th:if="${hoaDon.ghiChu != null and hoaDon.ghiChu.contains('điện nước')}" style="color: #f59e0b;">⚡ Điện nước</span>
-                                        <span th:case="'dich_vu'" th:unless="${hoaDon.ghiChu != null and hoaDon.ghiChu.contains('điện nước')}" style="color: #ec4899;">🛠️ Dịch vụ</span>
+                                        <span th:case="'dich_vu'" style="color: #ec4899;">🛠️ Dịch vụ</span>
                                         <span th:case="'sua_chua'" style="color: #8b5cf6;">🔧 Sửa chữa</span>
                                         <span th:case="'phat'" style="color: #ef4444;">⚠️ Phạt</span>
                                         <span th:case="'khac'" style="color: #6b7280;">📄 Khác</span>
-                                        <span th:case="*" th:text="${hoaDon.loaiHoaDon}">Khác</span>
+                                        <span th:case="null" style="color: #6b7280;">📄 Khác</span>
+                                        <span th:case="''" style="color: #6b7280;">📄 Khác</span>
+                                        <span th:case="*" style="color: #6b7280;">📄 Khác</span>
                                     </span>
                                 </td>
                                 <td>
@@ -130,7 +131,6 @@
                                     </span>
                                 </td>
                                 <td class="actions">
-                                    <a th:href="@{/ke-toan/quan-ly-hoa-don/sua/{id}(id=${hoaDon.maHoaDon})}" class="btn btn-sm btn-warning">Sửa</a>
                                     <form th:action="@{/ke-toan/quan-ly-hoa-don/xoa/{id}(id=${hoaDon.maHoaDon})}" method="post" style="display: inline;">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
