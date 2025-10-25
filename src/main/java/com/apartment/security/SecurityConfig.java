@@ -56,7 +56,8 @@ public class SecurityConfig {
                 .ignoringRequestMatchers(
                     new AntPathRequestMatcher("/admin/**/api/**"),
                     new AntPathRequestMatcher("/ke-toan/**/save"),
-                    new AntPathRequestMatcher("/ke-toan/**/thanh-toan/**")
+                    new AntPathRequestMatcher("/ke-toan/**/thanh-toan/**"),
+                    new AntPathRequestMatcher("/cu-dan/**/save")
                 )
             )
             .authorizeHttpRequests(auth -> auth

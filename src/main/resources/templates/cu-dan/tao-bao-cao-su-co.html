@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tạo báo cáo sự cố - Cư dân</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cư dân</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/cu-dan/dashboard}">
+                            <span>🏠</span> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-tin-ca-nhan}">
+                            <span>👤</span> Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-bao}">
+                            <span>📢</span> Thông báo
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}" class="active">
+                            <span>🚨</span> Báo cáo sự cố
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Tạo báo cáo sự cố</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cư dân</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <!-- Form -->
+                <div class="form-container">
+                    <form th:action="@{/cu-dan/bao-cao-su-co/luu}" th:object="${baoCaoSuCo}" method="post">
+                        <div class="form-group">
+                            <label for="tieuDe">Tiêu đề báo cáo <span class="required">*</span></label>
+                            <input type="text" id="tieuDe" th:field="*{tieuDe}" class="form-control" 
+                                   placeholder="Nhập tiêu đề báo cáo sự cố" required>
+                            <div class="form-error" th:if="${#fields.hasErrors('tieuDe')}" 
+                                 th:errors="*{tieuDe}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="moTaSuCo">Mô tả chi tiết sự cố <span class="required">*</span></label>
+                            <textarea id="moTaSuCo" th:field="*{moTaSuCo}" class="form-control" 
+                                      rows="5" placeholder="Mô tả chi tiết về sự cố đã xảy ra..." required></textarea>
+                            <div class="form-error" th:if="${#fields.hasErrors('moTaSuCo')}" 
+                                 th:errors="*{moTaSuCo}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="viTriSuCo">Vị trí xảy ra sự cố</label>
+                            <input type="text" id="viTriSuCo" th:field="*{viTriSuCo}" class="form-control" 
+                                   placeholder="Ví dụ: Tầng 5, căn hộ 501, hành lang tầng 3...">
+                            <div class="form-error" th:if="${#fields.hasErrors('viTriSuCo')}" 
+                                 th:errors="*{viTriSuCo}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mucDoUuTien">Mức độ ưu tiên</label>
+                            <select id="mucDoUuTien" th:field="*{mucDoUuTien}" class="form-control">
+                                <option value="binh_thuong">Bình thường</option>
+                                <option value="cao">Cao</option>
+                                <option value="khan_cap">Khẩn cấp</option>
+                            </select>
+                            <div class="form-error" th:if="${#fields.hasErrors('mucDoUuTien')}" 
+                                 th:errors="*{mucDoUuTien}"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="ghiChu">Ghi chú thêm</label>
+                            <textarea id="ghiChu" th:field="*{ghiChu}" class="form-control" 
+                                      rows="3" placeholder="Thông tin bổ sung (nếu có)..."></textarea>
+                            <div class="form-error" th:if="${#fields.hasErrors('ghiChu')}" 
+                                 th:errors="*{ghiChu}"></div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <span>📝</span> Tạo báo cáo
+                            </button>
+                            <a th:href="@{/cu-dan/bao-cao-su-co}" class="btn btn-secondary">
+                                <span>↩️</span> Quay lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>

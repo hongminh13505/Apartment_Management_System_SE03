@@ -22,19 +22,22 @@
                 <ul>
                     <li>
                         <a th:href="@{/cu-dan/dashboard}">
-                            <span>📊</span> Dashboard
+                            <span>🏠</span> Dashboard
                         </a>
                     </li>
-                    
+                    <li>
+                        <a th:href="@{/cu-dan/thong-tin-ca-nhan}">
+                            <span>👤</span> Thông tin cá nhân
+                        </a>
+                    </li>
                     <li>
                         <a th:href="@{/cu-dan/thong-bao}">
                             <span>📢</span> Thông báo
                         </a>
                     </li>
-                    
                     <li>
                         <a th:href="@{/cu-dan/bao-cao-su-co}" class="active">
-                            <span>⚠️</span> Báo cáo sự cố
+                            <span>🚨</span> Báo cáo sự cố
                         </a>
                     </li>
                 </ul>
@@ -66,13 +69,18 @@
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                 <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
                 
-                <!-- Search Bar -->
+                <!-- Search Bar and Actions -->
                 <div class="content-header">
                     <div class="search-bar">
                         <form th:action="@{/cu-dan/bao-cao-su-co}" method="get">
                             <input type="text" name="search" th:value="${search}" placeholder="Tìm kiếm..." class="form-control">
                             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                         </form>
+                    </div>
+                    <div class="action-buttons">
+                        <a th:href="@{/cu-dan/bao-cao-su-co/tao-moi}" class="btn btn-success">
+                            <span>➕</span> Tạo báo cáo mới
+                        </a>
                     </div>
                 </div>
                 
