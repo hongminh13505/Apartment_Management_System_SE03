@@ -102,33 +102,33 @@
                     <a th:href="@{/admin/tai-san/create}" class="btn btn-success">+ Thêm mới</a>
                 </div>
                 
-                <div class="table-wrapper">
-                    <table class="data-table">
+                <div class="table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th style="width: 80px;">Mã TS</th>
-                                <th>Tên tài sản</th>
-                                <th style="width: 100px;">Loại</th>
-                                <th>Vị trí</th>
-                                <th style="width: 100px;">Diện tích</th>
-                                <th style="width: 130px;">Giá trị</th>
-                                <th style="width: 120px;">Trạng thái</th>
-                                <th style="width: 100px;">Hộ sử dụng</th>
-                                <th style="width: 150px;">Thao tác</th>
+                                <th style="width: 100px; min-width: 100px;">Mã TS</th>
+                                <th style="min-width: 200px;">Tên tài sản</th>
+                                <th style="width: 120px; min-width: 120px;">Loại</th>
+                                <th style="min-width: 150px;">Vị trí</th>
+                                <th style="width: 120px; min-width: 120px;">Diện tích</th>
+                                <th style="width: 150px; min-width: 150px;">Giá trị</th>
+                                <th style="width: 140px; min-width: 140px;">Trạng thái</th>
+                                <th style="width: 120px; min-width: 120px;">Hộ sử dụng</th>
+                                <th style="width: 180px; min-width: 180px;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="ts : ${taiSanList}">
-                                <td th:text="${ts.maTaiSan}" style="text-align: center;"></td>
-                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word;"></td>
+                                <td th:text="${ts.maTaiSan}" style="text-align: center; font-weight: 600; color: var(--primary-color);"></td>
+                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word; font-weight: 500;"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.loaiTaiSan == 'can_ho'}" class="badge badge-info">Căn hộ</span>
                                     <span th:if="${ts.loaiTaiSan == 'thiet_bi'}" class="badge badge-secondary">Thiết bị</span>
                                     <span th:if="${ts.loaiTaiSan == 'tien_ich'}" class="badge badge-success">Tiện ích</span>
                                 </td>
                                 <td th:text="${ts.viTri}" style="word-break: break-word;"></td>
-                                <td th:text="${ts.dienTich != null ? ts.dienTich : '-'}" style="text-align: right;"></td>
-                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') : '-'}" style="text-align: right;"></td>
+                                <td th:text="${ts.dienTich != null ? ts.dienTich + ' m²' : '-'}" style="text-align: right;"></td>
+                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '-'}" style="text-align: right;"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.trangThai == 'hoat_dong'}" class="badge badge-success">Hoạt động</span>
                                     <span th:if="${ts.trangThai == 'bao_tri'}" class="badge badge-warning">Bảo trì</span>
@@ -144,7 +144,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${taiSanList.isEmpty()}">
-                                <td colspan="9" style="text-align: center; color: #94a3b8;">Chưa có tài sản nào</td>
+                                <td colspan="9" style="text-align: center; color: #94a3b8; padding: 40px; font-size: 16px;">Chưa có tài sản nào</td>
                             </tr>
                         </tbody>
                     </table>
