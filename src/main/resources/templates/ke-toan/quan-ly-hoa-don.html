@@ -59,7 +59,7 @@
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
                 <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
                 
-                <!-- Search and Add Button -->
+                <!-- Search Bar -->
                 <div class="content-header">
                     <div class="search-bar">
                         <form th:action="@{/ke-toan/quan-ly-hoa-don}" method="get">
@@ -67,7 +67,20 @@
                             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                         </form>
                     </div>
-                    <a th:href="@{/ke-toan/quan-ly-hoa-don/tao-moi}" class="btn btn-success">+ Thêm mới</a>
+                    <div class="action-buttons">
+                        <div class="dropdown">
+                            <button class="btn btn-success dropdown-toggle" type="button" id="createInvoiceDropdown" onclick="toggleDropdown()">
+                                📄 Tạo hóa đơn
+                            </button>
+                            <ul class="dropdown-menu" id="dropdownMenu">
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=dien_nuoc">⚡ Điện nước</a></li>
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=dich_vu">🛠️ Dịch vụ</a></li>
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=sua_chua">🔧 Sửa chữa</a></li>
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=phat">⚠️ Phạt</a></li>
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=khac">📄 Khác</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Table -->
@@ -93,16 +106,16 @@
                                 <td th:text="${hoaDon.maHo}">H001</td>
                                 <td>
                                     <span th:switch="${hoaDon.loaiHoaDon}">
-                                        <span th:case="'dien'" style="color: #f59e0b;">Điện</span>
-                                        <span th:case="'nuoc'" style="color: #3b82f6;">Nước</span>
-                                        <span th:case="'quan_ly'" style="color: #8b5cf6;">Phí quản lý</span>
-                                        <span th:case="'gui_xe'" style="color: #10b981;">Gửi xe</span>
-                                        <span th:case="'dich_vu'" style="color: #ec4899;">Dịch vụ</span>
+                                        <span th:case="'dich_vu'" th:if="${hoaDon.ghiChu != null and hoaDon.ghiChu.contains('điện nước')}" style="color: #f59e0b;">⚡ Điện nước</span>
+                                        <span th:case="'dich_vu'" th:unless="${hoaDon.ghiChu != null and hoaDon.ghiChu.contains('điện nước')}" style="color: #ec4899;">🛠️ Dịch vụ</span>
+                                        <span th:case="'sua_chua'" style="color: #8b5cf6;">🔧 Sửa chữa</span>
+                                        <span th:case="'phat'" style="color: #ef4444;">⚠️ Phạt</span>
+                                        <span th:case="'khac'" style="color: #6b7280;">📄 Khác</span>
                                         <span th:case="*" th:text="${hoaDon.loaiHoaDon}">Khác</span>
                                     </span>
                                 </td>
                                 <td>
-                                    <span th:text="${#numbers.formatDecimal(hoaDon.tongTien != null ? hoaDon.tongTien : 0, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
+                                    <span th:text="${#numbers.formatDecimal(hoaDon.soTien != null ? hoaDon.soTien : 0, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</span>
                                 </td>
                                 <td th:text="${hoaDon.hanThanhToan != null ? #temporals.format(hoaDon.hanThanhToan, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
                                 <td>
@@ -132,6 +145,22 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    <script>
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            dropdownMenu.classList.toggle('show');
+        }
+        
+        // Đóng dropdown khi click bên ngoài
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            if (!dropdown.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
 

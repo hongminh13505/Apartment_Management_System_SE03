@@ -5,9 +5,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${isEdit ? 'Sửa hóa đơn' : 'Thêm hóa đơn'}">Quản lý hóa đơn</title>
+    <title>Tạo hóa đơn - Quản lý chung cư</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <style>
+        .invoice-type-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .invoice-type-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .calculation-section {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .calculation-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .calculation-value {
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .total-section {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -40,7 +115,7 @@
             <header class="header">
                 <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-                    <h2 th:text="${isEdit ? 'Sửa hóa đơn' : 'Thêm hóa đơn mới'}">Thêm hóa đơn</h2>
+                    <h2 id="pageTitle">📄 Tạo hóa đơn</h2>
                 </div>
                 
                 <div class="header-right">
@@ -55,13 +130,19 @@
             
             <!-- Page Content -->
             <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
                 <div class="form-container">
-                    <form th:action="@{/ke-toan/quan-ly-hoa-don/luu}" method="post" th:object="${hoaDon}">
-                        <input type="hidden" th:field="*{maHoaDon}" th:if="${isEdit}">
+                    <form th:action="@{/ke-toan/quan-ly-hoa-don/luu}" method="post" id="invoiceForm">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <input type="hidden" name="loaiHoaDon" th:value="${loaiHoaDon}" id="loaiHoaDon">
+                        
                         
                         <div class="form-group">
                             <label for="maHo">Mã hộ <span class="required">*</span></label>
-                            <select id="maHo" th:field="*{maHo}" class="form-control" required>
+                            <select id="maHo" name="maHo" class="form-control" required>
                                 <option value="">-- Chọn hộ gia đình --</option>
                                 <option th:each="ho : ${hoGiaDinhList}" 
                                         th:value="${ho.maHo}" 
@@ -69,47 +150,105 @@
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="loaiHoaDon">Loại hóa đơn <span class="required">*</span></label>
-                            <select id="loaiHoaDon" th:field="*{loaiHoaDon}" class="form-control" required>
-                                <option value="">-- Chọn loại hóa đơn --</option>
-                                <option value="dien">Điện</option>
-                                <option value="nuoc">Nước</option>
-                                <option value="quan_ly">Phí quản lý</option>
-                                <option value="gui_xe">Gửi xe</option>
-                                <option value="dich_vu">Dịch vụ</option>
-                            </select>
+                        <!-- Điện nước section -->
+                        <div id="dienNuocSection" class="hidden">
+                            <div class="form-group">
+                                <label for="kyThanhToan">Kỳ thanh toán <span class="required">*</span></label>
+                                <input type="text" id="kyThanhToan" name="kyThanhToan" class="form-control" 
+                                       placeholder="VD: 01/2024" required>
+                            </div>
+                            
+                            <!-- Chỉ số điện -->
+                            <div class="calculation-section">
+                                <h4>⚡ Chỉ số điện</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="dienCu">Chỉ số điện cũ <span class="required">*</span></label>
+                                        <input type="number" id="dienCu" name="dienCu" class="form-control" 
+                                               min="0" step="1" required onchange="calculateTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dienMoi">Chỉ số điện mới <span class="required">*</span></label>
+                                        <input type="number" id="dienMoi" name="dienMoi" class="form-control" 
+                                               min="0" step="1" required onchange="calculateTotal()">
+                                    </div>
+                                </div>
+                                <div class="calculation-row">
+                                    <span class="calculation-label">Số điện tiêu thụ:</span>
+                                    <span class="calculation-value" id="soDienTieuThu">0 số</span>
+                                </div>
+                                <div class="calculation-row">
+                                    <span class="calculation-label">Tiền điện (3,500 VNĐ/số):</span>
+                                    <span class="calculation-value" id="tienDien">0 VNĐ</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Chỉ số nước -->
+                            <div class="calculation-section">
+                                <h4>💧 Chỉ số nước</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="nuocCu">Chỉ số nước cũ <span class="required">*</span></label>
+                                        <input type="number" id="nuocCu" name="nuocCu" class="form-control" 
+                                               min="0" step="1" required onchange="calculateTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nuocMoi">Chỉ số nước mới <span class="required">*</span></label>
+                                        <input type="number" id="nuocMoi" name="nuocMoi" class="form-control" 
+                                               min="0" step="1" required onchange="calculateTotal()">
+                                    </div>
+                                </div>
+                                <div class="calculation-row">
+                                    <span class="calculation-label">Số khối nước tiêu thụ:</span>
+                                    <span class="calculation-value" id="soNuocTieuThu">0 khối</span>
+                                </div>
+                                <div class="calculation-row">
+                                    <span class="calculation-label">Tiền nước (10,000 VNĐ/khối):</span>
+                                    <span class="calculation-value" id="tienNuoc">0 VNĐ</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Tổng tiền điện nước -->
+                            <div class="total-section">
+                                <h4>Tổng tiền hóa đơn điện nước</h4>
+                                <div class="total-amount" id="tongTienDienNuoc">0 VNĐ</div>
+                            </div>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="tongTien">Tổng tiền (VNĐ) <span class="required">*</span></label>
-                            <input type="number" id="tongTien" th:field="*{tongTien}" class="form-control" required min="0">
+                        <!-- Các loại hóa đơn khác -->
+                        <div id="otherInvoiceSection" class="hidden">
+                            <div class="form-group">
+                                <label for="soTien">Số tiền (VNĐ) <span class="required">*</span></label>
+                                <input type="number" id="soTien" name="soTien" class="form-control" 
+                                       min="0" step="1000" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="moTa">Mô tả chi tiết <span class="required">*</span></label>
+                                <textarea id="moTa" name="moTa" class="form-control" rows="4" 
+                                          placeholder="Nhập mô tả chi tiết về hóa đơn..." required></textarea>
+                            </div>
                         </div>
                         
                         <div class="form-group">
                             <label for="hanThanhToan">Hạn thanh toán <span class="required">*</span></label>
-                            <input type="date" id="hanThanhToan" th:field="*{hanThanhToan}" class="form-control" required>
+                            <input type="date" id="hanThanhToan" name="hanThanhToan" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="trangThai">Trạng thái <span class="required">*</span></label>
-                            <select id="trangThai" th:field="*{trangThai}" class="form-control" required>
-                                <option value="chua_thanh_toan">Chưa thanh toán</option>
-                                <option value="da_thanh_toan">Đã thanh toán</option>
-                                <option value="qua_han">Quá hạn</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="moTa">Mô tả</label>
-                            <textarea id="moTa" th:field="*{moTa}" class="form-control" rows="4" placeholder="Nhập mô tả..."></textarea>
+                            <label for="ghiChu">Ghi chú</label>
+                            <textarea id="ghiChu" name="ghiChu" class="form-control" rows="3" 
+                                      placeholder="Nhập ghi chú (nếu có)..."></textarea>
                         </div>
                         
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-success">
-                                <span th:text="${isEdit ? 'Cập nhật' : 'Tạo mới'}">Lưu</span>
+                            <button type="submit" class="btn btn-success" id="submitButton">
+                                💾 Tạo hóa đơn
                             </button>
-                            <a th:href="@{/ke-toan/quan-ly-hoa-don}" class="btn btn-secondary">Hủy</a>
+                            <button type="button" class="btn btn-info" onclick="testForm()">
+                                🔍 Test Form
+                            </button>
+                            <a href="/ke-toan/quan-ly-hoa-don" class="btn btn-secondary">Hủy</a>
                         </div>
                     </form>
                 </div>
@@ -118,6 +257,256 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    <script>
+        // Lấy loại hóa đơn từ URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const loaiHoaDon = urlParams.get('loai');
+        
+        // Cập nhật giao diện dựa trên loại hóa đơn
+        function updateInterface() {
+            const pageTitle = document.getElementById('pageTitle');
+            const dienNuocSection = document.getElementById('dienNuocSection');
+            const otherInvoiceSection = document.getElementById('otherInvoiceSection');
+            const submitButton = document.getElementById('submitButton');
+            
+            switch(loaiHoaDon) {
+                case 'dien_nuoc':
+                    pageTitle.textContent = '⚡ Tạo hóa đơn điện nước';
+                    dienNuocSection.classList.remove('hidden');
+                    otherInvoiceSection.classList.add('hidden');
+                    submitButton.textContent = '💾 Tạo hóa đơn điện nước';
+                    break;
+                case 'dich_vu':
+                    pageTitle.textContent = '🛠️ Tạo hóa đơn dịch vụ';
+                    dienNuocSection.classList.add('hidden');
+                    otherInvoiceSection.classList.remove('hidden');
+                    submitButton.textContent = '💾 Tạo hóa đơn dịch vụ';
+                    break;
+                case 'sua_chua':
+                    pageTitle.textContent = '🔧 Tạo hóa đơn sửa chữa';
+                    dienNuocSection.classList.add('hidden');
+                    otherInvoiceSection.classList.remove('hidden');
+                    submitButton.textContent = '💾 Tạo hóa đơn sửa chữa';
+                    break;
+                case 'phat':
+                    pageTitle.textContent = '⚠️ Tạo hóa đơn phạt';
+                    dienNuocSection.classList.add('hidden');
+                    otherInvoiceSection.classList.remove('hidden');
+                    submitButton.textContent = '💾 Tạo hóa đơn phạt';
+                    break;
+                case 'khac':
+                    pageTitle.textContent = '📄 Tạo hóa đơn khác';
+                    dienNuocSection.classList.add('hidden');
+                    otherInvoiceSection.classList.remove('hidden');
+                    submitButton.textContent = '💾 Tạo hóa đơn khác';
+                    break;
+            }
+        }
+        
+        // Tính toán tổng tiền điện nước
+        function calculateTotal() {
+            console.log('=== DEBUG: Bắt đầu tính toán tổng tiền ===');
+            
+            const dienCu = parseFloat(document.getElementById('dienCu').value) || 0;
+            const dienMoi = parseFloat(document.getElementById('dienMoi').value) || 0;
+            const nuocCu = parseFloat(document.getElementById('nuocCu').value) || 0;
+            const nuocMoi = parseFloat(document.getElementById('nuocMoi').value) || 0;
+            
+            console.log('Chỉ số:', {dienCu, dienMoi, nuocCu, nuocMoi});
+            
+            // Tính số điện tiêu thụ
+            const soDienTieuThu = Math.max(0, dienMoi - dienCu);
+            document.getElementById('soDienTieuThu').textContent = soDienTieuThu + ' số';
+            
+            // Tính tiền điện (3,500 VNĐ/số)
+            const tienDien = soDienTieuThu * 3500;
+            document.getElementById('tienDien').textContent = tienDien.toLocaleString('vi-VN') + ' VNĐ';
+            
+            // Tính số khối nước tiêu thụ
+            const soNuocTieuThu = Math.max(0, nuocMoi - nuocCu);
+            document.getElementById('soNuocTieuThu').textContent = soNuocTieuThu + ' khối';
+            
+            // Tính tiền nước (10,000 VNĐ/khối)
+            const tienNuoc = soNuocTieuThu * 10000;
+            document.getElementById('tienNuoc').textContent = tienNuoc.toLocaleString('vi-VN') + ' VNĐ';
+            
+            // Tính tổng tiền
+            const tongTien = tienDien + tienNuoc;
+            document.getElementById('tongTienDienNuoc').textContent = tongTien.toLocaleString('vi-VN') + ' VNĐ';
+            
+            // Cập nhật hidden input cho số tiền
+            const soTienInput = document.getElementById('soTien');
+            soTienInput.value = tongTien;
+            
+            console.log('Tổng tiền:', tongTien);
+            console.log('Số tiền input value:', soTienInput.value);
+        }
+        
+        // Đặt ngày hạn thanh toán mặc định là 30 ngày từ hôm nay
+        function setDefaultDueDate() {
+            const today = new Date();
+            const futureDate = new Date(today.getTime() + (30 * 24 * 60 * 60 * 1000));
+            const dateString = futureDate.toISOString().split('T')[0];
+            document.getElementById('hanThanhToan').value = dateString;
+        }
+        
+        // Cập nhật số tiền khi người dùng nhập vào ô số tiền
+        function updateSoTien() {
+            const soTienInput = document.getElementById('soTien');
+            const soTienValue = parseFloat(soTienInput.value) || 0;
+            // Đảm bảo số tiền không âm
+            if (soTienValue < 0) {
+                soTienInput.value = 0;
+            }
+        }
+        
+        // Test form function
+        function testForm() {
+            console.log('=== DEBUG: Test Form Function ===');
+            console.log('loaiHoaDon:', loaiHoaDon);
+            
+            const form = document.getElementById('invoiceForm');
+            if (form) {
+                console.log('Form found:', form);
+                console.log('Form action:', form.action);
+                console.log('Form method:', form.method);
+                
+                // Test validation
+                const isValid = validateForm();
+                console.log('Validation result:', isValid);
+                
+                // Test form data
+                const formData = new FormData(form);
+                console.log('Form data:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(key + ': ' + value);
+                }
+            } else {
+                console.log('Form not found!');
+            }
+        }
+        
+        // Validate form trước khi submit
+        function validateForm() {
+            console.log('=== DEBUG: Bắt đầu validate form ===');
+            console.log('loaiHoaDon:', loaiHoaDon);
+            
+            const maHo = document.getElementById('maHo').value;
+            const soTien = document.getElementById('soTien').value;
+            const hanThanhToan = document.getElementById('hanThanhToan').value;
+            
+            console.log('maHo:', maHo);
+            console.log('soTien:', soTien);
+            console.log('hanThanhToan:', hanThanhToan);
+            
+            if (!maHo) {
+                alert('Vui lòng chọn mã hộ!');
+                console.log('Validation failed: Mã hộ không được để trống');
+                return false;
+            }
+            
+            if (!soTien || parseFloat(soTien) <= 0) {
+                alert('Vui lòng nhập số tiền hợp lệ!');
+                console.log('Validation failed: Số tiền không hợp lệ');
+                return false;
+            }
+            
+            if (!hanThanhToan) {
+                alert('Vui lòng chọn hạn thanh toán!');
+                console.log('Validation failed: Hạn thanh toán không được để trống');
+                return false;
+            }
+            
+            // Kiểm tra thêm cho điện nước
+            if (loaiHoaDon === 'dien_nuoc') {
+                console.log('=== DEBUG: Kiểm tra validation cho điện nước ===');
+                const kyThanhToan = document.getElementById('kyThanhToan').value;
+                const dienCu = document.getElementById('dienCu').value;
+                const dienMoi = document.getElementById('dienMoi').value;
+                const nuocCu = document.getElementById('nuocCu').value;
+                const nuocMoi = document.getElementById('nuocMoi').value;
+                
+                console.log('kyThanhToan:', kyThanhToan);
+                console.log('dienCu:', dienCu, 'dienMoi:', dienMoi);
+                console.log('nuocCu:', nuocCu, 'nuocMoi:', nuocMoi);
+                
+                if (!kyThanhToan) {
+                    alert('Vui lòng nhập kỳ thanh toán!');
+                    console.log('Validation failed: Kỳ thanh toán không được để trống');
+                    return false;
+                }
+                
+                if (!dienCu || !dienMoi || !nuocCu || !nuocMoi) {
+                    alert('Vui lòng nhập đầy đủ chỉ số điện nước!');
+                    console.log('Validation failed: Chỉ số điện nước không đầy đủ');
+                    return false;
+                }
+                
+                if (parseInt(dienMoi) < parseInt(dienCu)) {
+                    alert('Chỉ số điện mới phải lớn hơn chỉ số điện cũ!');
+                    console.log('Validation failed: Chỉ số điện mới < chỉ số điện cũ');
+                    return false;
+                }
+                
+                if (parseInt(nuocMoi) < parseInt(nuocCu)) {
+                    alert('Chỉ số nước mới phải lớn hơn chỉ số nước cũ!');
+                    console.log('Validation failed: Chỉ số nước mới < chỉ số nước cũ');
+                    return false;
+                }
+            }
+            
+            // Kiểm tra cho các loại hóa đơn khác
+            if (loaiHoaDon !== 'dien_nuoc') {
+                const moTa = document.getElementById('moTa').value;
+                if (!moTa || moTa.trim() === '') {
+                    alert('Vui lòng nhập mô tả chi tiết!');
+                    console.log('Validation failed: Mô tả không được để trống');
+                    return false;
+                }
+            }
+            
+            console.log('=== DEBUG: Validation thành công ===');
+            return true;
+        }
+        
+        // Thêm event listener cho form submit
+        document.addEventListener('DOMContentLoaded', function() {
+            updateInterface();
+            setDefaultDueDate();
+            
+            // Thêm event listener cho ô số tiền
+            const soTienInput = document.getElementById('soTien');
+            if (soTienInput) {
+                soTienInput.addEventListener('input', updateSoTien);
+            }
+            
+            // Thêm event listener cho form submit
+            const form = document.getElementById('invoiceForm');
+            if (form) {
+                console.log('=== DEBUG: Form found, adding submit listener ===');
+                form.addEventListener('submit', function(e) {
+                    console.log('=== DEBUG: Form submit event triggered ===');
+                    
+                    // Log tất cả form data
+                    const formData = new FormData(form);
+                    console.log('Form data:');
+                    for (let [key, value] of formData.entries()) {
+                        console.log(key + ': ' + value);
+                    }
+                    
+                    if (!validateForm()) {
+                        console.log('=== DEBUG: Form validation failed ===');
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    console.log('=== DEBUG: Form validation passed, submitting ===');
+                    // Không preventDefault để form được submit
+                });
+            } else {
+                console.log('=== DEBUG: Form not found! ===');
+            }
+        });
+    </script>
 </body>
 </html>
-

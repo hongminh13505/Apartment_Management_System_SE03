@@ -1,13 +1,13 @@
 -- =====================================================
--- H? TH?NG QU?N LÝ CHUNG C? - POSTGRESQL SCHEMA V2
+-- H? TH?NG QU?N Lï¿½ CHUNG C? - POSTGRESQL SCHEMA V2
 -- H? tr? l?u l?ch s? ??y ??
 -- =====================================================
 
 -- =====================================================
--- PH?N 1: QU?N LÝ NG??I DÙNG & C? DÂN
+-- PH?N 1: QU?N Lï¿½ NG??I Dï¿½NG & C? Dï¿½N
 -- =====================================================
 
--- B?ng ng??i dùng (tài kho?n ??ng nh?p h? th?ng)
+-- B?ng ng??i dï¿½ng (tï¿½i kho?n ??ng nh?p h? th?ng)
 CREATE TABLE doi_tuong (
     cccd VARCHAR(12) PRIMARY KEY,
     mat_khau VARCHAR(255) NOT NULL,
@@ -28,18 +28,18 @@ CREATE TABLE doi_tuong (
     CONSTRAINT check_ngay_sinh_nguoidung CHECK (ngay_sinh <= CURRENT_DATE)
 );
 
--- B?ng h? gia ?ình
+-- B?ng h? gia ?ï¿½nh
 CREATE TABLE ho_gia_dinh (
     ma_ho VARCHAR(20) PRIMARY KEY,
     ten_ho VARCHAR(100) NOT NULL,
-    ma_can_ho INTEGER UNIQUE, -- Liên k?t v?i b?ng tai_san_chung_cu
+    ma_can_ho INTEGER UNIQUE, -- Liï¿½n k?t v?i b?ng tai_san_chung_cu
     ngay_thanh_lap DATE DEFAULT CURRENT_DATE,
     trang_thai VARCHAR(20) DEFAULT 'hoat_dong' CHECK (trang_thai IN ('hoat_dong', 'da_chuyen_di', 'giai_the')),
     ghi_chu TEXT,
     ngay_cap_nhat TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- B?ng thành viên h? (l?u l?ch s? quan h?)
+-- B?ng thï¿½nh viï¿½n h? (l?u l?ch s? quan h?)
 CREATE TABLE thanh_vien_ho (
     cccd VARCHAR(12),
     ma_ho VARCHAR(20) NOT NULL,
@@ -62,15 +62,15 @@ CREATE TABLE thanh_vien_ho (
 );
 
 -- =====================================================
--- PH?N 2: QU?N LÝ TÀI S?N
+-- PH?N 2: QU?N Lï¿½ Tï¿½I S?N
 -- =====================================================
 
--- B?ng tài s?n chung c?
+-- B?ng tï¿½i s?n chung c?
 CREATE TABLE tai_san_chung_cu (
     ma_tai_san SERIAL PRIMARY KEY,
     ten_tai_san VARCHAR(100) NOT NULL,
     loai_tai_san VARCHAR(30) NOT NULL CHECK (loai_tai_san IN ('can_ho', 'thiet_bi', 'tien_ich')),
-    ma_ho VARCHAR(20), -- H? gia ?ình s? h?u/s? d?ng
+    ma_ho VARCHAR(20), -- H? gia ?ï¿½nh s? h?u/s? d?ng
     trang_thai VARCHAR(20) DEFAULT 'hoat_dong' 
         CHECK (trang_thai IN ('hoat_dong', 'bao_tri', 'hong', 'ngung_hoat_dong')),
     dien_tich DECIMAL(10,2), -- m2 (cho c?n h?)
@@ -83,7 +83,7 @@ CREATE TABLE tai_san_chung_cu (
         ON UPDATE CASCADE
 );
 
--- C?p nh?t liên k?t ng??c t? ho_gia_dinh ??n tai_san_chung_cu
+-- C?p nh?t liï¿½n k?t ng??c t? ho_gia_dinh ??n tai_san_chung_cu
 ALTER TABLE ho_gia_dinh
 ADD CONSTRAINT fk_ma_can_ho FOREIGN KEY (ma_can_ho) 
     REFERENCES tai_san_chung_cu(ma_tai_san) 
@@ -91,17 +91,17 @@ ADD CONSTRAINT fk_ma_can_ho FOREIGN KEY (ma_can_ho)
     ON UPDATE CASCADE;
 
 -- =====================================================
--- PH?N 3: QU?N LÝ D?CH V?
+-- PH?N 3: QU?N Lï¿½ D?CH V?
 -- =====================================================
 
--- B?ng d?ch v? (các d?ch v? có phí)
+-- B?ng d?ch v? (cï¿½c d?ch v? cï¿½ phï¿½)
 CREATE TABLE dich_vu (
     ma_dich_vu SERIAL PRIMARY KEY,
     ten_dich_vu VARCHAR(100) NOT NULL,
     cccd_ban_quan_tri VARCHAR(12),
     mo_ta TEXT,
     gia_thanh DECIMAL(15,2) NOT NULL,
-    don_vi VARCHAR(20), -- VD: VN?/tháng, VN?/l?n
+    don_vi VARCHAR(20), -- VD: VN?/thï¿½ng, VN?/l?n
     loai_dich_vu VARCHAR(30) CHECK (loai_dich_vu IN ('dinh_ky', 'theo_yeu_cau')),
     trang_thai VARCHAR(20) DEFAULT 'hoat_dong' CHECK (trang_thai IN ('hoat_dong', 'tam_ngung')),
     ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -112,7 +112,7 @@ CREATE TABLE dich_vu (
     CONSTRAINT check_gia_thanh CHECK (gia_thanh >= 0)
 );
 
--- B?ng ??ng ký d?ch v?
+-- B?ng ??ng kï¿½ d?ch v?
 CREATE TABLE dang_ky_dich_vu (
     ma_dang_ky INTEGER PRIMARY KEY,
     cccd_nguoi_dung VARCHAR(12) NOT NULL,
@@ -120,10 +120,10 @@ CREATE TABLE dang_ky_dich_vu (
     mo_ta_yeu_cau TEXT,
     ngay_dang_ky TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ngay_bat_dau_su_dung DATE,
-    ngay_ket_thuc_su_dung DATE, -- NULL = vô th?i h?n (cho d?ch v? ??nh k?)
+    ngay_ket_thuc_su_dung DATE, -- NULL = vï¿½ th?i h?n (cho d?ch v? ??nh k?)
     trang_thai VARCHAR(20) DEFAULT 'cho_duyet' 
         CHECK (trang_thai IN ('cho_duyet', 'da_duyet', 'dang_su_dung', 'da_huy', 'da_ket_thuc')),
-    cccd_nguoi_duyet VARCHAR(12), -- BQL phê duy?t
+    cccd_nguoi_duyet VARCHAR(12), -- BQL phï¿½ duy?t
     ngay_duyet TIMESTAMP,
     ghi_chu TEXT,
     CONSTRAINT fk_cccd_nguoidung_dkdv FOREIGN KEY (cccd_nguoi_dung) 
@@ -141,17 +141,17 @@ CREATE TABLE dang_ky_dich_vu (
 );
 
 -- =====================================================
--- PH?N 4: BÁO CÁO S? C? (tách riêng kh?i d?ch v?)
+-- PH?N 4: Bï¿½O Cï¿½O S? C? (tï¿½ch riï¿½ng kh?i d?ch v?)
 -- =====================================================
 
--- B?ng báo cáo s? c?
+-- B?ng bï¿½o cï¿½o s? c?
 CREATE TABLE bao_cao_su_co (
     ma_bao_cao SERIAL PRIMARY KEY,
-    cccd_nguoi_bao_cao VARCHAR(12) NOT NULL, -- C? dân b? s? c?
-    cccd_nguoi_nhap VARCHAR(12), -- NULL n?u c? dân t? báo, có giá tr? n?u BQL nh?p thay
+    cccd_nguoi_bao_cao VARCHAR(12) NOT NULL, -- C? dï¿½n b? s? c?
+    cccd_nguoi_nhap VARCHAR(12), -- NULL n?u c? dï¿½n t? bï¿½o, cï¿½ giï¿½ tr? n?u BQL nh?p thay
     tieu_de VARCHAR(200) NOT NULL,
     mo_ta_su_co TEXT NOT NULL,
-    vi_tri_su_co TEXT, -- V? trí x?y ra s? c?
+    vi_tri_su_co TEXT, -- V? trï¿½ x?y ra s? c?
     muc_do_uu_tien VARCHAR(20) DEFAULT 'binh_thuong' 
         CHECK (muc_do_uu_tien IN ('thap', 'binh_thuong', 'cao', 'khan_cap')),
     phuong_thuc_bao_cao VARCHAR(20) DEFAULT 'truc_tuyen' 
@@ -159,7 +159,7 @@ CREATE TABLE bao_cao_su_co (
     ngay_bao_cao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     trang_thai VARCHAR(20) DEFAULT 'moi_tiep_nhan' 
         CHECK (trang_thai IN ('moi_tiep_nhan', 'dang_xu_ly', 'cho_phe_duyet', 'da_hoan_thanh', 'da_huy')),
-    cccd_nguoi_xu_ly VARCHAR(12), -- Nhân viên k? thu?t x? lý
+    cccd_nguoi_xu_ly VARCHAR(12), -- Nhï¿½n viï¿½n k? thu?t x? lï¿½
     ngay_bat_dau_xu_ly TIMESTAMP,
     ngay_hoan_thanh TIMESTAMP,
     ket_qua_xu_ly TEXT,
@@ -180,7 +180,7 @@ CREATE TABLE bao_cao_su_co (
     CONSTRAINT check_chi_phi CHECK (chi_phi_xu_ly >= 0)
 );
 
--- B?ng ?nh ?ính kèm báo cáo s? c?
+-- B?ng ?nh ?ï¿½nh kï¿½m bï¿½o cï¿½o s? c?
 CREATE TABLE anh_bao_cao_su_co (
     ma_anh SERIAL PRIMARY KEY,
     ma_bao_cao INTEGER NOT NULL,
@@ -193,17 +193,49 @@ CREATE TABLE anh_bao_cao_su_co (
 );
 
 -- =====================================================
--- PH?N 5: HÓA ??N & THANH TOÁN
+-- PH?N 5: CH? S? ??I?N N??C
 -- =====================================================
 
--- B?ng hóa ??n
+-- B?ng ch? s? ??i?n n??c
+CREATE TABLE chi_so_dien_nuoc (
+    ma_chi_so SERIAL PRIMARY KEY,
+    ma_ho VARCHAR(20) NOT NULL,
+    ky_thanh_toan VARCHAR(20) NOT NULL, -- VD: "01/2024"
+    dien_cu INTEGER NOT NULL DEFAULT 0,
+    dien_moi INTEGER NOT NULL DEFAULT 0,
+    nuoc_cu INTEGER NOT NULL DEFAULT 0,
+    nuoc_moi INTEGER NOT NULL DEFAULT 0,
+    don_gia_dien DECIMAL(10,2) DEFAULT 3500.00, -- VN?/s?
+    don_gia_nuoc DECIMAL(10,2) DEFAULT 10000.00, -- VN?/kh?i
+    tien_dien DECIMAL(15,2) DEFAULT 0,
+    tien_nuoc DECIMAL(15,2) DEFAULT 0,
+    tien_dich_vu DECIMAL(15,2) DEFAULT 0, -- T?ng ti?n d?ch v? khï¿½c
+    tong_tien DECIMAL(15,2) DEFAULT 0,
+    ngay_nhap TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ghi_chu TEXT,
+    CONSTRAINT fk_ma_ho_chiso FOREIGN KEY (ma_ho) 
+        REFERENCES ho_gia_dinh(ma_ho) 
+        ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT check_dien_cu_moi CHECK (dien_moi >= dien_cu),
+    CONSTRAINT check_nuoc_cu_moi CHECK (nuoc_moi >= nuoc_cu),
+    CONSTRAINT check_chi_so_duong CHECK (dien_cu >= 0 AND dien_moi >= 0 AND nuoc_cu >= 0 AND nuoc_moi >= 0),
+    CONSTRAINT check_tien_duong CHECK (tien_dien >= 0 AND tien_nuoc >= 0 AND tien_dich_vu >= 0 AND tong_tien >= 0),
+    CONSTRAINT unique_ma_ho_ky UNIQUE (ma_ho, ky_thanh_toan)
+);
+
+-- =====================================================
+-- PH?N 6: Hï¿½A ??N & THANH TOï¿½N
+-- =====================================================
+
+-- B?ng hï¿½a ??n
 CREATE TABLE hoa_don (
     ma_hoa_don SERIAL PRIMARY KEY,
-    ma_ho VARCHAR(20) NOT NULL, -- Hóa ??n theo h? gia ?ình
+    ma_ho VARCHAR(20) NOT NULL, -- Hï¿½a ??n theo h? gia ?ï¿½nh
     so_tien DECIMAL(15,2) NOT NULL,
-    ma_dich_vu INTEGER, -- Hóa ??n d?ch v?
-    ma_bao_cao INTEGER, -- Hóa ??n chi phí s?a ch?a (n?u có)
-    ma_tai_san INTEGER, -- C?n h? liên quan
+    ma_dich_vu INTEGER, -- Hï¿½a ??n d?ch v?
+    ma_bao_cao INTEGER, -- Hï¿½a ??n chi phï¿½ s?a ch?a (n?u cï¿½)
+    ma_tai_san INTEGER, -- C?n h? liï¿½n quan
     loai_hoa_don VARCHAR(30) CHECK (loai_hoa_don IN ('dich_vu', 'sua_chua', 'phat', 'khac')),
     trang_thai VARCHAR(20) DEFAULT 'chua_thanh_toan' 
         CHECK (trang_thai IN ('da_thanh_toan', 'chua_thanh_toan', 'qua_han', 'giam_tru')),
@@ -236,10 +268,10 @@ CREATE TABLE hoa_don (
 );
 
 -- =====================================================
--- PH?N 6: THÔNG BÁO & PH?N H?I
+-- PH?N 7: THï¿½NG Bï¿½O & PH?N H?I
 -- =====================================================
 
--- B?ng thông báo
+-- B?ng thï¿½ng bï¿½o
 CREATE TABLE thong_bao (
     ma_thong_bao SERIAL PRIMARY KEY,
     cccd_ban_quan_tri VARCHAR(12) NOT NULL,
@@ -257,7 +289,7 @@ CREATE TABLE thong_bao (
         ON UPDATE CASCADE
 );
 
--- B?ng thông báo g?i ??n h? c? th? (n?u doi_tuong_nhan = 'theo_ho')
+-- B?ng thï¿½ng bï¿½o g?i ??n h? c? th? (n?u doi_tuong_nhan = 'theo_ho')
 CREATE TABLE thong_bao_ho (
     id SERIAL PRIMARY KEY,
     ma_thong_bao INTEGER NOT NULL,
