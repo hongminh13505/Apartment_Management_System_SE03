@@ -24,6 +24,7 @@ public class CuDanController {
     public String dashboard(Model model, Authentication authentication) {
         // Thông báo và sự cố
         model.addAttribute("thongBaoList", thongBaoService.findAllVisible());
+        model.addAttribute("baoCaoSuCoList", baoCaoSuCoService.findAll());
         
         model.addAttribute("username", authentication.getName());
         model.addAttribute("role", "Cư dân");
