@@ -86,6 +86,22 @@ public class KeToanController {
             // Lấy danh sách hóa đơn
             java.util.List<HoaDon> hoaDonList = hoaDonService.findAll();
             
+            // Cập nhật các hóa đơn cũ có loaiHoaDon null thành "khac"
+            boolean hasUpdates = false;
+            for (HoaDon hoaDon : hoaDonList) {
+                System.out.println("=== DEBUG: Hóa đơn " + hoaDon.getMaHoaDon() + " - loaiHoaDon: '" + hoaDon.getLoaiHoaDon() + "'");
+                if (hoaDon.getLoaiHoaDon() == null || hoaDon.getLoaiHoaDon().trim().isEmpty()) {
+                    System.out.println("=== DEBUG: Cập nhật hóa đơn " + hoaDon.getMaHoaDon() + " thành 'khac'");
+                    hoaDon.setLoaiHoaDon("khac");
+                    hoaDonService.save(hoaDon);
+                    hasUpdates = true;
+                }
+            }
+            if (hasUpdates) {
+                // Reload danh sách sau khi cập nhật
+                hoaDonList = hoaDonService.findAll();
+            }
+            
             // Lọc theo từ khóa tìm kiếm nếu có
             if (search != null && !search.trim().isEmpty()) {
                 String searchLower = search.trim().toLowerCase();
@@ -183,7 +199,7 @@ public class KeToanController {
                 }
             } else {
                 // Các loại hóa đơn khác
-                hoaDon.setLoaiHoaDon(loaiHoaDon);
+                hoaDon.setLoaiHoaDon(loaiHoaDon != null ? loaiHoaDon : "khac");
                 if (moTa != null && !moTa.trim().isEmpty()) {
                     finalGhiChu = moTa;
                     if (ghiChu != null && !ghiChu.trim().isEmpty()) {
@@ -195,6 +211,8 @@ public class KeToanController {
             
             // Lưu hóa đơn
             System.out.println("=== DEBUG: Lưu hóa đơn ===");
+            System.out.println("loaiHoaDon: " + loaiHoaDon);
+            System.out.println("hoaDon.loaiHoaDon: " + hoaDon.getLoaiHoaDon());
             System.out.println("Hóa đơn: " + hoaDon.toString());
             hoaDonService.save(hoaDon);
             System.out.println("=== DEBUG: Đã lưu hóa đơn thành công ===");
