@@ -200,13 +200,14 @@ CREATE TABLE anh_bao_cao_su_co (
 CREATE TABLE chi_so_dien_nuoc (
     ma_chi_so SERIAL PRIMARY KEY,
     ma_ho VARCHAR(20) NOT NULL,
+    ma_hoa_don INTEGER, -- Foreign key đến bảng hoa_don
     ky_thanh_toan VARCHAR(20) NOT NULL, -- VD: "01/2024"
     dien_cu INTEGER NOT NULL DEFAULT 0,
     dien_moi INTEGER NOT NULL DEFAULT 0,
     nuoc_cu INTEGER NOT NULL DEFAULT 0,
     nuoc_moi INTEGER NOT NULL DEFAULT 0,
-    don_gia_dien DECIMAL(10,2) DEFAULT 3500.00, -- VN?/s?
-    don_gia_nuoc DECIMAL(10,2) DEFAULT 10000.00, -- VN?/kh?i
+    don_gia_dien DECIMAL(15,2) DEFAULT 3500.00, -- VNĐ/số
+    don_gia_nuoc DECIMAL(15,2) DEFAULT 10000.00, -- VNĐ/khối
     tien_dien DECIMAL(15,2) DEFAULT 0,
     tien_nuoc DECIMAL(15,2) DEFAULT 0,
     tien_dich_vu DECIMAL(15,2) DEFAULT 0, -- T?ng ti?n d?ch v? kh�c
@@ -216,6 +217,10 @@ CREATE TABLE chi_so_dien_nuoc (
     CONSTRAINT fk_ma_ho_chiso FOREIGN KEY (ma_ho) 
         REFERENCES ho_gia_dinh(ma_ho) 
         ON DELETE CASCADE 
+        ON UPDATE CASCADE,
+    CONSTRAINT fk_ma_hoa_don_chiso FOREIGN KEY (ma_hoa_don) 
+        REFERENCES hoa_don(ma_hoa_don) 
+        ON DELETE SET NULL 
         ON UPDATE CASCADE,
     CONSTRAINT check_dien_cu_moi CHECK (dien_moi >= dien_cu),
     CONSTRAINT check_nuoc_cu_moi CHECK (nuoc_moi >= nuoc_cu),
@@ -236,7 +241,7 @@ CREATE TABLE hoa_don (
     ma_dich_vu INTEGER, -- H�a ??n d?ch v?
     ma_bao_cao INTEGER, -- H�a ??n chi ph� s?a ch?a (n?u c�)
     ma_tai_san INTEGER, -- C?n h? li�n quan
-    loai_hoa_don VARCHAR(30) CHECK (loai_hoa_don IN ('dich_vu', 'sua_chua', 'phat', 'khac')),
+    loai_hoa_don VARCHAR(30) CHECK (loai_hoa_don IN ('dich_vu', 'dien_nuoc', 'sua_chua', 'phat', 'khac')),
     trang_thai VARCHAR(20) DEFAULT 'chua_thanh_toan' 
         CHECK (trang_thai IN ('da_thanh_toan', 'chua_thanh_toan', 'qua_han', 'giam_tru')),
     ngay_tao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

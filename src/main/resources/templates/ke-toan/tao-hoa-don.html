@@ -213,7 +213,7 @@
                                 <h4>Tổng tiền hóa đơn điện nước</h4>
                                 <div class="total-amount" id="tongTienDienNuoc">0 VNĐ</div>
                                 <!-- Hidden input để lưu số tiền -->
-                                <input type="hidden" id="soTienDienNuoc" name="soTien" value="0">
+                                <input type="hidden" id="soTienDienNuoc" name="soTienDienNuoc" value="0">
                             </div>
                         </div>
                         
@@ -363,9 +363,15 @@
         function submitForm() {
             console.log('=== DEBUG: submitForm() called ===');
             
+            // Validate form trước
+            if (!validateForm()) {
+                console.log('=== DEBUG: Form validation failed ===');
+                return false;
+            }
+            
             const form = document.getElementById('invoiceForm');
             if (form) {
-                console.log('=== DEBUG: Form found, submitting ===');
+                console.log('=== DEBUG: Form validation passed, submitting ===');
                 
                 // Log form data
                 const formData = new FormData(form);
