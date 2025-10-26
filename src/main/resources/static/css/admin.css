@@ -78,6 +78,22 @@
     margin-right: 12px;
 }
 
+.sidebar-menu a img {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    vertical-align: middle;
+    filter: brightness(0) invert(1);
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.sidebar-menu a:hover img,
+.sidebar-menu a.active img {
+    opacity: 1;
+    filter: brightness(0) invert(1);
+}
+
 /* ===========================
    MAIN CONTENT
    =========================== */

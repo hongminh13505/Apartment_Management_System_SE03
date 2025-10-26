@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng nhập - Hệ thống quản lý chung cư</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .role-card.active .role-icon img {
+            filter: brightness(0) invert(1);
+        }
+    </style>
 </head>
 <body class="login-page">
     <div class="login-container">
@@ -17,7 +22,9 @@
             <!-- Role Selection -->
             <div class="role-selection">
                 <div class="role-card" data-role="NGUOI_DUNG_THUONG">
-                    <div class="role-icon">👨‍👩‍👧‍👦</div>
+                    <div class="role-icon">
+                        <img src="/images/ho-gia-dinh.png" alt="Cư dân" style="width: 32px; height: 32px;">
+                    </div>
                     <div class="role-name">Cư dân</div>
                 </div>
                 <div class="role-card" data-role="BAN_QUAN_TRI">
