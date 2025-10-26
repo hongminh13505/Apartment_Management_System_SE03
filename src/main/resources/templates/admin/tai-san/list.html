@@ -20,43 +20,43 @@
                 <ul>
                     <li>
                         <a th:href="@{/admin/dashboard}">
-                            <span>📊</span> Dashboard
+                            <img src="/images/img4.png" alt="Dashboard" style="width: 18px; height: 18px; margin-right: 12px;"> Dashboard
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/doi-tuong}">
-                            <span>👥</span> Quản lý cư dân
+                            <img src="/images/quan-ly-cu-dan.png" alt="Quản lý cư dân" style="width: 18px; height: 18px; margin-right: 12px;"> Quản lý cư dân
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/ho-gia-dinh}">
-                            <span>🏠</span> Hộ gia đình
+                            <img src="/images/ho-gia-dinh.png" alt="Hộ gia đình" style="width: 18px; height: 18px; margin-right: 12px;"> Hộ gia đình
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/tai-san}" class="active">
-                            <span>🏢</span> Tài sản chung cư
+                            <img src="/images/tai-san-chung-cu.png" alt="Tài sản chung cư" style="width: 18px; height: 18px; margin-right: 12px;"> Tài sản chung cư
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/hoa-don}">
-                            <span>💰</span> Hóa đơn
+                            <img src="/images/hoa-don.png" alt="Hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Hóa đơn
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/bao-cao-su-co}">
-                            <span>⚠️</span> Báo cáo sự cố
+                            <img src="/images/bao-cao-su-co.png" alt="Báo cáo sự cố" style="width: 18px; height: 18px; margin-right: 12px;"> Báo cáo sự cố
                         </a>
                     </li>
                     
                     <li>
                         <a th:href="@{/admin/thong-bao}">
-                            <span>📢</span> Thông báo
+                            <img src="/images/thong-bao.png" alt="Thông báo" style="width: 18px; height: 18px; margin-right: 12px;"> Thông báo
                         </a>
                     </li>
                 </ul>
@@ -102,33 +102,33 @@
                     <a th:href="@{/admin/tai-san/create}" class="btn btn-success">+ Thêm mới</a>
                 </div>
                 
-                <div class="table-wrapper">
-                    <table class="data-table">
+                <div class="table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th style="width: 80px;">Mã TS</th>
-                                <th>Tên tài sản</th>
-                                <th style="width: 100px;">Loại</th>
-                                <th>Vị trí</th>
-                                <th style="width: 100px;">Diện tích</th>
-                                <th style="width: 130px;">Giá trị</th>
-                                <th style="width: 120px;">Trạng thái</th>
-                                <th style="width: 100px;">Hộ sử dụng</th>
-                                <th style="width: 150px;">Thao tác</th>
+                                <th style="width: 100px; min-width: 100px;">Mã TS</th>
+                                <th style="min-width: 200px;">Tên tài sản</th>
+                                <th style="width: 120px; min-width: 120px;">Loại</th>
+                                <th style="min-width: 150px;">Vị trí</th>
+                                <th style="width: 120px; min-width: 120px;">Diện tích</th>
+                                <th style="width: 150px; min-width: 150px;">Giá trị</th>
+                                <th style="width: 140px; min-width: 140px;">Trạng thái</th>
+                                <th style="width: 120px; min-width: 120px;">Hộ sử dụng</th>
+                                <th style="width: 180px; min-width: 180px;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="ts : ${taiSanList}">
-                                <td th:text="${ts.maTaiSan}" style="text-align: center;"></td>
-                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word;"></td>
+                                <td th:text="${ts.maTaiSan}" style="text-align: center; font-weight: 600; color: var(--primary-color);"></td>
+                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word; font-weight: 500;"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.loaiTaiSan == 'can_ho'}" class="badge badge-info">Căn hộ</span>
                                     <span th:if="${ts.loaiTaiSan == 'thiet_bi'}" class="badge badge-secondary">Thiết bị</span>
                                     <span th:if="${ts.loaiTaiSan == 'tien_ich'}" class="badge badge-success">Tiện ích</span>
                                 </td>
                                 <td th:text="${ts.viTri}" style="word-break: break-word;"></td>
-                                <td th:text="${ts.dienTich != null ? ts.dienTich : '-'}" style="text-align: right;"></td>
-                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') : '-'}" style="text-align: right;"></td>
+                                <td th:text="${ts.dienTich != null ? ts.dienTich + ' m²' : '-'}" style="text-align: right;"></td>
+                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '-'}" style="text-align: right;"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.trangThai == 'hoat_dong'}" class="badge badge-success">Hoạt động</span>
                                     <span th:if="${ts.trangThai == 'bao_tri'}" class="badge badge-warning">Bảo trì</span>
@@ -144,7 +144,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${taiSanList.isEmpty()}">
-                                <td colspan="9" style="text-align: center; color: #94a3b8;">Chưa có tài sản nào</td>
+                                <td colspan="9" style="text-align: center; color: #94a3b8; padding: 40px; font-size: 16px;">Chưa có tài sản nào</td>
                             </tr>
                         </tbody>
                     </table>

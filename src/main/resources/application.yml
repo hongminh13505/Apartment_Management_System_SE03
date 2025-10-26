@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/apartment_db
     username: postgres
-    password: ancutkhong1235
+    password: gygygyg67
     driver-class-name: org.postgresql.Driver
     
   jpa:

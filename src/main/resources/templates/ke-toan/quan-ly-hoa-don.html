@@ -22,12 +22,12 @@
                 <ul>
                     <li>
                         <a href="/ke-toan/dashboard">
-                            <span>📊</span> Dashboard
+                            <img src="/images/img4.png" alt="Dashboard" style="width: 18px; height: 18px; margin-right: 12px;"> Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="/ke-toan/quan-ly-hoa-don" class="active">
-                            <span>📄</span> Quản lý hóa đơn
+                            <img src="/images/hoa-don.png" alt="Quản lý hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Quản lý hóa đơn
                         </a>
                     </li>
                 </ul>
@@ -70,13 +70,13 @@
                     <div class="action-buttons">
                         <div class="dropdown">
                             <button class="btn btn-success dropdown-toggle" type="button" id="createInvoiceDropdown" onclick="toggleDropdown()">
-                                📄 Tạo hóa đơn
+                                <img src="/images/add.png" alt="Tạo hóa đơn" style="width: 18px; height: 18px; filter: brightness(0) invert(1); margin-right: 0px; vertical-align: middle;"> Tạo hóa đơn
                             </button>
                             <ul class="dropdown-menu" id="dropdownMenu">
                                 <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=dien_nuoc">⚡ Điện nước</a></li>
                                 <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=dich_vu">🛠️ Dịch vụ</a></li>
                                 <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=sua_chua">🔧 Sửa chữa</a></li>
-                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=phat">⚠️ Phạt</a></li>
+                                <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=phat">‼️ Phạt</a></li>
                                 <li><a class="dropdown-item" href="/ke-toan/quan-ly-hoa-don/tao-hoa-don?loai=khac">📄 Khác</a></li>
                             </ul>
                         </div>
@@ -108,7 +108,7 @@
                                     <span th:switch="${hoaDon.loaiHoaDon}">
                                         <span th:case="'dich_vu'" style="color: #ec4899;">🛠️ Dịch vụ</span>
                                         <span th:case="'sua_chua'" style="color: #8b5cf6;">🔧 Sửa chữa</span>
-                                        <span th:case="'phat'" style="color: #ef4444;">⚠️ Phạt</span>
+                                        <span th:case="'phat'" style="color: #ef4444;">Phạt</span>
                                         <span th:case="'khac'" style="color: #6b7280;">📄 Khác</span>
                                         <span th:case="null" style="color: #6b7280;">📄 Khác</span>
                                         <span th:case="''" style="color: #6b7280;">📄 Khác</span>

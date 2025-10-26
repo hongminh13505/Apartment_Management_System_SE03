@@ -97,12 +97,12 @@
                 <ul>
                     <li>
                         <a href="/ke-toan/dashboard">
-                            <span>📊</span> Dashboard
+                            <img src="/images/img4.png" alt="Dashboard" style="width: 18px; height: 18px; margin-right: 12px;"> Dashboard
                         </a>
                     </li>
                     <li>
                         <a href="/ke-toan/quan-ly-hoa-don" class="active">
-                            <span>📄</span> Quản lý hóa đơn
+                            <img src="/images/hoa-don.png" alt="Quản lý hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Quản lý hóa đơn
                         </a>
                     </li>
                 </ul>
@@ -115,7 +115,7 @@
             <header class="header">
                 <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-                    <h2 id="pageTitle">📄 Tạo hóa đơn</h2>
+                    <h2 id="pageTitle">Tạo hóa đơn</h2>
                 </div>
                 
                 <div class="header-right">
@@ -244,8 +244,10 @@
                         </div>
                         
                         <div class="form-actions" style="display: flex !important; gap: 15px; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
-                            <a href="/ke-toan/quan-ly-hoa-don" class="btn btn-secondary" style="display: inline-block !important;">Hủy</a>
-                            <button type="button" class="btn btn-primary" id="submitButton" onclick="submitForm()" style="display: inline-block !important;">💾 Lưu</button>
+                            <a href="/ke-toan/quan-ly-hoa-don" class="btn btn-secondary" style="display: inline-block !important; background-color: #ef4444; color: white; border-color: #ef4444;">Hủy</a>
+                            <button type="button" class="btn btn-primary" id="submitButton" onclick="submitForm()" style="display: inline-block !important;">
+                                <img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -268,34 +270,34 @@
             
             switch(loaiHoaDon) {
                 case 'dien_nuoc':
-                    pageTitle.textContent = '⚡ Tạo hóa đơn điện nước';
+                    pageTitle.textContent = ' Tạo hóa đơn điện nước';
                     dienNuocSection.classList.remove('hidden');
                     otherInvoiceSection.classList.add('hidden');
-                    if (submitButton) submitButton.textContent = '💾 Lưu hóa đơn điện nước';
+                    if (submitButton) submitButton.innerHTML = '<img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu hóa đơn điện nước';
                     break;
                 case 'dich_vu':
-                    pageTitle.textContent = '🛠️ Tạo hóa đơn dịch vụ';
+                    pageTitle.textContent = ' Tạo hóa đơn dịch vụ';
                     dienNuocSection.classList.add('hidden');
                     otherInvoiceSection.classList.remove('hidden');
-                    if (submitButton) submitButton.textContent = '💾 Lưu hóa đơn dịch vụ';
+                    if (submitButton) submitButton.innerHTML = '<img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu hóa đơn dịch vụ';
                     break;
                 case 'sua_chua':
-                    pageTitle.textContent = '🔧 Tạo hóa đơn sửa chữa';
+                    pageTitle.textContent = ' Tạo hóa đơn sửa chữa';
                     dienNuocSection.classList.add('hidden');
                     otherInvoiceSection.classList.remove('hidden');
-                    if (submitButton) submitButton.textContent = '💾 Lưu hóa đơn sửa chữa';
+                    if (submitButton) submitButton.innerHTML = '<img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu hóa đơn sửa chữa';
                     break;
                 case 'phat':
-                    pageTitle.textContent = '⚠️ Tạo hóa đơn phạt';
+                    pageTitle.textContent = ' Tạo hóa đơn phạt';
                     dienNuocSection.classList.add('hidden');
                     otherInvoiceSection.classList.remove('hidden');
-                    if (submitButton) submitButton.textContent = '💾 Lưu hóa đơn phạt';
+                    if (submitButton) submitButton.innerHTML = '<img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu hóa đơn phạt';
                     break;
                 case 'khac':
-                    pageTitle.textContent = '📄 Tạo hóa đơn khác';
+                    pageTitle.textContent = ' Tạo hóa đơn khác';
                     dienNuocSection.classList.add('hidden');
                     otherInvoiceSection.classList.remove('hidden');
-                    if (submitButton) submitButton.textContent = '💾 Lưu hóa đơn khác';
+                    if (submitButton) submitButton.innerHTML = '<img src="/images/save.png" alt="Lưu" style="width: 14px; height: 14px; filter: brightness(0) invert(1); margin-right: 8px; vertical-align: middle;"> Lưu hóa đơn khác';
                     break;
             }
         }
