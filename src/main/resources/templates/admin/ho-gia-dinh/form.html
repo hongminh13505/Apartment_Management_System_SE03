@@ -102,9 +102,16 @@
                                 <input type="text" id="maHo" th:field="*{maHo}" class="form-control" th:readonly="${isEdit}" required>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="form-group" style="position: relative;">
                                 <label for="tenHo">Tên chủ hộ: <span class="required">*</span></label>
-                                <input type="text" id="tenHo" th:field="*{tenHo}" class="form-control" required>
+                                <input type="text" id="tenHo" th:field="*{tenHo}" class="form-control" required 
+                                       autocomplete="off" placeholder="Tìm kiếm cư dân...">
+                                <input type="hidden" id="cccdChuHo" name="cccdChuHo">
+                                <small class="text-muted">Nhập tên, CCCD hoặc SĐT để tìm cư dân trong hệ thống</small>
+                                <!-- Dropdown kết quả -->
+                                <div id="searchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; 
+                                    background: white; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 300px; 
+                                    overflow-y: auto; z-index: 1000; margin-top: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"></div>
                             </div>
                         </div>
 
@@ -156,5 +163,83 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    <script th:inline="javascript">
+        let selectedChuHo = null;
+        let searchTimeout = null;
+        
+        const searchInput = document.getElementById('tenHo');
+        const searchResults = document.getElementById('searchResults');
+        const cccdInput = document.getElementById('cccdChuHo');
+        
+        // Tìm kiếm cư dân với debounce
+        searchInput.addEventListener('input', function() {
+            const keyword = this.value.trim();
+            
+            clearTimeout(searchTimeout);
+            
+            if (keyword.length < 2) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                fetch(`/admin/ho-gia-dinh/api/search-cudan?keyword=${encodeURIComponent(keyword)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let html = '';
+                            data.forEach(cuDan => {
+                                const ngaySinh = cuDan.ngaySinh || '';
+                                html += `
+                                    <div class="search-item" style="padding: 12px; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: background 0.2s;"
+                                         onmouseover="this.style.background='#f1f5f9'" 
+                                         onmouseout="this.style.background='white'"
+                                         onclick="selectChuHo('${cuDan.cccd}', '${cuDan.hoVaTen}', '${ngaySinh}', '${cuDan.soDienThoai || ''}')">
+                                        <div style="font-weight: 600; color: #1e293b;">${cuDan.hoVaTen}</div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                            CCCD: ${cuDan.cccd} | SĐT: ${cuDan.soDienThoai || 'N/A'}
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            searchResults.innerHTML = html;
+                            searchResults.style.display = 'block';
+                        } else {
+                            searchResults.innerHTML = '<div style="padding: 12px; text-align: center; color: #94a3b8;">Không tìm thấy cư dân nào</div>';
+                            searchResults.style.display = 'block';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        searchResults.style.display = 'none';
+                    });
+            }, 300);
+        });
+        
+        // Hàm chọn chủ hộ
+        window.selectChuHo = function(cccd, hoVaTen, ngaySinh, soDienThoai) {
+            selectedChuHo = { cccd, hoVaTen, ngaySinh, soDienThoai };
+            searchInput.value = hoVaTen;
+            cccdInput.value = cccd;
+            searchResults.style.display = 'none';
+        };
+        
+        // Đóng dropdown khi click bên ngoài
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        // Validate form trước khi submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (cccdInput.value === '' || selectedChuHo === null) {
+                e.preventDefault();
+                alert('Vui lòng chọn chủ hộ từ danh sách cư dân!');
+                searchInput.focus();
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>

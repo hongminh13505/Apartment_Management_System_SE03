@@ -248,7 +248,7 @@ public class KeToanController {
                 chiSo.setDienMoi(dienMoi);
                 chiSo.setNuocCu(nuocCu);
                 chiSo.setNuocMoi(nuocMoi);
-                chiSo.setTienDichVu(BigDecimal.ZERO); // Không có dịch vụ khác, chỉ có điện nước
+                chiSo.setTienDichVu(finalSoTien);
                 
                 System.out.println("Chỉ số: " + chiSo.toString());
                 chiSoService.save(chiSo);

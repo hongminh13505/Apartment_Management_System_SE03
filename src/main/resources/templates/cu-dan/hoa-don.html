@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hóa đơn - Cư dân</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>BLUE MOON</h3>
+                <p class="role-badge">Cư dân</p>
+            </div>
+            
+            <nav class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a th:href="@{/cu-dan/dashboard}">
+                            <img src="/images/ho-gia-dinh.png" alt="Dashboard" style="width: 18px; height: 18px; margin-right: 12px;"> Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-tin-ca-nhan}">
+                            <img src="/images/quan-ly-cu-dan.png" alt="Quản lý cư dân" style="width: 18px; height: 18px; margin-right: 12px;"> Thông tin cá nhân
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/thong-bao}">
+                            <img src="/images/thong-bao.png" alt="Thông báo" style="width: 18px; height: 18px; margin-right: 12px;"> Thông báo
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/hoa-don}" class="active">
+                            <img src="/images/hoa-don.png" alt="Hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Hóa đơn
+                        </a>
+                    </li>
+                    <li>
+                        <a th:href="@{/cu-dan/bao-cao-su-co}">
+                            <img src="/images/bao-cao-su-co.png" alt="Báo cáo sự cố" style="width: 18px; height: 18px; margin-right: 12px;"> Báo cáo sự cố
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                    <h2>Hóa đơn của tôi</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="user-info">
+                        <span>Xin chào, <strong th:text="${username}">Cư dân</strong></span>
+                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Page Content -->
+            <main class="page-content">
+                <!-- Messages -->
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+                
+                <!-- Payment Info Banner -->
+                <div class="info-banner" style="background: #e8f5e8; border: 2px solid #28a745; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
+                    <h4 style="color: #28a745; margin-bottom: 10px;">📋 THÔNG TIN CHUYỂN KHOẢN</h4>
+                    <p style="margin: 5px 0; font-size: 16px;"><strong>STK:</strong> 999999</p>
+                    <p style="margin: 5px 0; font-size: 16px;"><strong>Ngân hàng:</strong> MBB BANK</p>
+                    <p style="margin: 5px 0; font-size: 16px;"><strong>Chủ tài khoản:</strong> CHUNG CƯ BLUE MOON</p>
+                    <p style="margin: 10px 0 0 0; color: #666; font-size: 14px;">⚠️ Vui lòng chuyển khoản và bấm nút "Đã thanh toán" sau khi đã hoàn tất giao dịch.</p>
+                </div>
+                
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>MÃ HÓA ĐƠN</th>
+                                <th>LOẠI HÓA ĐƠN</th>
+                                <th>SỐ TIỀN</th>
+                                <th>HẠN THANH TOÁN</th>
+                                <th>TRẠNG THÁI</th>
+                                <th th:if="${isChuHo}">THAO TÁC</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${hoaDonList.isEmpty()}">
+                                <td colspan="6" style="text-align: center; color: #94a3b8;">Không có hóa đơn nào</td>
+                            </tr>
+                            <tr th:each="hoaDon : ${hoaDonList}">
+                                <td th:text="${hoaDon.maHoaDon}">HD001</td>
+                                <td>
+                                    <span th:switch="${hoaDon.loaiHoaDon}">
+                                        <span th:case="'dien_nuoc'" style="color: #4894ec;">⚡ Điện nước</span>
+                                        <span th:case="'dich_vu'" style="color: #ec4899;">🛠️ Dịch vụ</span>
+                                        <span th:case="'sua_chua'" style="color: #8b5cf6;">🔧 Sửa chữa</span>
+                                        <span th:case="'phat'" style="color: #ef4444;">Phạt</span>
+                                        <span th:case="'khac'" style="color: #6b7280;">📄 Khác</span>
+                                        <span th:case="*" style="color: #6b7280;">📄 Khác</span>
+                                    </span>
+                                </td>
+                                <td th:text="${#numbers.formatDecimal(hoaDon.soTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                <td th:text="${hoaDon.hanThanhToan != null ? #temporals.format(hoaDon.hanThanhToan, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${hoaDon.trangThai == 'da_thanh_toan'} ? 'badge-success' : (${hoaDon.trangThai == 'qua_han'} ? 'badge-danger' : 'badge-warning')">
+                                        <span th:switch="${hoaDon.trangThai}">
+                                            <span th:case="'da_thanh_toan'">✓ Đã thanh toán</span>
+                                            <span th:case="'chua_thanh_toan'">⏳ Chưa thanh toán</span>
+                                            <span th:case="'qua_han'">⚠️ Quá hạn</span>
+                                            <span th:case="*" th:text="${hoaDon.trangThai}">N/A</span>
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="actions" th:if="${isChuHo && hoaDon.trangThai != 'da_thanh_toan'}">
+                                    <form th:action="@{/cu-dan/hoa-don/thanh-toan/{id}(id=${hoaDon.maHoaDon})}" method="post" style="display: inline;">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Xác nhận đã thanh toán hóa đơn #' + this.form.action.split('/').pop() + '?')">
+                                            💳 Thanh toán
+                                        </button>
+                                    </form>
+                                </td>
+                                <td th:if="${isChuHo && hoaDon.trangThai == 'da_thanh_toan'}" style="text-align: center; color: #94a3b8;">
+                                    Đã thanh toán
+                                </td>
+                                <td th:if="!${isChuHo}" style="text-align: center; color: #94a3b8;">
+                                    Chỉ chủ hộ mới được thanh toán
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
+
