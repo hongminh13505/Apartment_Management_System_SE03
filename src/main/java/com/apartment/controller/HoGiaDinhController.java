@@ -9,6 +9,7 @@ import com.apartment.service.HoGiaDinhService;
 import com.apartment.service.DoiTuongService;
 import com.apartment.service.TaiSanChungCuService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -57,13 +58,16 @@ public class HoGiaDinhController {
     }
     
     @GetMapping("/create")
-    public String createForm(Model model) {
+    public String createForm(Model model, @RequestParam(required = false) String error) {
         model.addAttribute("hoGiaDinh", new HoGiaDinh());
         model.addAttribute("isEdit", false);
         // Load danh sách căn hộ để chọn
         model.addAttribute("canHoList", taiSanChungCuService.findAllCanHo());
         // Khởi tạo empty list cho thành viên
         model.addAttribute("thanhVienList", java.util.Collections.emptyList());
+        if (error != null) {
+            model.addAttribute("error", error);
+        }
         return "admin/ho-gia-dinh/form";
     }
     
@@ -144,10 +148,58 @@ public class HoGiaDinhController {
     }
     
     @PostMapping("/save")
-    public String save(@ModelAttribute HoGiaDinh hoGiaDinh, RedirectAttributes redirectAttributes) {
+    public String save(@ModelAttribute HoGiaDinh hoGiaDinh, 
+                      @RequestParam(required = false) String cccdChuHo,
+                      @RequestParam(required = false) String isEdit,
+                      RedirectAttributes redirectAttributes) {
         try {
+            // Kiểm tra xem căn hộ đã được gán cho hộ gia đình khác chưa
+            if (hoGiaDinh.getMaCanHo() != null) {
+                HoGiaDinh existingHo = hoGiaDinhService.findByMaCanHo(hoGiaDinh.getMaCanHo()).orElse(null);
+                
+                // Kiểm tra đây có phải là hộ mới (maHo chưa tồn tại) hay edit
+                boolean isNew = hoGiaDinhService.findByMaHo(hoGiaDinh.getMaHo()).isEmpty();
+                
+                // Nếu căn hộ đã được gán cho hộ khác
+                if (existingHo != null && !existingHo.getMaHo().equals(hoGiaDinh.getMaHo())) {
+                    String errorMsg = "⚠️ Căn hộ này đã được gán cho hộ gia đình " + existingHo.getMaHo() + " (Tên: " + existingHo.getTenHo() + ")! Vui lòng chọn căn hộ khác.";
+                    redirectAttributes.addFlashAttribute("error", errorMsg);
+                    System.out.println("=== DEBUG: " + errorMsg + " ===");
+                    if (isNew) {
+                        return "redirect:/admin/ho-gia-dinh";
+                    } else {
+                        return "redirect:/admin/ho-gia-dinh/edit/" + hoGiaDinh.getMaHo();
+                    }
+                }
+            }
+            
+            // Lưu thông tin hộ gia đình
             hoGiaDinhService.save(hoGiaDinh);
+            
+            // Nếu có CCCD chủ hộ, tự động thêm vào bảng thành viên hộ
+            if (cccdChuHo != null && !cccdChuHo.trim().isEmpty()) {
+                // Kiểm tra xem chủ hộ đã tồn tại chưa
+                List<ThanhVienHo> existingMembers = thanhVienHoRepository.findActiveByCccd(cccdChuHo);
+                boolean alreadyExists = existingMembers.stream()
+                    .anyMatch(m -> m.getMaHo().equals(hoGiaDinh.getMaHo()) && m.getLaChuHo());
+                
+                if (!alreadyExists) {
+                    // Thêm chủ hộ vào bảng thành viên hộ
+                    ThanhVienHo chuHo = new ThanhVienHo();
+                    chuHo.setCccd(cccdChuHo);
+                    chuHo.setMaHo(hoGiaDinh.getMaHo());
+                    chuHo.setLaChuHo(true);
+                    chuHo.setQuanHeVoiChuHo("Chủ hộ");
+                    chuHo.setNgayBatDau(LocalDate.now());
+                    
+                    thanhVienHoRepository.save(chuHo);
+                }
+            }
+            
             redirectAttributes.addFlashAttribute("success", "Lưu thành công!");
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", 
+                "Căn hộ này đã được gán cho hộ gia đình khác! Vui lòng chọn căn hộ khác.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
         }

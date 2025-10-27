@@ -106,8 +106,9 @@
                                 <td th:text="${hoaDon.maHo}">H001</td>
                                 <td>
                                     <span th:switch="${hoaDon.loaiHoaDon}">
-                                        <span th:case="'dich_vu'" style="color: #ec4899;">🛠️ Dịch vụ</span>
-                                        <span th:case="'sua_chua'" style="color: #8b5cf6;">🔧 Sửa chữa</span>
+                                        <span th:case="'dien_nuoc'" style="color: #4894ec;">Điện nước</span>
+                                        <span th:case="'dich_vu'" style="color: #ec4899;">Dịch vụ</span>
+                                        <span th:case="'sua_chua'" style="color: #8b5cf6;">Sửa chữa</span>
                                         <span th:case="'phat'" style="color: #ef4444;">Phạt</span>
                                         <span th:case="'khac'" style="color: #6b7280;">📄 Khác</span>
                                         <span th:case="null" style="color: #6b7280;">📄 Khác</span>

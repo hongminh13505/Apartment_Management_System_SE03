@@ -16,6 +16,9 @@ public class ChiSoDienNuoc {
     @Column(name = "ma_ho", nullable = false, length = 20)
     private String maHo;
 
+    @Column(name = "ma_hoa_don")
+    private Integer maHoaDon;
+
     // Kỳ thanh toán định dạng YYYY-MM
     @Column(name = "ky_thanh_toan", nullable = false, length = 7)
     private String kyThanhToan;
@@ -74,6 +77,8 @@ public class ChiSoDienNuoc {
     public void setMaChiSo(Long maChiSo) { this.maChiSo = maChiSo; }
     public String getMaHo() { return maHo; }
     public void setMaHo(String maHo) { this.maHo = maHo; }
+    public Integer getMaHoaDon() { return maHoaDon; }
+    public void setMaHoaDon(Integer maHoaDon) { this.maHoaDon = maHoaDon; }
     public String getKyThanhToan() { return kyThanhToan; }
     public void setKyThanhToan(String kyThanhToan) { this.kyThanhToan = kyThanhToan; }
     public Integer getDienCu() { return dienCu; }

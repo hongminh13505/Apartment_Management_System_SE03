@@ -161,7 +161,8 @@ public class KeToanController {
     @PostMapping("/quan-ly-hoa-don/luu")
     public String luuHoaDon(@RequestParam String maHo,
                            @RequestParam String loaiHoaDon,
-                           @RequestParam BigDecimal soTien,
+                           @RequestParam(required = false) BigDecimal soTien,
+                           @RequestParam(required = false) BigDecimal soTienDienNuoc,
                            @RequestParam LocalDate hanThanhToan,
                            @RequestParam(required = false) String ghiChu,
                            @RequestParam(required = false) String moTa,
@@ -176,23 +177,40 @@ public class KeToanController {
             System.out.println("maHo: " + maHo);
             System.out.println("loaiHoaDon: " + loaiHoaDon);
             System.out.println("soTien: " + soTien);
+            System.out.println("soTienDienNuoc: " + soTienDienNuoc);
             System.out.println("hanThanhToan: " + hanThanhToan);
             System.out.println("ghiChu: " + ghiChu);
             System.out.println("moTa: " + moTa);
             System.out.println("kyThanhToan: " + kyThanhToan);
             
+            // Validate maHo
+            if (maHo == null || maHo.trim().isEmpty()) {
+                ra.addFlashAttribute("error", "Vui lòng chọn mã hộ gia đình!");
+                return "redirect:/ke-toan/quan-ly-hoa-don";
+            }
+            
+            // Xác định số tiền dựa trên loại hóa đơn
+            BigDecimal finalSoTien;
+            if ("dien_nuoc".equals(loaiHoaDon)) {
+                finalSoTien = soTienDienNuoc != null ? soTienDienNuoc : BigDecimal.ZERO;
+            } else {
+                finalSoTien = soTien != null ? soTien : BigDecimal.ZERO;
+            }
+            
+            System.out.println("=== DEBUG: Số tiền cuối cùng: " + finalSoTien);
+            
             // Tạo hóa đơn
             HoaDon hoaDon = new HoaDon();
             hoaDon.setMaHo(maHo);
-            hoaDon.setSoTien(soTien);
+            hoaDon.setSoTien(finalSoTien);
             hoaDon.setHanThanhToan(hanThanhToan);
             hoaDon.setTrangThai("chua_thanh_toan");
             
             // Xử lý ghi chú dựa trên loại hóa đơn
             String finalGhiChu = ghiChu;
             if ("dien_nuoc".equals(loaiHoaDon)) {
-                // Điện nước được lưu như dịch vụ nhưng có ghi chú đặc biệt
-                hoaDon.setLoaiHoaDon("dich_vu");
+                // Điện nước - lưu đúng loại và có ghi chú đặc biệt
+                hoaDon.setLoaiHoaDon("dien_nuoc");
                 finalGhiChu = "Hóa đơn điện nước - Kỳ: " + kyThanhToan;
                 if (ghiChu != null && !ghiChu.trim().isEmpty()) {
                     finalGhiChu += " - " + ghiChu;
@@ -215,8 +233,8 @@ public class KeToanController {
             System.out.println("hoaDon.loaiHoaDon: " + hoaDon.getLoaiHoaDon());
             System.out.println("Hóa đơn: " + hoaDon.toString());
             hoaDonService.save(hoaDon);
-            System.out.println("=== DEBUG: Đã lưu hóa đơn thành công ===");
-            
+            System.out.println("=== DEBUG: Đã lưu hóa đơn thành công, maHoaDon: " + hoaDon.getMaHoaDon() + " ===");
+           
             // Lưu chỉ số điện nước nếu là hóa đơn điện nước
             if ("dien_nuoc".equals(loaiHoaDon) && kyThanhToan != null && 
                 dienCu != null && dienMoi != null && nuocCu != null && nuocMoi != null) {
@@ -224,21 +242,23 @@ public class KeToanController {
                 System.out.println("=== DEBUG: Lưu chỉ số điện nước ===");
                 ChiSoDienNuoc chiSo = new ChiSoDienNuoc();
                 chiSo.setMaHo(maHo);
+                chiSo.setMaHoaDon(hoaDon.getMaHoaDon()); // Liên kết với hóa đơn
                 chiSo.setKyThanhToan(kyThanhToan);
                 chiSo.setDienCu(dienCu);
                 chiSo.setDienMoi(dienMoi);
                 chiSo.setNuocCu(nuocCu);
                 chiSo.setNuocMoi(nuocMoi);
-                chiSo.setTienDichVu(soTien);
+                chiSo.setTienDichVu(finalSoTien);
                 
                 System.out.println("Chỉ số: " + chiSo.toString());
                 chiSoService.save(chiSo);
                 System.out.println("=== DEBUG: Đã lưu chỉ số điện nước thành công ===");
             }
+
             
             String loaiHoaDonName = getLoaiHoaDonName(loaiHoaDon);
             ra.addFlashAttribute("success", "Tạo hóa đơn " + loaiHoaDonName + " thành công! Tổng tiền: " + 
-                               soTien.toPlainString() + " VNĐ");
+                               finalSoTien.toPlainString() + " VNĐ");
         } catch (Exception e) {
             System.err.println("=== DEBUG: Lỗi khi lưu hóa đơn ===");
             System.err.println("Lỗi: " + e.getMessage());

@@ -22,6 +22,10 @@ public class HoGiaDinhService {
         return hoGiaDinhRepository.findByMaHo(maHo);
     }
     
+    public Optional<HoGiaDinh> findByMaCanHo(Integer maCanHo) {
+        return hoGiaDinhRepository.findByMaCanHo(maCanHo);
+    }
+    
     public List<HoGiaDinh> findByTrangThai(String trangThai) {
         return hoGiaDinhRepository.findByTrangThai(trangThai);
     }

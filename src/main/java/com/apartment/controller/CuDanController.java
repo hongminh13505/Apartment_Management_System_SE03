@@ -3,6 +3,11 @@ package com.apartment.controller;
 import com.apartment.service.*;
 import com.apartment.entity.DoiTuong;
 import com.apartment.entity.BaoCaoSuCo;
+import com.apartment.entity.HoaDon;
+import com.apartment.entity.ThanhVienHo;
+import com.apartment.repository.ThanhVienHoRepository;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -24,6 +29,28 @@ public class CuDanController {
     
     @Autowired
     private DoiTuongService doiTuongService;
+    
+    @Autowired
+    private HoaDonService hoaDonService;
+    
+    @Autowired
+    private ThanhVienHoRepository thanhVienHoRepository;
+    
+    // Helper method để lấy mã hộ của cư dân
+    private String getMaHoByCccd(String cccd) {
+        java.util.List<ThanhVienHo> thanhVienList = thanhVienHoRepository.findActiveByCccd(cccd);
+        if (thanhVienList.isEmpty()) {
+            return null;
+        }
+        return thanhVienList.get(0).getMaHo();
+    }
+    
+    // Helper method để kiểm tra có phải chủ hộ không
+    private boolean isChuHo(String cccd, String maHo) {
+        java.util.List<ThanhVienHo> chuHoList = thanhVienHoRepository.findChuHoByMaHo(maHo);
+        return chuHoList.stream()
+                .anyMatch(tv -> tv.getCccd().equals(cccd) && tv.getLaChuHo());
+    }
     
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
@@ -194,6 +221,74 @@ public class CuDanController {
         }
         
         return "redirect:/cu-dan/bao-cao-su-co";
+    }
+    
+    @GetMapping("/hoa-don")
+    public String hoaDon(Model model, Authentication authentication) {
+        try {
+            String cccd = authentication.getName();
+            String maHo = getMaHoByCccd(cccd);
+            
+            if (maHo == null) {
+                model.addAttribute("error", "Bạn chưa được gán vào hộ gia đình nào!");
+                model.addAttribute("hoaDonList", new java.util.ArrayList<>());
+                model.addAttribute("isChuHo", false);
+                return "cu-dan/hoa-don";
+            }
+            
+            boolean isChuHo = isChuHo(cccd, maHo);
+            java.util.List<HoaDon> hoaDonList = hoaDonService.findByMaHo(maHo);
+            
+            model.addAttribute("hoaDonList", hoaDonList);
+            model.addAttribute("isChuHo", isChuHo);
+            model.addAttribute("maHo", maHo);
+            model.addAttribute("username", authentication.getName());
+            
+            return "cu-dan/hoa-don";
+        } catch (Exception e) {
+            model.addAttribute("error", "Có lỗi khi tải danh sách hóa đơn: " + e.getMessage());
+            model.addAttribute("hoaDonList", new java.util.ArrayList<>());
+            model.addAttribute("isChuHo", false);
+            return "cu-dan/hoa-don";
+        }
+    }
+    
+    @PostMapping("/hoa-don/thanh-toan/{id}")
+    public String thanhToan(@PathVariable Integer id,
+                           @RequestParam(required = false, defaultValue = "chuyen_khoan") String phuongThucThanhToan,
+                           RedirectAttributes redirectAttributes,
+                           Authentication authentication) {
+        try {
+            String cccd = authentication.getName();
+            String maHo = getMaHoByCccd(cccd);
+            
+            if (maHo == null || !isChuHo(cccd, maHo)) {
+                redirectAttributes.addFlashAttribute("error", "Chỉ chủ hộ mới được thanh toán hóa đơn!");
+                return "redirect:/cu-dan/hoa-don";
+            }
+            
+            HoaDon hoaDon = hoaDonService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn"));
+            
+            // Kiểm tra hóa đơn thuộc hộ của người dùng
+            if (!hoaDon.getMaHo().equals(maHo)) {
+                redirectAttributes.addFlashAttribute("error", "Bạn không có quyền thanh toán hóa đơn này!");
+                return "redirect:/cu-dan/hoa-don";
+            }
+            
+            // Cập nhật trạng thái thanh toán
+            hoaDon.setTrangThai("da_thanh_toan");
+            hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
+            hoaDon.setNgayThanhToan(LocalDateTime.now());
+            
+            hoaDonService.save(hoaDon);
+            redirectAttributes.addFlashAttribute("success", "Thanh toán hóa đơn thành công!");
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Có lỗi khi thanh toán: " + e.getMessage());
+        }
+        
+        return "redirect:/cu-dan/hoa-don";
     }
 }
 
