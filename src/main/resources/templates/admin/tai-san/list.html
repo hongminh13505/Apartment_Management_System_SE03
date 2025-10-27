@@ -103,40 +103,40 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th style="width: 100px; min-width: 100px;">Mã TS</th>
-                                <th style="min-width: 200px;">Tên tài sản</th>
-                                <th style="width: 120px; min-width: 120px;">Loại</th>
-                                <th style="min-width: 150px;">Vị trí</th>
-                                <th style="width: 120px; min-width: 120px;">Diện tích</th>
-                                <th style="width: 150px; min-width: 150px;">Giá trị</th>
-                                <th style="width: 140px; min-width: 140px;">Trạng thái</th>
-                                <th style="width: 120px; min-width: 120px;">Hộ sử dụng</th>
-                                <th style="width: 180px; min-width: 180px;">Thao tác</th>
+                                <th style="width: 100px; text-align: center;">Mã TS</th>
+                                <th style="width: 180px;">Tên tài sản</th>
+                                <th style="width: 100px; text-align: center;">Loại</th>
+                                <th style="width: 150px;">Vị trí</th>
+                                <th style="width: 100px; text-align: center;">Diện tích</th>
+                                <th style="width: 130px; text-align: center;">Giá trị</th>
+                                <th style="width: 120px; text-align: center;">Trạng thái</th>
+                                <th style="width: 120px; text-align: center;">Hộ sử dụng</th>
+                                <th style="width: 140px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="ts : ${taiSanList}">
-                                <td th:text="${ts.maTaiSan}" style="text-align: center; font-weight: 600; color: var(--primary-color);"></td>
-                                <td th:text="${ts.tenTaiSan}" style="word-break: break-word; font-weight: 500;"></td>
+                                <td style="text-align: center; font-size: 13px; font-weight: 600; color: var(--primary-color);" th:text="${ts.maTaiSan}"></td>
+                                <td style="font-size: 13px; word-break: break-word; font-weight: 500;" th:text="${ts.tenTaiSan}"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.loaiTaiSan == 'can_ho'}" class="badge badge-info">Căn hộ</span>
                                     <span th:if="${ts.loaiTaiSan == 'thiet_bi'}" class="badge badge-secondary">Thiết bị</span>
                                     <span th:if="${ts.loaiTaiSan == 'tien_ich'}" class="badge badge-success">Tiện ích</span>
                                 </td>
-                                <td th:text="${ts.viTri}" style="word-break: break-word;"></td>
-                                <td th:text="${ts.dienTich != null ? ts.dienTich + ' m²' : '-'}" style="text-align: right;"></td>
-                                <td th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '-'}" style="text-align: right;"></td>
+                                <td style="font-size: 13px; word-break: break-word;" th:text="${ts.viTri}"></td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${ts.dienTich != null ? ts.dienTich + ' m²' : '-'}"></td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${ts.giaTri != null ? #numbers.formatDecimal(ts.giaTri, 0, 'COMMA', 0, 'POINT') + ' VNĐ' : '-'}"></td>
                                 <td style="text-align: center;">
                                     <span th:if="${ts.trangThai == 'hoat_dong'}" class="badge badge-success">Hoạt động</span>
                                     <span th:if="${ts.trangThai == 'bao_tri'}" class="badge badge-warning">Bảo trì</span>
                                     <span th:if="${ts.trangThai == 'hong'}" class="badge badge-danger">Hỏng</span>
                                     <span th:if="${ts.trangThai == 'ngung_hoat_dong'}" class="badge badge-secondary">Ngừng hoạt động</span>
                                 </td>
-                                <td th:text="${ts.maHo != null ? ts.maHo : 'Trống'}" style="text-align: center;"></td>
-                                <td class="actions" style="white-space: nowrap;">
+                                <td style="text-align: center; font-size: 13px;" th:text="${ts.maHo != null ? ts.maHo : 'Trống'}"></td>
+                                <td class="actions" style="justify-content: center; white-space: nowrap;">
                                     <a th:href="@{/admin/tai-san/edit/{id}(id=${ts.maTaiSan})}" class="btn btn-sm btn-primary">Sửa</a>
                                     <a th:href="@{/admin/tai-san/delete/{id}(id=${ts.maTaiSan})}" 
                                        class="btn btn-sm btn-danger"

@@ -120,35 +120,37 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>Mã HĐ</th>
-                                <th>Mã hộ</th>
-                                <th>Loại hóa đơn</th>
-                                <th>Số tiền</th>
-                                <th>Hạn thanh toán</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th style="width: 100px; text-align: center;">Mã HĐ</th>
+                                <th style="width: 110px; text-align: center;">Mã hộ</th>
+                                <th style="width: 120px; text-align: center;">Loại hóa đơn</th>
+                                <th style="width: 120px; text-align: center;">Số tiền</th>
+                                <th style="width: 130px; text-align: center;">Hạn thanh toán</th>
+                                <th style="width: 130px; text-align: center;">Trạng thái</th>
+                                <th style="width: 150px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="hd : ${hoaDonList}">
-                                <td th:text="${hd.maHoaDon}">1</td>
-                                <td th:text="${hd.maHo}">HO001</td>
-                                <td th:text="${hd.loaiHoaDon}">Dịch vụ</td>
-                                <td th:text="${#numbers.formatDecimal(hd.soTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,000,000 VNĐ</td>
-                                <td th:text="${hd.hanThanhToan != null ? #temporals.format(hd.hanThanhToan, 'dd/MM/yyyy') : '-'}">01/01/2025</td>
-                                <td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${hd.maHoaDon}">1</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${hd.maHo}">HO001</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${hd.loaiHoaDon}">Dịch vụ</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${#numbers.formatDecimal(hd.soTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">1,000,000 VNĐ</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${hd.hanThanhToan != null ? #temporals.format(hd.hanThanhToan, 'dd/MM/yyyy') : '-'}">01/01/2025</td>
+                                <td style="text-align: center;">
                                     <span class="badge" 
                                           th:classappend="${hd.trangThai == 'da_thanh_toan'} ? 'badge-success' : 
                                                          ${hd.trangThai == 'qua_han'} ? 'badge-danger' : 'badge-warning'"
-                                          th:text="${hd.trangThai}">Chưa thanh toán</span>
+                                          th:text="${hd.trangThai == 'da_thanh_toan'} ? 'Đã thanh toán' : 
+                                                      ${hd.trangThai == 'qua_han'} ? 'Quá hạn' : 
+                                                      ${hd.trangThai == 'chua_thanh_toan'} ? 'Chưa thanh toán' : '${hd.trangThai}'">Chưa thanh toán</span>
                                 </td>
-                                <td class="actions">
+                                <td class="actions" style="justify-content: center;">
                                     <a th:if="${hd.trangThai == 'chua_thanh_toan'}" 
                                        href="#" 
-                                       onclick="thanhToan(event, [[${hd.maHoaDon}]])"
+                                       th:onclick="'thanhToan(event, ' + ${hd.maHoaDon} + ')'"
                                        class="btn btn-sm btn-success">Thanh toán</a>
                                     <a th:href="@{/admin/hoa-don/edit/{id}(id=${hd.maHoaDon})}" class="btn btn-sm btn-warning">Sửa</a>
                                 </td>

@@ -94,35 +94,40 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>CCCD</th>
-                                <th>Họ và tên</th>
-                                <th>Ngày sinh</th>
-                                <th>Giới tính</th>
-                                <th>Số điện thoại</th>
-                                <th>Vai trò</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th style="width: 120px;">CCCD</th>
+                                <th style="width: 150px;">Họ và tên</th>
+                                <th style="width: 100px;">Ngày sinh</th>
+                                <th style="width: 80px; text-align: center;">Giới tính</th>
+                                <th style="width: 120px;">Số điện thoại</th>
+                                <th style="width: 100px; text-align: center;">Vai trò</th>
+                                <th style="width: 120px; text-align: center;">Trạng thái</th>
+                                <th style="width: 130px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="dt : ${doiTuongList}">
                                 <td th:text="${dt.cccd}">001234567890</td>
                                 <td th:text="${dt.hoVaTen}">Nguyễn Văn A</td>
-                                <td th:text="${#temporals.format(dt.ngaySinh, 'dd/MM/yyyy')}">01/01/1990</td>
-                                <td th:text="${dt.gioiTinh}">Nam</td>
-                                <td th:text="${dt.soDienThoai}">0123456789</td>
-                                <td>
-                                    <span class="badge badge-info" th:text="${dt.vaiTro}">Vai trò</span>
+                                <td style="font-size: 13px;" th:text="${#temporals.format(dt.ngaySinh, 'dd/MM/yyyy')}">01/01/1990</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.gioiTinh}">Nam</td>
+                                <td style="font-size: 13px;" th:text="${dt.soDienThoai}">0123456789</td>
+                                <td style="text-align: center;">
+                                    <span class="badge badge-info" 
+                                          th:text="${dt.vaiTro == 'ban_quan_tri'} ? 'Ban quản trị' : 
+                                                    (${dt.vaiTro == 'co_quan_chuc_nang'} ? 'Cơ quan chức năng' : 
+                                                    (${dt.vaiTro == 'ke_toan'} ? 'Kế toán' : 
+                                                    (${dt.vaiTro == 'nguoi_dung_thuong'} ? 'Người dùng thường' : 
+                                                    (${dt.vaiTro == 'khong_dung_he_thong'} ? 'Không dùng hệ thống' : 'N/A'))))">Vai trò</span>
                                 </td>
-                                <td>
+                                <td style="text-align: center;">
                                     <span class="badge" 
                                           th:classappend="${dt.trangThaiTaiKhoan == 'hoat_dong'} ? 'badge-success' : 'badge-danger'"
-                                          th:text="${dt.trangThaiTaiKhoan}">Trạng thái</span>
+                                          th:text="${dt.trangThaiTaiKhoan == 'hoat_dong'} ? 'Hoạt động' : 'Tạm khóa'">Trạng thái</span>
                                 </td>
-                                <td class="actions">
+                                <td class="actions" style="justify-content: center;">
                                     <a th:href="@{/admin/doi-tuong/edit/{cccd}(cccd=${dt.cccd})}" class="btn btn-sm btn-warning">Sửa</a>
                                     <a th:href="@{/admin/doi-tuong/delete/{cccd}(cccd=${dt.cccd})}" 
                                        class="btn btn-sm btn-danger" 

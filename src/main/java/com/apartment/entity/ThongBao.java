@@ -48,7 +48,6 @@ public class ThongBao {
         ngayTaoThongBao = LocalDateTime.now();
     }
     
-    // Manual getter/setter methods for Lombok compatibility
     public Integer getMaThongBao() {
         return maThongBao;
     }

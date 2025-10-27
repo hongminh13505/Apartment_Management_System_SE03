@@ -72,7 +72,6 @@ public class ChiSoDienNuoc {
         if (ngayNhap == null) ngayNhap = LocalDateTime.now();
     }
 
-    // Getters and setters
     public Long getMaChiSo() { return maChiSo; }
     public void setMaChiSo(Long maChiSo) { this.maChiSo = maChiSo; }
     public String getMaHo() { return maHo; }

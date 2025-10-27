@@ -116,26 +116,28 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-compact">
                             <thead>
                                 <tr>
-                                    <th>Tiêu đề</th>
-                                    <th>Ngày báo cáo</th>
-                                    <th>Mức độ</th>
-                                    <th>Trạng thái</th>
+                                    <th style="width: 250px; text-align: center;">Tiêu đề</th>
+                                    <th style="width: 160px; text-align: center;">Ngày báo cáo</th>
+                                    <th style="width: 130px; text-align: center;">Mức độ</th>
+                                    <th style="width: 130px; text-align: center;">Trạng thái</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="bc : ${baoCaoSuCoList}" th:if="${baoCaoSuCoList != null and !baoCaoSuCoList.isEmpty()}">
-                                    <td th:text="${bc.tieuDe}">Tiêu đề</td>
-                                    <td th:text="${bc.ngayBaoCao != null ? #temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm') : 'N/A'}">01/01/2025</td>
-                                    <td>
+                                    <td style="font-size: 13px;" th:text="${bc.tieuDe}">Tiêu đề</td>
+                                    <td style="text-align: center; font-size: 13px;" th:text="${bc.ngayBaoCao != null ? #temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm') : 'N/A'}">01/01/2025</td>
+                                    <td style="text-align: center;">
                                         <span class="badge" 
                                               th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
-                                              th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                              th:text="${bc.mucDoUuTien == 'khan_cap'} ? 'Khẩn cấp' : (${bc.mucDoUuTien == 'cao'} ? 'Cao' : 'Bình thường')">Bình thường</span>
                                     </td>
-                                    <td>
-                                        <span class="badge badge-warning" th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                    <td style="text-align: center;">
+                                        <span class="badge" 
+                                              th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : (${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info')"
+                                              th:text="${bc.trangThai == 'da_hoan_thanh'} ? 'Đã hoàn thành' : (${bc.trangThai == 'dang_xu_ly'} ? 'Đang xử lý' : 'Mới tiếp nhận')">Mới tiếp nhận</span>
                                     </td>
                                 </tr>
                                 <tr th:if="${baoCaoSuCoList == null or baoCaoSuCoList.isEmpty()}">

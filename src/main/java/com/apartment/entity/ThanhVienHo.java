@@ -48,7 +48,6 @@ public class ThanhVienHo {
     @JoinColumn(name = "cccd", referencedColumnName = "cccd", insertable = false, updatable = false)
     private DoiTuong doiTuong;
     
-    // Composite Key Class
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ThanhVienHoId implements Serializable {
@@ -92,7 +91,6 @@ public class ThanhVienHo {
         }
     }
     
-    // Getters and Setters
     public String getCccd() {
         return cccd;
     }

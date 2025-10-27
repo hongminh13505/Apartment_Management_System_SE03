@@ -49,7 +49,6 @@ public class TaiSanChungCu {
         }
     }
     
-    // Getters and Setters
     public Integer getMaTaiSan() {
         return maTaiSan;
     }

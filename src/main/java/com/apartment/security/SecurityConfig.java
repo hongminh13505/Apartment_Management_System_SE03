@@ -52,7 +52,6 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(roleValidationFilter, UsernamePasswordAuthenticationFilter.class)
             .csrf(csrf -> csrf
-                // Use Ant-style matcher to allow multiple ** segments safely
                 .ignoringRequestMatchers(
                     new AntPathRequestMatcher("/admin/**/api/**"),
                     new AntPathRequestMatcher("/ke-toan/**/save"),
@@ -100,24 +99,19 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            // Get selected role from session
             String selectedRole = (String) ((HttpServletRequest) request).getSession().getAttribute("selectedRole");
             
-            // Get actual user role
             String actualRole = authentication.getAuthorities().stream()
                     .map(a -> a.getAuthority().replace("ROLE_", ""))
                     .findFirst()
                     .orElse("");
             
-            // Validate role if one was selected
             if (selectedRole != null && !selectedRole.isEmpty() && !selectedRole.equals(actualRole)) {
-                // Role mismatch - logout and redirect to login with error
                 ((HttpServletRequest) request).getSession().invalidate();
                 response.sendRedirect("/login?error=true");
                 return;
             }
             
-            // Clear selected role from session
             ((HttpServletRequest) request).getSession().removeAttribute("selectedRole");
             
             String redirectUrl = "/dashboard";

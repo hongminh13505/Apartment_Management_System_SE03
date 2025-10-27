@@ -65,7 +65,7 @@
                 <div class="header-right">
                     <div class="user-info">
                         <span>Xin chào, <strong th:text="${username}">Cơ quan</strong></span>
-                        <form th:action="@{/logout}" method="post" style="display: inline;">
+                        <form th:2017="@{/logout}" method="post" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
                         </form>
                     </div>
@@ -90,15 +90,15 @@
                 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>MÃ BÁO CÁO</th>
-                                <th>TIÊU ĐỀ</th>
-                                <th>NGƯỜI BÁO CÁO</th>
-                                <th>NGÀY BÁO CÁO</th>
-                                <th>TRẠNG THÁI</th>
-                                <th>MỨC ĐỘ ƯU TIÊN</th>
+                                <th style="width: 100px; text-align: center;">MÃ BÁO CÁO</th>
+                                <th style="width: 200px; text-align: center;">TIÊU ĐỀ</th>
+                                <th style="width: 140px; text-align: center;">NGƯỜI BÁO CÁO</th>
+                                <th style="width: 140px; text-align: center;">NGÀY BÁO CÁO</th>
+                                <th style="width: 130px; text-align: center;">TRẠNG THÁI</th>
+                                <th style="width: 130px; text-align: center;">MỨC ĐỘ ƯU TIÊN</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,17 +106,19 @@
                                 <td colspan="6" style="text-align: center; color: #94a3b8;">Không có báo cáo sự cố nào</td>
                             </tr>
                             <tr th:each="bc : ${baoCaoList}">
-                                <td th:text="${bc.maBaoCao}">BC001</td>
-                                <td th:text="${bc.tieuDe}">Sự cố điện</td>
-                                <td th:text="${bc.cccdNguoiBaoCao}">001234567890</td>
-                                <td th:text="${bc.ngayBaoCao != null ? #temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
-                                <td>
-                                    <span class="badge badge-warning" th:text="${bc.trangThai}">Đang xử lý</span>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.maBaoCao}">BC001</td>
+                                <td style="font-size: 13px;" th:text="${bc.tieuDe}">Sự cố điện</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.cccdNguoiBaoCao}">001234567890</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.ngayBaoCao != null ? #temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</td>
+                                <td style="text-align: center;">
+                                    <span class="badge" 
+                                          th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : (${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info')"
+                                          th:text="${bc.trangThai == 'da_hoan_thanh'} ? 'Đã hoàn thành' : (${bc.trangThai == 'dang_xu_ly'} ? 'Đang xử lý' : 'Mới tiếp nhận')">Đang xử lý</span>
                                 </td>
-                                <td>
+                                <td style="text-align: center;">
                                     <span class="badge"
-                                          th:classappend="${bc.mucDoUuTien == 'cao'} ? 'badge-danger' : (${bc.mucDoUuTien == 'trung_binh'} ? 'badge-warning' : 'badge-info')"
-                                          th:text="${bc.mucDoUuTien}">Cao</span>
+                                          th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
+                                          th:text="${bc.mucDoUuTien == 'khan_cap'} ? 'Khẩn cấp' : (${bc.mucDoUuTien == 'cao'} ? 'Cao' : 'Bình thường')">Bình thường</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -129,4 +131,3 @@
     <script th:src="@{/js/script.js}"></script>
 </body>
 </html>
-

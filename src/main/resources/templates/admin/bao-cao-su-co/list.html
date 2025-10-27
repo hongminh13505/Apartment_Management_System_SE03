@@ -102,38 +102,38 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>Mã BC</th>
-                                <th>Tiêu đề</th>
-                                <th>Người báo cáo</th>
-                                <th>Mức độ ưu tiên</th>
-                                <th>Ngày báo cáo</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th style="width: 90px; text-align: center;">Mã BC</th>
+                                <th style="width: 200px; text-align: center;">Tiêu đề</th>
+                                <th style="width: 140px; text-align: center;">Người báo cáo</th>
+                                <th style="width: 130px; text-align: center;">Mức độ ưu tiên</th>
+                                <th style="width: 140px; text-align: center;">Ngày báo cáo</th>
+                                <th style="width: 120px; text-align: center;">Trạng thái</th>
+                                <th style="width: 150px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="bc : ${baoCaoList}">
-                                <td th:text="${bc.maBaoCao}">1</td>
-                                <td th:text="${bc.tieuDe}">Sự cố thang máy</td>
-                                <td th:text="${bc.cccdNguoiBaoCao}">001234567890</td>
-                                <td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.maBaoCao}">1</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.tieuDe}">Sự cố thang máy</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${bc.cccdNguoiBaoCao}">001234567890</td>
+                                <td style="text-align: center;">
                                     <span class="badge" 
                                            th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
-                                           th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                           th:text="${bc.mucDoUuTien == 'khan_cap'} ? 'Khẩn cấp' : (${bc.mucDoUuTien == 'cao'} ? 'Cao' : 'Bình thường')">Bình thường</span>
                                 </td>
-                                <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
-                                <td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                <td style="text-align: center;">
                                     <span class="badge" 
                                            th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : (${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info')"
-                                           th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                           th:text="${bc.trangThai == 'da_hoan_thanh'} ? 'Đã hoàn thành' : (${bc.trangThai == 'dang_xu_ly'} ? 'Đang xử lý' : 'Mới tiếp nhận')">Mới tiếp nhận</span>
                                 </td>
-                                <td class="actions">
+                                <td class="actions" style="justify-content: center;">
                                     <a th:if="${bc.trangThai != 'da_hoan_thanh'}" 
                                        href="#" 
-                                       onclick="xuLy(event, [[${bc.maBaoCao}]])"
+                                       th:onclick="'xuLy(event, ' + ${bc.maBaoCao} + ')'"
                                        class="btn btn-sm btn-success">Xử lý</a>
                                     <a th:href="@{/admin/bao-cao-su-co/edit/{id}(id=${bc.maBaoCao})}" class="btn btn-sm btn-warning">Chi tiết</a>
                                 </td>

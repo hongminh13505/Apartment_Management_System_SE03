@@ -41,6 +41,10 @@ public class AdminController {
         // Báo cáo sự cố mới nhất
         model.addAttribute("baoCaoSuCoList", baoCaoSuCoService.findPendingReports());
         
+        // Hóa đơn - chart data
+        model.addAttribute("hoaDonDaThanhToan", hoaDonService.countPaidInvoices());
+        model.addAttribute("hoaDonChuaThanhToan", hoaDonService.countUnpaidInvoices());
+        
         // Thông báo mới nhất
         model.addAttribute("thongBaoList", thongBaoService.findAllVisible());
         

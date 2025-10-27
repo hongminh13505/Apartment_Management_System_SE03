@@ -94,34 +94,34 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>Mã hộ</th>
-                                <th>Tên chủ hộ</th>
-                                <th>Căn hộ</th>
-                                <th>Ngày thành lập</th>
-                                <th>Trạng thái</th>
-                                <th>Thao tác</th>
+                                <th style="width: 100px; text-align: center;">Mã hộ</th>
+                                <th style="width: 180px;">Tên chủ hộ</th>
+                                <th style="width: 150px;">Căn hộ</th>
+                                <th style="width: 120px; text-align: center;">Ngày thành lập</th>
+                                <th style="width: 130px; text-align: center;">Trạng thái</th>
+                                <th style="width: 180px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="ho : ${hoGiaDinhList}">
-                                <td th:text="${ho.maHo}">HO001</td>
-                                <td th:text="${ho.tenHo}">Hộ gia đình A</td>
-                                <td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${ho.maHo}">HO001</td>
+                                <td style="font-size: 13px;" th:text="${ho.tenHo}">Hộ gia đình A</td>
+                                <td style="font-size: 13px;">
                                     <span th:with="canHo=${allCanHo.?[maTaiSan == __${ho.maCanHo}__].![tenTaiSan + (viTri != null ? ' - ' + viTri : '')]}">
                                         <span th:if="${!canHo.isEmpty()}" th:text="${canHo[0]}">Căn hộ 101</span>
                                         <span th:if="${canHo.isEmpty()}" style="color: #94a3b8;">Chưa có</span>
                                     </span>
                                 </td>
-                                <td th:text="${#temporals.format(ho.ngayThanhLap, 'dd/MM/yyyy')}">01/01/2020</td>
-                                <td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${#temporals.format(ho.ngayThanhLap, 'dd/MM/yyyy')}">01/01/2020</td>
+                                <td style="text-align: center;">
                                     <span class="badge" 
                                           th:classappend="${ho.trangThai == 'hoat_dong'} ? 'badge-success' : 'badge-secondary'"
-                                          th:text="${ho.trangThai}">Hoạt động</span>
+                                          th:text="${ho.trangThai == 'hoat_dong'} ? 'Hoạt động' : 'Ngưng hoạt động'">Hoạt động</span>
                                 </td>
-                                <td class="actions">
+                                <td class="actions" style="justify-content: center;">
                                     <a th:href="@{/admin/ho-gia-dinh/detail/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-info">Chi tiết</a>
                                     <a th:href="@{/admin/ho-gia-dinh/edit/{maHo}(maHo=${ho.maHo})}" class="btn btn-sm btn-warning">Sửa</a>
                                     <a th:href="@{/admin/ho-gia-dinh/delete/{maHo}(maHo=${ho.maHo})}" 

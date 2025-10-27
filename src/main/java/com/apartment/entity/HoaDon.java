@@ -77,7 +77,6 @@ public class HoaDon {
         ngayTao = LocalDateTime.now();
     }
     
-    // Manual getter/setter methods for Lombok compatibility
     public Integer getMaHoaDon() {
         return maHoaDon;
     }
