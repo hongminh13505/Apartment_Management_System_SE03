@@ -58,8 +58,25 @@ public class BaoCaoSuCoController {
     @PostMapping("/save")
     public String save(@ModelAttribute BaoCaoSuCo baoCaoSuCo, RedirectAttributes redirectAttributes) {
         try {
-            baoCaoSuCoService.save(baoCaoSuCo);
-            redirectAttributes.addFlashAttribute("success", "Lưu báo cáo thành công!");
+            // If maBaoCao exists, it's an update; otherwise it's a new record
+            if (baoCaoSuCo.getMaBaoCao() != null) {
+                // Preserve the original data by fetching existing record first
+                BaoCaoSuCo existingBaoCao = baoCaoSuCoService.findById(baoCaoSuCo.getMaBaoCao())
+                        .orElseThrow(() -> new RuntimeException("Không tìm thấy báo cáo"));
+                
+                // Update only the editable fields
+                existingBaoCao.setTieuDe(baoCaoSuCo.getTieuDe());
+                existingBaoCao.setMoTaSuCo(baoCaoSuCo.getMoTaSuCo());
+                existingBaoCao.setCccdNguoiBaoCao(baoCaoSuCo.getCccdNguoiBaoCao());
+                existingBaoCao.setMucDoUuTien(baoCaoSuCo.getMucDoUuTien());
+                existingBaoCao.setTrangThai(baoCaoSuCo.getTrangThai());
+                
+                baoCaoSuCoService.save(existingBaoCao);
+                redirectAttributes.addFlashAttribute("success", "Cập nhật báo cáo thành công!");
+            } else {
+                baoCaoSuCoService.save(baoCaoSuCo);
+                redirectAttributes.addFlashAttribute("success", "Tạo báo cáo thành công!");
+            }
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
         }
