@@ -22,6 +22,9 @@ public interface HoaDonRepository extends JpaRepository<HoaDon, Integer> {
     
     @Query("SELECT SUM(hd.soTien) FROM HoaDon hd WHERE hd.trangThai = 'chua_thanh_toan'")
     BigDecimal sumUnpaidAmount();
+    
+    @Query("SELECT hd FROM HoaDon hd ORDER BY hd.ngayTao DESC LIMIT 10")
+    List<HoaDon> findRecentInvoices();
 }
 
 

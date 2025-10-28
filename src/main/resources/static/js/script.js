@@ -9,6 +9,71 @@ function toggleSidebar() {
 }
 
 // ===========================
+// PAGE TRANSITIONS
+// ===========================
+document.addEventListener('DOMContentLoaded', function() {
+    // Add fade-in effect to page content
+    const pageContent = document.querySelector('.page-content');
+    if (pageContent) {
+        pageContent.style.opacity = '0';
+        pageContent.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            pageContent.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            pageContent.style.opacity = '1';
+            pageContent.style.transform = 'translateY(0)';
+        }, 100);
+    }
+
+    // Add stagger effect to stat cards
+    const statCards = document.querySelectorAll('.stat-card');
+    if (statCards.length > 0) {
+        statCards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 200 + (index * 100));
+        });
+    }
+
+    // Add fade-in effect to content sections
+    const contentSections = document.querySelectorAll('.content-section');
+    if (contentSections.length > 0) {
+        contentSections.forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                section.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            }, 400 + (index * 150));
+        });
+    }
+});
+
+// ===========================
+// SMOOTH SCROLL BEHAVIOR
+// ===========================
+// Add smooth scrolling to all anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+
+// ===========================
 // AUTO HIDE ALERTS
 // ===========================
 document.addEventListener('DOMContentLoaded', function() {

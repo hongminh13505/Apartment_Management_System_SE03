@@ -108,14 +108,15 @@
                                     <span class="badge" 
                                           th:classappend="${tb.loaiThongBao == 'quan_trong'} ? 'badge-danger' : 
                                                          ${tb.loaiThongBao == 'khan_cap'} ? 'badge-warning' : 'badge-info'"
-                                          th:text="${tb.loaiThongBao}">Bình thường</span>
+                                          th:text="${tb.loaiThongBao == 'quan_trong'} ? 'Quan trọng' : 
+                                                      ${tb.loaiThongBao == 'khan_cap'} ? 'Khẩn cấp' : 'Bình thường'">Bình thường</span>
                                 </td>
                                 <td th:text="${tb.doiTuongNhan}">Tất cả</td>
                                 <td th:text="${#temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
                                 <td>
                                     <span class="badge" 
                                           th:classappend="${tb.trangThai == 'hien'} ? 'badge-success' : 'badge-secondary'"
-                                          th:text="${tb.trangThai}">Hiện</span>
+                                          th:text="${tb.trangThai == 'hien'} ? 'Hiện' : 'Ẩn'">Hiện</span>
                                 </td>
                                 <td class="actions">
                                     <a th:href="@{/admin/thong-bao/edit/{id}(id=${tb.maThongBao})}" class="btn btn-sm btn-warning">Sửa</a>

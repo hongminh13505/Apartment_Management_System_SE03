@@ -74,8 +74,8 @@ public class DoiTuong {
         ngayCapNhat = LocalDateTime.now();
     }
     
-    // Manual getter/setter methods for Lombok compatibility
     public String getMatKhau() {
+
         return matKhau;
     }
     

@@ -78,31 +78,33 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table table-compact">
                             <thead>
                                 <tr>
-                                    <th>Mã</th>
-                                    <th>Tiêu đề</th>
-                                    <th>Người báo cáo</th>
-                                    <th>Mức độ</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày báo cáo</th>
+                                    <th style="width: 70px; text-align: center;">Mã</th>
+                                    <th style="width: 200px; text-align: center;">Tiêu đề</th>
+                                    <th style="width: 140px; text-align: center;">Người báo cáo</th>
+                                    <th style="width: 130px; text-align: center;">Mức độ</th>
+                                    <th style="width: 130px; text-align: center;">Trạng thái</th>
+                                    <th style="width: 140px; text-align: center;">Ngày báo cáo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="bc : ${baoCaoSuCoList}" th:if="${baoCaoSuCoList != null and !baoCaoSuCoList.isEmpty()}">
-                                    <td th:text="${bc.maBaoCao}">1</td>
-                                    <td th:text="${bc.tieuDe}">Báo cáo</td>
-                                    <td th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
-                                    <td>
+                                    <td style="text-align: center; font-size: 13px;" th:text="${bc.maBaoCao}">1</td>
+                                    <td style="font-size: 13px;" th:text="${bc.tieuDe}">Báo cáo</td>
+                                    <td style="text-align: center; font-size: 13px;" th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
+                                    <td style="text-align: center;">
                                         <span class="badge" 
                                               th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
-                                              th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                              th:text="${bc.mucDoUuTien == 'khan_cap'} ? 'Khẩn cấp' : (${bc.mucDoUuTien == 'cao'} ? 'Cao' : 'Bình thường')">Bình thường</span>
                                     </td>
-                                    <td>
-                                        <span class="badge badge-warning" th:text="${bc.trangThai}">Mới tiếp nhận</span>
+                                    <td style="text-align: center;">
+                                        <span class="badge" 
+                                              th:classappend="${bc.trangThai == 'da_hoan_thanh'} ? 'badge-success' : (${bc.trangThai == 'dang_xu_ly'} ? 'badge-warning' : 'badge-info')"
+                                              th:text="${bc.trangThai == 'da_hoan_thanh'} ? 'Đã hoàn thành' : (${bc.trangThai == 'dang_xu_ly'} ? 'Đang xử lý' : 'Mới tiếp nhận')">Mới tiếp nhận</span>
                                     </td>
-                                    <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                    <td style="text-align: center; font-size: 13px;" th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
                                 </tr>
                                 <tr th:if="${baoCaoSuCoList == null or baoCaoSuCoList.isEmpty()}">
                                     <td colspan="6" class="text-center">Không có báo cáo sự cố mới</td>
@@ -187,25 +189,39 @@
         }
         
         .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+            border: none;
         }
         
         .badge-danger {
-            background-color: #fee2e2;
-            color: #991b1b;
+            background-color: #ef4444;
+            color: white;
+            border: none;
         }
         
         .badge-warning {
-            background-color: #fef3c7;
-            color: #92400e;
+            background-color: #f59e0b;
+            color: white;
+            border: none;
         }
         
         .badge-info {
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
         }
         
         .notifications-list {

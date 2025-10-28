@@ -8,6 +8,7 @@
     <title>Dashboard - Quản lý chung cư</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <div class="wrapper">
@@ -129,7 +130,9 @@
                     </div>
                     
                     <div class="stat-card">
-                        <div class="stat-icon">📋</div>
+                        <div class="stat-icon">
+                            <img src="/images/money.png" alt="Công nợ" style="width: 24px; height: 24px;">
+                        </div>
                         <div class="stat-details">
                             <h3 th:text="${#numbers.formatDecimal(congNoConLai, 0, 'COMMA', 0, 'POINT')}">0</h3>
                             <p>Công nợ (VNĐ)</p>
@@ -137,8 +140,10 @@
                     </div>
                 </div>
                 
-                <!-- Recent Reports -->
-                <div class="content-section">
+                <!-- Two Column Layout -->
+                <div class="dashboard-two-column">
+                    <!-- Recent Reports - 3/5 width -->
+                    <div class="content-section column-left">
                     <div class="section-header">
                         <h3>Báo cáo sự cố mới nhất</h3>
                         <a th:href="@{/admin/bao-cao-su-co}" class="btn btn-sm btn-primary">Xem tất cả</a>
@@ -148,54 +153,77 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Mã</th>
-                                    <th>Tiêu đề</th>
-                                    <th>Người báo cáo</th>
-                                    <th>Mức độ</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày báo cáo</th>
+                                    <th style="width: 60px; text-align: center;">Mã</th>
+                                    <th style="width: calc(25%); text-align: center;">Tiêu đề</th>
+                                    <th style="width: 140px; text-align: center;">Người báo cáo</th>
+                                    <th class="text-center-badge" style="width: 150px;">Mức độ ưu tiên</th>
+                                    <th style="width: 120px; text-align: center;">Ngày báo cáo</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr th:each="bc : ${baoCaoSuCoList}" th:if="${baoCaoSuCoList != null and !baoCaoSuCoList.isEmpty()}">
-                                    <td th:text="${bc.maBaoCao}">1</td>
-                                    <td th:text="${bc.tieuDe}">Báo cáo</td>
-                                    <td th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
+                                    <td style="text-align: center;" th:text="${bc.maBaoCao}">1</td>
+                                    <td style="text-align: center;" th:text="${bc.tieuDe}">Báo cáo</td>
+                                    <td style="text-align: center;" th:text="${bc.cccdNguoiBaoCao}">CCCD</td>
                                     <td>
                                         <span class="badge" 
                                               th:classappend="${bc.mucDoUuTien == 'khan_cap'} ? 'badge-danger' : (${bc.mucDoUuTien == 'cao'} ? 'badge-warning' : 'badge-info')"
-                                              th:text="${bc.mucDoUuTien}">Bình thường</span>
+                                              th:text="${bc.mucDoUuTien == 'khan_cap'} ? 'Khẩn cấp' : (${bc.mucDoUuTien == 'cao'} ? 'Cao' : 'Bình thường')">Bình thường</span>
                                     </td>
-                                    <td>
-                                        <span class="badge badge-warning" th:text="${bc.trangThai}">Mới tiếp nhận</span>
-                                    </td>
-                                    <td th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy HH:mm')}">01/01/2025</td>
+                                    <td style="text-align: center;" th:text="${#temporals.format(bc.ngayBaoCao, 'dd/MM/yyyy')}">01/01/2025</td>
                                 </tr>
                                 <tr th:if="${baoCaoSuCoList == null or baoCaoSuCoList.isEmpty()}">
-                                    <td colspan="6" class="text-center">Không có báo cáo sự cố mới</td>
+                                    <td colspan="5" class="text-center">Không có báo cáo sự cố mới</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+                    
+                    <!-- Invoice Status Chart - 2/5 width -->
+                    <div class="content-section column-right">
+                        <div class="section-header">
+                            <h3>Tỷ lệ thanh toán hóa đơn</h3>
+                            <a th:href="@{/admin/hoa-don}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                        </div>
+                        
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="invoiceStatusChart"></canvas>
+                        </div>
+                        
+                        <div class="chart-legend" style="display: flex; justify-content: center; gap: 24px; margin-top: 20px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669);"></span>
+                                <span style="font-size: 14px; font-weight: 600;">Đã thanh toán: <span th:text="${hoaDonDaThanhToan}">0</span></span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626);"></span>
+                                <span style="font-size: 14px; font-weight: 600;">Chưa thanh toán: <span th:text="${hoaDonChuaThanhToan}">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
-                <!-- Recent Notifications -->
+                <!-- Recent Notifications Timeline -->
                 <div class="content-section">
                     <div class="section-header">
                         <h3>Thông báo gần đây</h3>
                         <a th:href="@{/admin/thong-bao}" class="btn btn-sm btn-primary">Xem tất cả</a>
                     </div>
                     
-                    <div class="notifications-list">
-                        <div class="notification-item" th:each="tb : ${thongBaoList}" th:if="${thongBaoList != null and !thongBaoList.isEmpty()}">
-                            <div class="notification-header">
-                                <h4 th:text="${tb.tieuDe}">Tiêu đề thông báo</h4>
-                                <span class="notification-time" th:text="${#temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy HH:mm')}">01/01/2025</span>
+                    <div class="timeline">
+                        <div class="timeline-item" th:each="tb : ${thongBaoList}" th:if="${thongBaoList != null and !thongBaoList.isEmpty()}">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <h4 th:text="${tb.tieuDe}">Tiêu đề thông báo</h4>
+                                    <span class="timeline-time" th:text="${#temporals.format(tb.ngayTaoThongBao, 'dd/MM/yyyy HH:mm')}">01/01/2025</span>
+                                </div>
+                                <p th:text="${tb.noiDungThongBao}">Nội dung thông báo...</p>
                             </div>
-                            <p th:text="${tb.noiDungThongBao}">Nội dung thông báo...</p>
                         </div>
-                        <div th:if="${thongBaoList == null or thongBaoList.isEmpty()}">
-                            <p class="text-center">Không có thông báo mới</p>
+                        <div th:if="${thongBaoList == null or thongBaoList.isEmpty()}" class="text-center" style="padding: 40px;">
+                            <p>Không có thông báo mới</p>
                         </div>
                     </div>
                 </div>
@@ -204,6 +232,54 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const paidCount = /*[[${hoaDonDaThanhToan}]]*/ 0;
+            const unpaidCount = /*[[${hoaDonChuaThanhToan}]]*/ 0;
+            const total = paidCount + unpaidCount;
+            
+            const ctx = document.getElementById('invoiceStatusChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Đã thanh toán', 'Chưa thanh toán'],
+                        datasets: [{
+                            data: [paidCount, unpaidCount],
+                            backgroundColor: [
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(239, 68, 68, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(16, 185, 129, 1)',
+                                'rgba(239, 68, 68, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                        return label + ': ' + value + ' (' + percentage + '%)';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
 

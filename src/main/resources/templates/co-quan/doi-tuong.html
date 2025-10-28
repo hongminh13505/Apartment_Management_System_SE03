@@ -90,15 +90,15 @@
                 
                 <!-- Table -->
                 <div class="table-responsive">
-                    <table class="table">
+                    <table class="table table-compact">
                         <thead>
                             <tr>
-                                <th>CCCD</th>
-                                <th>HỌ TÊN</th>
-                                <th>NGÀY SINH</th>
-                                <th>SỐ ĐIỆN THOẠI</th>
-                                <th>EMAIL</th>
-                                <th>VAI TRÒ</th>
+                                <th style="width: 120px; text-align: center;">CCCD</th>
+                                <th style="width: 150px; text-align: center;">HỌ TÊN</th>
+                                <th style="width: 120px; text-align: center;">NGÀY SINH</th>
+                                <th style="width: 130px; text-align: center;">SỐ ĐIỆN THOẠI</th>
+                                <th style="width: 180px; text-align: center;">EMAIL</th>
+                                <th style="width: 140px; text-align: center;">VAI TRÒ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -106,13 +106,18 @@
                                 <td colspan="6" style="text-align: center; color: #94a3b8;">Không có cư dân nào</td>
                             </tr>
                             <tr th:each="dt : ${doiTuongList}">
-                                <td th:text="${dt.cccd}">001234567890</td>
-                                <td th:text="${dt.hoVaTen}">Nguyễn Văn A</td>
-                                <td th:text="${dt.ngaySinh != null ? #temporals.format(dt.ngaySinh, 'dd/MM/yyyy') : 'N/A'}">01/01/1990</td>
-                                <td th:text="${dt.soDienThoai}">0123456789</td>
-                                <td th:text="${dt.email}">email@example.com</td>
-                                <td>
-                                    <span class="badge badge-info" th:text="${dt.vaiTro}">Cư dân</span>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.cccd}">001234567890</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.hoVaTen}">Nguyễn Văn A</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.ngaySinh != null ? #temporals.format(dt.ngaySinh, 'dd/MM/yyyy') : 'N/A'}">01/01/1990</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.soDienThoai}">0123456789</td>
+                                <td style="text-align: center; font-size: 13px;" th:text="${dt.email}">email@example.com</td>
+                                <td style="text-align: center;">
+                                    <span class="badge badge-info" 
+                                          th:text="${dt.vaiTro == 'ban_quan_tri'} ? 'Ban quản trị' : 
+                                                    (${dt.vaiTro == 'co_quan_chuc_nang'} ? 'Cơ quan chức năng' : 
+                                                    (${dt.vaiTro == 'ke_toan'} ? 'Kế toán' : 
+                                                    (${dt.vaiTro == 'nguoi_dung_thuong'} ? 'Người dùng thường' : 
+                                                    (${dt.vaiTro == 'khong_dung_he_thong'} ? 'Không dùng hệ thống' : 'N/A'))))">Cư dân</span>
                                 </td>
                             </tr>
                         </tbody>

@@ -40,7 +40,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         String role = "ROLE_" + doiTuong.getVaiTro().toUpperCase();
         authorities.add(new SimpleGrantedAuthority(role));
         
-        // Debug logging
         System.out.println("User: " + doiTuong.getCccd() + ", Role: " + role + ", Last login updated");
         
         return User.builder()

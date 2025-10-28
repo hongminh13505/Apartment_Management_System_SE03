@@ -49,7 +49,6 @@ public class HoGiaDinh {
         ngayCapNhat = LocalDateTime.now();
     }
 
-    // ---- Explicit getters and setters to ensure runtime property access ----
     public String getMaHo() {
         return maHo;
     }

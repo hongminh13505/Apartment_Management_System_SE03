@@ -54,6 +54,21 @@ public class HoaDonService {
         BigDecimal sum = hoaDonRepository.sumUnpaidAmount();
         return sum != null ? sum : BigDecimal.ZERO;
     }
+    
+    public List<HoaDon> findRecentInvoices() {
+        return hoaDonRepository.findAll().stream()
+                .sorted((a, b) -> b.getNgayTao().compareTo(a.getNgayTao()))
+                .limit(10)
+                .collect(java.util.stream.Collectors.toList());
+    }
+    
+    public long countPaidInvoices() {
+        return hoaDonRepository.findByTrangThai("da_thanh_toan").size();
+    }
+    
+    public long countUnpaidInvoices() {
+        return hoaDonRepository.findByTrangThai("chua_thanh_toan").size();
+    }
 }
 
 

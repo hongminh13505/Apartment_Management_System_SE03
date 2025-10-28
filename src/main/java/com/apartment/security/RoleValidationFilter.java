@@ -25,12 +25,10 @@ public class RoleValidationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
         
-        // Only validate on login POST requests
         if ("/login".equals(request.getServletPath()) && "POST".equalsIgnoreCase(request.getMethod())) {
             String selectedRole = request.getParameter("role");
             String cccd = request.getParameter("cccd");
             
-            // Store selected role in session for later validation
             if (selectedRole != null && !selectedRole.isEmpty()) {
                 request.getSession().setAttribute("selectedRole", selectedRole);
             }
