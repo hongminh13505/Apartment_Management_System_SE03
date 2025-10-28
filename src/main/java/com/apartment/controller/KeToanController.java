@@ -29,11 +29,19 @@ public class KeToanController {
     
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
-        // Thống kê tài chính
         model.addAttribute("tongThuNhap", hoaDonService.sumPaidAmount());
         model.addAttribute("congNoConLai", hoaDonService.sumUnpaidAmount());
         model.addAttribute("tongHoGiaDinh", hoGiaDinhService.countActiveHo());
-        
+
+        // Bổ sung dữ liệu cho bảng và biểu đồ
+        java.util.List<com.apartment.entity.HoaDon> recent = hoaDonService.findRecentInvoices();
+        if (recent.size() > 6) {
+            recent = recent.subList(0, 6);
+        }
+        model.addAttribute("recentInvoices", recent);
+        model.addAttribute("hoaDonDaThanhToan", hoaDonService.countPaidInvoices());
+        model.addAttribute("hoaDonChuaThanhToan", hoaDonService.countUnpaidInvoices());
+
         model.addAttribute("username", authentication.getName());
         model.addAttribute("role", "Kế toán");
         return "ke-toan/dashboard";

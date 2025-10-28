@@ -1,8 +1,5 @@
- /* ===========================
-   ADMIN LAYOUT
-   =========================== */
 * {
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .wrapper {
@@ -11,9 +8,33 @@
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-/* Page Transition Effect */
+
 .page-content {
-    animation: fadeIn 0.5s ease-in-out;
+    animation: none;
+}
+
+
+.app-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.app-loader .spinner {
+    width: 56px;
+    height: 56px;
+    border: 6px solid #e5e7eb;
+    border-top-color: #2563eb;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 @keyframes fadeIn {
@@ -27,9 +48,6 @@
     }
 }
 
-/* ===========================
-   SIDEBAR
-   =========================== */
 .sidebar {
     width: var(--sidebar-width);
     background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
@@ -108,7 +126,11 @@
     vertical-align: middle;
     filter: brightness(0) invert(1);
     opacity: 0.7;
-    transition: all 0.3s ease;
+}
+
+.sidebar-menu a,
+.sidebar-menu a img {
+    transition: none !important;
 }
 
 .sidebar-menu a:hover img,
@@ -117,18 +139,12 @@
     filter: brightness(0) invert(1);
 }
 
-/* ===========================
-   MAIN CONTENT
-   =========================== */
 .main-content {
     flex: 1;
     margin-left: var(--sidebar-width);
     background: transparent;
 }
 
-/* ===========================
-   HEADER
-   =========================== */
 .header {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     padding: 20px 32px;
@@ -189,9 +205,6 @@
     color: var(--dark-text);
 }
 
-/* ===========================
-   PAGE CONTENT
-   =========================== */
 .page-content {
     padding: 32px;
 }
@@ -230,9 +243,6 @@
     margin-bottom: 20px;
 }
 
-/* ===========================
-   STATISTICS CARDS
-   =========================== */
 .stats-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -248,7 +258,7 @@
     align-items: center;
     gap: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -286,9 +296,6 @@
     color: var(--secondary-color);
 }
 
-/* ===========================
-   TABLES
-   =========================== */
 .table-responsive {
     overflow-x: auto;
 }
@@ -338,7 +345,7 @@
 }
 
 .table tbody tr {
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
 }
 
 .table tbody tr:hover {
@@ -352,27 +359,21 @@
     gap: 8px;
 }
 
-/* Center badges in table cells */
 .table td .badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Center columns containing badges */
 .table td:has(.badge),
 .table th:has(.badge) {
     text-align: center;
 }
 
-/* Fallback for browsers without :has() support */
 .table .text-center-badge {
     text-align: center;
 }
 
-/* ===========================
-   SEARCH BAR
-   =========================== */
 .search-bar form {
     display: flex;
     gap: 12px;
@@ -382,17 +383,11 @@
     min-width: 300px;
 }
 
-/* ===========================
-   FILTER GROUP
-   =========================== */
 .filter-group {
     display: flex;
     gap: 8px;
 }
 
-/* ===========================
-   FORM CONTAINER
-   =========================== */
 .form-container {
     background: white;
     border-radius: 20px;
@@ -415,9 +410,6 @@
     border-top: 1px solid var(--border-color);
 }
 
-/* ===========================
-   NOTIFICATIONS LIST
-   =========================== */
 .notifications-list {
     display: flex;
     flex-direction: column;
@@ -430,7 +422,7 @@
     border-radius: 12px;
     border-left: 5px solid var(--primary-color);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
 }
 
 .notification-item:hover {
@@ -463,9 +455,6 @@
     margin: 0;
 }
 
-/* ===========================
-   DASHBOARD STATS
-   =========================== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -481,7 +470,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    transition: all 0.3s;
+    transition: all 0.15s;
 }
 
 .stat-card:hover {
@@ -558,9 +547,6 @@
     line-height: 1.6;
 }
 
-/* ===========================
-   RESPONSIVE
-   =========================== */
 @media (max-width: 768px) {
     .sidebar {
         margin-left: calc(var(--sidebar-width) * -1);
@@ -605,7 +591,6 @@
     }
 }
 
-/* Button info style */
 .btn-info {
     background-color: #0ea5e9;
     color: white;
@@ -615,9 +600,6 @@
     background-color: #0284c7;
 }
 
-/* ===========================
-   ENHANCED TABLE STYLES
-   =========================== */
 .table-responsive {
     background: white;
     border-radius: 12px;
@@ -656,7 +638,7 @@
 }
 
 .table tbody tr {
-    transition: all 0.2s ease;
+    transition: all 0.12s ease;
 }
 
 .table tbody tr:hover {
@@ -680,7 +662,7 @@
     font-size: 12px;
     border-radius: 6px;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: all 0.12s ease;
 }
 
 .table td.actions .btn:hover {
@@ -688,7 +670,6 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Enhanced badge styles */
 .badge {
     display: inline-block;
     padding: 6px 12px;
@@ -731,9 +712,6 @@
     border: none;
 }
 
-/* ===========================
-   DASHBOARD TWO COLUMN LAYOUT
-   =========================== */
 .dashboard-two-column {
     display: grid;
     grid-template-columns: 3fr 2fr;
@@ -746,9 +724,6 @@
     margin-bottom: 0;
 }
 
-/* ===========================
-   TIMELINE STYLES
-   =========================== */
 .timeline {
     position: relative;
     padding-left: 40px;
@@ -788,7 +763,7 @@
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
 }
 
 .timeline-item:hover .timeline-content {
@@ -833,9 +808,6 @@
     margin: 0;
 }
 
-/* ===========================
-   RESPONSIVE - DASHBOARD LAYOUT
-   =========================== */
 @media (max-width: 1200px) {
     .dashboard-two-column {
         grid-template-columns: 1fr;

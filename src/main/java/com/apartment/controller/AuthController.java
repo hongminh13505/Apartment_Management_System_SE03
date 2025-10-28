@@ -35,8 +35,24 @@ public class AuthController {
     }
     
     @GetMapping("/dashboard")
-    public String dashboard() {
-        return "redirect:/admin/dashboard";
+    public String dashboard(org.springframework.security.core.Authentication authentication) {
+        if (authentication == null || authentication.getAuthorities() == null) {
+            return "redirect:/login";
+        }
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_BAN_QUAN_TRI"));
+        boolean isKeToan = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_KE_TOAN"));
+        boolean isCuDan = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_NGUOI_DUNG_THUONG"));
+        boolean isCoQuan = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_CO_QUAN_CHUC_NANG"));
+
+        if (isAdmin) return "redirect:/admin/dashboard";
+        if (isKeToan) return "redirect:/ke-toan/dashboard";
+        if (isCuDan) return "redirect:/cu-dan/dashboard";
+        if (isCoQuan) return "redirect:/co-quan/dashboard";
+        return "redirect:/login";
     }
     
     @GetMapping("/forgot-password")
@@ -61,8 +77,6 @@ public class AuthController {
                 return "redirect:/forgot-password";
             }
             
-            // TODO: Send password reset email
-            // For now, just redirect with success message
             redirectAttributes.addFlashAttribute("message", 
                 "Đã gửi email hướng dẫn đặt lại mật khẩu! Vui lòng liên hệ quản trị viên.");
             return "redirect:/login";

@@ -68,7 +68,7 @@ public class BaoCaoSuCoController {
     
     @PostMapping("/xu-ly/{id}")
     public String xuLy(@PathVariable Integer id, 
-                      @RequestParam String ketQuaXuLy,
+                      @RequestParam(required = false) String ketQuaXuLy,
                       Authentication authentication,
                       RedirectAttributes redirectAttributes) {
         try {
@@ -78,14 +78,16 @@ public class BaoCaoSuCoController {
             baoCao.setCccdNguoiXuLy(authentication.getName());
             baoCao.setTrangThai("da_hoan_thanh");
             baoCao.setNgayHoanThanh(LocalDateTime.now());
-            baoCao.setKetQuaXuLy(ketQuaXuLy);
+            if (ketQuaXuLy != null) {
+                baoCao.setKetQuaXuLy(ketQuaXuLy);
+            }
             
             baoCaoSuCoService.save(baoCao);
             redirectAttributes.addFlashAttribute("success", "Xử lý báo cáo thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
         }
-        return "redirect:/admin/bao-cao-su-co";
+        return "redirect:/admin/bao-cao-su-co?trangThai=da_hoan_thanh";
     }
 }
 

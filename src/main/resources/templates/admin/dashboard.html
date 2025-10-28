@@ -12,7 +12,6 @@
 </head>
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h3>BLUE MOON</h3>
@@ -45,8 +44,10 @@
                         </a>
                     </li>
                     
+                    
+                    
                     <li>
-                        <a th:href="@{/admin/hoa-don}">
+                        <a th:href="@{/admin/hoa-don-2}">
                             <img src="/images/hoa-don.png" alt="Hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Hóa đơn
                         </a>
                     </li>
@@ -66,9 +67,9 @@
             </nav>
         </aside>
         
-        <!-- Main Content -->
+     
         <div class="main-content">
-            <!-- Header -->
+     
             <header class="header">
                 <div class="header-left">
                     <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
@@ -85,9 +86,8 @@
                 </div>
             </header>
             
-            <!-- Page Content -->
+     
             <main class="page-content">
-                <!-- Statistics Cards -->
                 <div class="stats-container">
                     <div class="stat-card">
                         <div class="stat-icon">
@@ -139,10 +139,8 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Two Column Layout -->
+
                 <div class="dashboard-two-column">
-                    <!-- Recent Reports - 3/5 width -->
                     <div class="content-section column-left">
                     <div class="section-header">
                         <h3>Báo cáo sự cố mới nhất</h3>
@@ -179,12 +177,10 @@
                         </table>
                     </div>
                 </div>
-                    
-                    <!-- Invoice Status Chart - 2/5 width -->
                     <div class="content-section column-right">
                         <div class="section-header">
                             <h3>Tỷ lệ thanh toán hóa đơn</h3>
-                            <a th:href="@{/admin/hoa-don}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                            <a th:href="@{/admin/hoa-don-2}" class="btn btn-sm btn-primary">Xem tất cả</a>
                         </div>
                         
                         <div class="chart-container" style="position: relative; height: 300px;">
@@ -203,8 +199,6 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Recent Notifications Timeline -->
                 <div class="content-section">
                     <div class="section-header">
                         <h3>Thông báo gần đây</h3>

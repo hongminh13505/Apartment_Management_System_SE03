@@ -43,7 +43,7 @@
                     </li>
                     
                     <li>
-                        <a th:href="@{/admin/hoa-don}">
+                        <a th:href="@{/admin/hoa-don-2}">
                             <img src="/images/hoa-don.png" alt="Hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Hóa đơn
                         </a>
                     </li>
@@ -146,24 +146,54 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
-    <script>
+     <!-- Modal xác nhận xử lý -->
+     <div id="confirmModal" class="modal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-content" style="background: #fff; border-radius: 8px; width: 420px; max-width: 92%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <div class="modal-header" style="padding: 14px 16px; border-bottom: 1px solid #eee;">
+                <h3 style="margin: 0; font-size: 18px;">Xác nhận xử lý</h3>
+            </div>
+            <div class="modal-body" style="padding: 16px; font-size: 14px; color: #333;">
+                Bạn có chắc chắn muốn đánh dấu báo cáo này là <strong>Hoàn thành</strong>?
+            </div>
+            <div class="modal-footer" style="padding: 12px 16px; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #eee;">
+                <button id="cancelBtn" type="button" class="btn btn-secondary">Hủy</button>
+                <button id="confirmBtn" type="button" class="btn btn-primary">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+    const csrfParameterName = /*[[${_csrf.parameterName}]]*/ '_csrf';
+    const csrfToken = /*[[${_csrf.token}]]*/ '';
+    let selectedBaoCaoId = null;
+    const modal = document.getElementById('confirmModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    function openModal() { modal.style.display = 'flex'; }
+    function closeModal() { modal.style.display = 'none'; selectedBaoCaoId = null; }
+
+    cancelBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if(e.target === modal){ closeModal(); } });
+    confirmBtn.addEventListener('click', function(){
+        if (!selectedBaoCaoId) return;
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/bao-cao-su-co/xu-ly/' + selectedBaoCaoId;
+
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = csrfParameterName;
+        csrfInput.value = csrfToken;
+
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    });
     function xuLy(event, maBaoCao) {
         event.preventDefault();
-        const ketQua = prompt("Nhập kết quả xử lý:");
-        if (ketQua) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/admin/bao-cao-su-co/xu-ly/' + maBaoCao;
-            
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'ketQuaXuLy';
-            input.value = ketQua;
-            
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
+        selectedBaoCaoId = maBaoCao;
+        openModal();
     }
     </script>
 </body>
