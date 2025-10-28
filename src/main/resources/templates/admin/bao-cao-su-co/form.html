@@ -78,6 +78,9 @@
                 <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
                 
                 <form th:action="@{/admin/bao-cao-su-co/save}" th:object="${baoCaoSuCo}" method="post" class="form-container">
+                    <!-- Hidden field for maBaoCao to ensure update instead of create -->
+                    <input type="hidden" th:field="*{maBaoCao}">
+                    
                     <div class="form-group">
                         <label for="tieuDe">Tiêu đề *</label>
                         <input type="text" id="tieuDe" th:field="*{tieuDe}" class="form-control" required>
