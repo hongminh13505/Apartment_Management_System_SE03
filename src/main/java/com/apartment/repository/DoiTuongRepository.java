@@ -32,6 +32,12 @@ public interface DoiTuongRepository extends JpaRepository<DoiTuong, String> {
            "d.cccd LIKE CONCAT('%', :keyword, '%') OR " +
            "d.soDienThoai LIKE CONCAT('%', :keyword, '%'))")
     List<DoiTuong> searchCuDanByKeyword(String keyword);
+
+     @Query("SELECT d FROM DoiTuong d WHERE d.trangThaiTaiKhoan = 'hoat_dong' AND " +
+           "(LOWER(d.hoVaTen) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "d.cccd LIKE CONCAT('%', :keyword, '%') OR " +
+           "d.soDienThoai LIKE CONCAT('%', :keyword, '%'))")
+    List<DoiTuong> searchAllByKeyword(String keyword);
 }
 
 

@@ -30,16 +30,13 @@ public class GlobalErrorController implements ErrorController {
             model.addAttribute("statusCode", statusCode);
             model.addAttribute("errorMessage", getErrorMessage(statusCode));
             
-            // Redirect back to a safe page
-            if (statusCode == 404) {
-                return "redirect:/admin";
-            } else if (statusCode == 403) {
+         
+            if (statusCode == 403) {
                 return "redirect:/login";
             }
         }
-        
-        // For 500 and other errors, redirect back to admin dashboard
-        return "redirect:/admin";
+        // Về trang role-aware dashboard để tránh redirect vòng nếu không có quyền /admin
+        return "redirect:/dashboard";
     }
     
     private String getErrorMessage(int statusCode) {

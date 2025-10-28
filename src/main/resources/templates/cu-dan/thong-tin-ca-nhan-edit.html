@@ -60,7 +60,7 @@
                 
                 <div class="header-right">
                     <div class="user-info">
-                        <span>Xin chào, <strong th:text="${doiTuong.hoVaTen}">Nguyễn Văn A</strong></span>
+                        <span>Xin chào, <strong sec:authentication="name">username</strong></span>
                         <form th:action="@{/logout}" method="post" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger">Đăng xuất</button>
                         </form>

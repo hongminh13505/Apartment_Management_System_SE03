@@ -61,9 +61,8 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                .requestMatchers("/error", "/favicon.ico").permitAll()
                 .requestMatchers("/login", "/forgot-password").permitAll()
-                // Cho phép kế toán truy cập trang hóa đơn trong khu vực admin
-                .requestMatchers("/admin/hoa-don/**").hasAnyRole("BAN_QUAN_TRI", "KE_TOAN")
                 // Cho phép kế toán xem danh sách hộ gia đình (cần để tạo hóa đơn)
                 .requestMatchers("/admin/ho-gia-dinh", "/admin/ho-gia-dinh/detail/**").hasAnyRole("BAN_QUAN_TRI", "KE_TOAN")
                 // Các trang admin khác chỉ cho BQT

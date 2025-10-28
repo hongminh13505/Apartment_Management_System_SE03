@@ -39,7 +39,7 @@ public class DoiTuongService {
         if (keyword == null || keyword.isBlank()) {
             return findAll();
         }
-        return doiTuongRepository.searchCuDanByKeyword(keyword.trim());
+         return doiTuongRepository.searchAllByKeyword(keyword.trim());
     }
     
     @Transactional

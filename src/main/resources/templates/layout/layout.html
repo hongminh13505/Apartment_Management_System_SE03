@@ -10,6 +10,9 @@
     <link rel="stylesheet" th:href="@{/css/admin.css}">
 </head>
 <body>
+    <div id="appLoader" class="app-loader" style="display:none;">
+        <div class="spinner"></div>
+    </div>
     <div class="wrapper">
         <!-- Sidebar -->
         <aside class="sidebar" th:fragment="sidebar">
@@ -37,8 +40,8 @@
                         </a>
                     </li>
                     
-                    <li sec:authorize="hasAnyRole('BAN_QUAN_TRI', 'KE_TOAN')">
-                        <a th:href="@{/admin/hoa-don}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'hoa-don')} ? 'active' : ''">
+                    <li sec:authorize="hasRole('BAN_QUAN_TRI')">
+                        <a th:href="@{/admin/hoa-don-2}" th:classappend="${#strings.contains(#httpServletRequest.requestURI, 'hoa-don-2')} ? 'active' : ''">
                             <img src="/images/hoa-don.png" alt="Hóa đơn" style="width: 18px; height: 18px; margin-right: 12px;"> Hóa đơn
                         </a>
                     </li>
@@ -85,6 +88,30 @@
     </div>
     
     <script th:src="@{/js/script.js}"></script>
+    <script>
+        // Simple page loading overlay: show on nav click, hide after load
+        (function() {
+            const loader = document.getElementById('appLoader');
+            function hideLoader() { if (loader) loader.style.display = 'none'; }
+            function showLoader() { if (loader) loader.style.display = 'flex'; }
+            // Hide once content ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', hideLoader);
+            } else { hideLoader(); }
+            // Intercept sidebar/menu clicks
+            document.addEventListener('click', function(e) {
+                const a = e.target.closest('a');
+                if (!a) return;
+                const href = a.getAttribute('href');
+                if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+                // Only show for internal navigations
+                const isSameOrigin = href.startsWith('/') || href.startsWith(window.location.origin);
+                if (isSameOrigin) {
+                    showLoader();
+                }
+            }, true);
+        })();
+    </script>
 </body>
 </html>
 

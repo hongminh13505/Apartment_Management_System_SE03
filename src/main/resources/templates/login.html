@@ -19,7 +19,6 @@
                 <p>Chọn vai trò và đăng nhập</p>
             </div>
             
-            <!-- Role Selection -->
             <div class="role-selection">
                 <div class="role-card" data-role="NGUOI_DUNG_THUONG">
                     <div class="role-icon">
@@ -81,19 +80,14 @@
     </div>
     
     <script>
-        // Role selection
         document.querySelectorAll('.role-card').forEach(card => {
             card.addEventListener('click', function() {
-                // Remove active class from all cards
                 document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
-                // Add active class to clicked card
                 this.classList.add('active');
-                // Set hidden input value
                 document.getElementById('selectedRole').value = this.dataset.role;
             });
         });
         
-        // Form validation
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const role = document.getElementById('selectedRole').value;
             if (!role) {
@@ -103,7 +97,6 @@
             }
         });
         
-        // Toggle password visibility
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleIcon = document.querySelector('.toggle-password');

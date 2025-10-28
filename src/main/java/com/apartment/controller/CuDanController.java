@@ -36,7 +36,7 @@ public class CuDanController {
     @Autowired
     private ThanhVienHoRepository thanhVienHoRepository;
     
-    // Helper method để lấy mã hộ của cư dân
+   
     private String getMaHoByCccd(String cccd) {
         java.util.List<ThanhVienHo> thanhVienList = thanhVienHoRepository.findActiveByCccd(cccd);
         if (thanhVienList.isEmpty()) {
@@ -44,8 +44,7 @@ public class CuDanController {
         }
         return thanhVienList.get(0).getMaHo();
     }
-    
-    // Helper method để kiểm tra có phải chủ hộ không
+  
     private boolean isChuHo(String cccd, String maHo) {
         java.util.List<ThanhVienHo> chuHoList = thanhVienHoRepository.findChuHoByMaHo(maHo);
         return chuHoList.stream()
@@ -54,7 +53,7 @@ public class CuDanController {
     
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
-        // Thông báo và sự cố
+   
         model.addAttribute("thongBaoList", thongBaoService.findAllVisible());
         model.addAttribute("baoCaoSuCoList", baoCaoSuCoService.findAll());
         
@@ -103,7 +102,7 @@ public class CuDanController {
             DoiTuong existingDoiTuong = doiTuongService.findByCccd(cccd)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy thông tin cá nhân"));
             
-            // Cập nhật thông tin
+        
             existingDoiTuong.setHoVaTen(doiTuong.getHoVaTen());
             existingDoiTuong.setNgaySinh(doiTuong.getNgaySinh());
             existingDoiTuong.setGioiTinh(doiTuong.getGioiTinh());
@@ -111,8 +110,7 @@ public class CuDanController {
             existingDoiTuong.setEmail(doiTuong.getEmail());
             existingDoiTuong.setQueQuan(doiTuong.getQueQuan());
             existingDoiTuong.setNgheNghiep(doiTuong.getNgheNghiep());
-            
-            // Chỉ cập nhật mật khẩu nếu có nhập
+          
             if (matKhau != null && !matKhau.trim().isEmpty()) {
                 existingDoiTuong.setMatKhau(matKhau);
             }
@@ -132,7 +130,7 @@ public class CuDanController {
         try {
             java.util.List<com.apartment.entity.ThongBao> thongBaoList = thongBaoService.findAll();
             
-            // Tìm kiếm nếu có
+           
             if (search != null && !search.trim().isEmpty()) {
                 String searchLower = search.trim().toLowerCase();
                 thongBaoList = thongBaoList.stream()
@@ -161,8 +159,7 @@ public class CuDanController {
         try {
             String cccd = authentication.getName();
             java.util.List<com.apartment.entity.BaoCaoSuCo> baoCaoList = baoCaoSuCoService.findByCccdNguoiBaoCao(cccd);
-            
-            // Tìm kiếm nếu có
+          
             if (search != null && !search.trim().isEmpty()) {
                 String searchLower = search.trim().toLowerCase();
                 baoCaoList = baoCaoList.stream()
@@ -204,13 +201,13 @@ public class CuDanController {
         try {
             String cccd = authentication.getName();
             
-            // Thiết lập thông tin người báo cáo
+        
             baoCaoSuCo.setCccdNguoiBaoCao(cccd);
             baoCaoSuCo.setCccdNguoiNhap(cccd);
             baoCaoSuCo.setPhuongThucBaoCao("truc_tuyen");
             baoCaoSuCo.setTrangThai("moi_tiep_nhan");
             
-            // Thiết lập ngày báo cáo
+           
             baoCaoSuCo.setNgayBaoCao(java.time.LocalDateTime.now());
             
             baoCaoSuCoService.save(baoCaoSuCo);
@@ -270,13 +267,12 @@ public class CuDanController {
             HoaDon hoaDon = hoaDonService.findById(id)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn"));
             
-            // Kiểm tra hóa đơn thuộc hộ của người dùng
+           
             if (!hoaDon.getMaHo().equals(maHo)) {
                 redirectAttributes.addFlashAttribute("error", "Bạn không có quyền thanh toán hóa đơn này!");
                 return "redirect:/cu-dan/hoa-don";
             }
             
-            // Cập nhật trạng thái thanh toán
             hoaDon.setTrangThai("da_thanh_toan");
             hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
             hoaDon.setNgayThanhToan(LocalDateTime.now());

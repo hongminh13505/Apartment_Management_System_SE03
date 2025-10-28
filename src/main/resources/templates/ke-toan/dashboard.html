@@ -59,7 +59,9 @@
                 <!-- Statistics Cards -->
                 <div class="stats-container">
                     <div class="stat-card">
-                        <div class="stat-icon">💵</div>
+                        <div class="stat-icon">
+                            <img src="/images/money.png" alt="Công nợ còn lại" style="width: 24px; height: 24px;">
+                        </div>
                         <div class="stat-details">
                             <h3 th:text="${#numbers.formatDecimal(tongThuNhap != null ? tongThuNhap : 0, 0, 'COMMA', 0, 'POINT')}">0</h3>
                             <p>Tổng thu nhập (VNĐ)</p>
@@ -68,7 +70,7 @@
                     
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <img src="/images/bao-cao-su-co.png" alt="Công nợ còn lại" style="width: 24px; height: 24px;">
+                            <img src="/images/hoa-don.png" alt="Công nợ còn lại" style="width: 24px; height: 24px;">
                         </div>
                         <div class="stat-details">
                             <h3 th:text="${#numbers.formatDecimal(congNoConLai != null ? congNoConLai : 0, 0, 'COMMA', 0, 'POINT')}">0</h3>
@@ -87,13 +89,112 @@
                     </div>
                 </div>
                 
-                <!-- Welcome Section -->
-                <div class="content-section">
-                    <div class="welcome-section">
-                        <h2>Chào mừng đến với hệ thống quản lý tài chính</h2>
-                        <p>Sử dụng menu bên trái để quản lý hóa đơn và theo dõi công nợ.</p>
+                <!-- Two Column Layout: Recent Invoices (3/5) + Pie Chart (2/5) -->
+                <div class="dashboard-two-column">
+                    <!-- Recent Invoices - 3/5 width -->
+                    <div class="content-section column-left">
+                        <div class="section-header">
+                            <h3>Hóa đơn gần đây</h3>
+                            <a href="/ke-toan/quan-ly-hoa-don" class="btn btn-sm btn-primary">Xem tất cả</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-compact">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px; text-align:center;">Mã HĐ</th>
+                                        <th style="width:110px; text-align:center;">Mã hộ</th>
+                                        <th style="width:140px; text-align:center;">Loại</th>
+                                        <th style="width:140px; text-align:center;">Số tiền</th>
+                                        <th style="width:140px; text-align:center;">Hạn thanh toán</th>
+                                        <th style="width:130px; text-align:center;">Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:if="${recentInvoices == null or #lists.isEmpty(recentInvoices)}">
+                                        <td colspan="6" style="text-align:center; color:#94a3b8;">Không có hóa đơn nào</td>
+                                    </tr>
+                                    <tr th:each="hd : ${recentInvoices}">
+                                        <td style="text-align:center; font-size:13px;" th:text="${hd.maHoaDon}">1</td>
+                                        <td style="text-align:center; font-size:13px;" th:text="${hd.maHo}">HO001</td>
+                                        <td style="text-align:center; font-size:13px;">
+                                            <span th:switch="${hd.loaiHoaDon}">
+                                                <span th:case="'dien_nuoc'" style="color:#4894ec;">Điện nước</span>
+                                                <span th:case="'dich_vu'" style="color:#ec4899;">Dịch vụ</span>
+                                                <span th:case="'sua_chua'" style="color:#8b5cf6;">Sửa chữa</span>
+                                                <span th:case="'phat'" style="color:#ef4444;">Phạt</span>
+                                                <span th:case="*" style="color:#6b7280;">Khác</span>
+                                            </span>
+                                        </td>
+                                        <td style="text-align:center; font-size:13px;" th:text="${#numbers.formatDecimal(hd.soTien, 0, 'COMMA', 0, 'POINT')} + ' VNĐ'">0 VNĐ</td>
+                                        <td style="text-align:center; font-size:13px;" th:text="${hd.hanThanhToan != null ? #temporals.format(hd.hanThanhToan, 'dd/MM/yyyy') : 'N/A'}">01/01/2025</td>
+                                        <td style="text-align:center;">
+                                            <span class="badge" th:classappend="${hd.trangThai == 'da_thanh_toan'} ? 'badge-success' : (${hd.trangThai == 'qua_han'} ? 'badge-danger' : 'badge-warning')">
+                                                <span th:switch="${hd.trangThai}">
+                                                    <span th:case="'da_thanh_toan'">✓ Đã thanh toán</span>
+                                                    <span th:case="'chua_thanh_toan'">⏳ Chưa thanh toán</span>
+                                                    <span th:case="'qua_han'">⚠️ Quá hạn</span>
+                                                    <span th:case="*">Chưa thanh toán</span>
+                                                </span>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Status Pie Chart - 2/5 width -->
+                    <div class="content-section column-right">
+                        <div class="section-header">
+                            <h3>Tỷ lệ thanh toán hóa đơn</h3>
+                            <a href="/ke-toan/quan-ly-hoa-don" class="btn btn-sm btn-primary">Xem tất cả</a>
+                        </div>
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="invoiceStatusChart"></canvas>
+                        </div>
                     </div>
                 </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+                <script th:inline="javascript">
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const paidCount = /*[[${hoaDonDaThanhToan}]]*/ 0;
+                        const unpaidCount = /*[[${hoaDonChuaThanhToan}]]*/ 0;
+                        const total = paidCount + unpaidCount;
+                        const ctx = document.getElementById('invoiceStatusChart');
+                        if (ctx) {
+                            new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: ['Đã thanh toán', 'Chưa thanh toán'],
+                                    datasets: [{
+                                        data: [paidCount, unpaidCount],
+                                        backgroundColor: ['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)'],
+                                        borderColor: ['rgba(16,185,129,1)','rgba(239,68,68,1)'],
+                                        borderWidth: 2
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function(context) {
+                                                    const label = context.label || '';
+                                                    const value = context.parsed || 0;
+                                                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                                                    return label + ': ' + value + ' (' + percentage + '%)';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+                </script>
             </main>
         </div>
     </div>
