@@ -1,14 +1,26 @@
-# Sử dụng image JDK 17 chính thức
-FROM openjdk:17-jdk-slim
-
-# Tạo thư mục app
+# ========================
+# GIAI ĐOẠN BUILD (sử dụng Maven)
+# ========================
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy file JAR từ target/
-COPY target/apartment-management-1.0.0.jar app.jar
+# Copy toàn bộ project vào container build
+COPY . .
 
-# Expose port (Render tự chọn port, nên dùng biến môi trường)
+# Build ứng dụng (bỏ qua test để tiết kiệm thời gian)
+RUN mvn clean package -DskipTests
+
+# ========================
+# GIAI ĐOẠN RUN (sử dụng JDK nhẹ)
+# ========================
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+
+# Copy file jar từ container build
+COPY --from=build /app/target/*.jar app.jar
+
+# Render sẽ tự inject PORT vào biến môi trường
 EXPOSE 8080
 
-# Lệnh khởi động app
+# Lệnh khởi động ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]
