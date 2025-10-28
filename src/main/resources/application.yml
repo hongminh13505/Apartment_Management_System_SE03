@@ -3,9 +3,9 @@ spring:
     name: apartment-management
     
   datasource:
-    url: jdbc:postgresql://localhost:5432/apartment_db
-    username: postgres
-    password: gygygyg67
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/apartment_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:gygygyg67}
     driver-class-name: org.postgresql.Driver
     
   jpa:
@@ -35,7 +35,7 @@ spring:
       static-locations: classpath:/static/
       
 server:
-  port: 8082
+  port: ${PORT:8080}
   servlet:
     context-path: /
     session:
